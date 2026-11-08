@@ -84,11 +84,7 @@ String normalizeServerInput(String input, {required bool allowInsecureLocal}) {
 
 /// Hosts for which plain http is allowed in the dev flavor.
 bool isLocalHost(String host) =>
-    host == 'localhost' ||
-    host == '127.0.0.1' ||
-    host == '10.0.2.2' ||
-    host == '[::1]' ||
-    host == '::1';
+    host == 'localhost' || host == '127.0.0.1' || host == '10.0.2.2';
 
 /// Fetches and validates `GET /.well-known/openbekci.json` from the client's origin.
 Future<Discovery> fetchDiscovery(ApiClient client) async {

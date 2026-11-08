@@ -54,6 +54,16 @@ void main() {
       );
     });
 
+    test('dev flavor refuses http for hosts the network config blocks', () {
+      for (final host in ['[::1]', '192.168.1.5', 'localhost.evil.org']) {
+        expect(
+          () => n('http://$host:8484', dev: true),
+          throwsA(errorCode('insecure_server')),
+          reason: host,
+        );
+      }
+    });
+
     test('rejects garbage', () {
       for (final bad in ['', '   ', 'ftp://x.org', 'https://']) {
         expect(
