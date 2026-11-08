@@ -37,6 +37,10 @@ class TokenManager {
   DateTime? _accessExpiresAt;
   Future<String>? _inflight;
 
+  /// Bumped by [clearMemory]: a refresh that started before a sign-out must
+  /// not write its tokens back afterwards.
+  int _epoch = 0;
+
   /// Number of refresh requests actually sent (for tests and diagnostics).
   int refreshCount = 0;
 
@@ -58,6 +62,7 @@ class TokenManager {
 
   /// Forgets the in-memory token (sign-out).
   void clearMemory() {
+    _epoch++;
     _access = null;
     _accessExpiresAt = null;
   }
@@ -94,7 +99,11 @@ class TokenManager {
   }
 
   Future<String> _doRefresh() async {
+    final epoch = _epoch;
     final refreshToken = await _store.readRefreshToken();
+    if (epoch != _epoch) {
+      throw const AppError(code: 'invalid_grant', status: 401);
+    }
     if (refreshToken == null) {
       await _lose();
       throw const AppError(code: 'invalid_grant', status: 401);
@@ -105,15 +114,22 @@ class TokenManager {
         refreshRequest: RefreshRequest(refreshToken: refreshToken),
       );
       final pair = response.data!;
+      if (epoch != _epoch) {
+        // Signed out while the request was in flight: drop the new pair and
+        // do not touch the (possibly new) session.
+        throw const _Superseded();
+      }
       await setTokens(
         accessToken: pair.accessToken,
         accessExpiresAt: pair.accessExpiresAt,
         refreshToken: pair.refreshToken,
       );
       return pair.accessToken;
+    } on _Superseded {
+      throw const AppError(code: 'invalid_grant', status: 401);
     } on Object catch (e) {
       final error = AppError.from(e);
-      if (error.isInvalidGrant || error.status == 401) {
+      if (epoch == _epoch && (error.isInvalidGrant || error.status == 401)) {
         await _lose();
       }
       throw error;
@@ -124,4 +140,9 @@ class TokenManager {
     clearMemory();
     await onSessionLost?.call();
   }
+}
+
+/// A refresh outlived the session that started it.
+class _Superseded implements Exception {
+  const new();
 }

@@ -325,4 +325,47 @@ void main() {
       }
     });
   });
+
+  group('sign-out racing a refresh', () {
+    test(
+      'a refresh finishing after sign-out does not resurrect tokens',
+      () async {
+        final h = await harness();
+        h.adapter.on('POST /v1/auth/token/refresh', (o) async {
+          await Future<void>.delayed(const Duration(milliseconds: 30));
+          return FakeResponse.ok(
+            tokenJson(access: 'late-a', refresh: 'late-r'),
+          );
+        });
+        final pending = h.tokens.refresh();
+        final outcome = expectLater(pending, throwsA(isA<AppError>()));
+        await Future<void>.delayed(const Duration(milliseconds: 5));
+        // Sign-out: memory cleared, secure storage wiped.
+        h.tokens.clearMemory();
+        await h.store.clear();
+        await outcome;
+        expect(
+          h.store.refreshToken,
+          isNull,
+          reason: 'refresh token stays wiped',
+        );
+        expect(h.tokens.currentAccessToken, isNull);
+        expect(h.lost, 0, reason: 'a stale result must not wipe a new session');
+      },
+    );
+
+    test('a stale 401 from before sign-out does not sign out again', () async {
+      final h = await harness();
+      h.adapter.on('POST /v1/auth/token/refresh', (o) async {
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+        return FakeResponse.problem(401, 'invalid_grant');
+      });
+      final pending = h.tokens.refresh();
+      final outcome = expectLater(pending, throwsA(isA<AppError>()));
+      await Future<void>.delayed(const Duration(milliseconds: 5));
+      h.tokens.clearMemory();
+      await outcome;
+      expect(h.lost, 0);
+    });
+  });
 }
