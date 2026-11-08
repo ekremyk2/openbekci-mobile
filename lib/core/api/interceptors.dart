@@ -175,7 +175,8 @@ class RetryInterceptor extends Interceptor {
         o.method == 'HEAD' ||
         o.headers.containsKey('Idempotency-Key');
     final error = AppError.from(err);
-    final transient = error.retryable && error.status != 500; // 500 is not a transient signal // 500 is not a transient signal
+    final transient =
+        error.retryable && error.status != 500; // 500 is not a transient signal
     if (!safe || !transient || count >= maxRetries) {
       return handler.next(err);
     }
@@ -224,7 +225,7 @@ class ScrubbingLogInterceptor extends Interceptor {
 }
 
 final _secretKeys = RegExp(
-  '(token|code|password|secret|authorization)',
+  '(token|code|otp|password|secret|authorization|key)',
   caseSensitive: false,
 );
 
@@ -239,7 +240,11 @@ String scrubUrl(Uri uri) {
   final segments = [...uri.pathSegments];
   for (var i = 0; i < segments.length - 1; i++) {
     final s = segments[i];
-    if (s == 'invite' || s == 'invitations' || s == 'join' || s == 'link') {
+    if (s == 'invite' ||
+        s == 'invitations' ||
+        s == 'join' ||
+        s == 'link' ||
+        s == 'reset') {
       segments[i + 1] = '***';
     }
   }
@@ -258,8 +263,12 @@ String scrubText(String text) => text
       (m) => '${m[1]}***',
     )
     .replaceAllMapped(
+      RegExp(r'(Idempotency-Key\s*[:=]\s*)[^\s"&,}]+', caseSensitive: false),
+      (m) => '${m[1]}***',
+    )
+    .replaceAllMapped(
       RegExp(
-        r'("?(?:refresh_token|access_token|password|code|token)"?\s*[:=]\s*"?)[^"&,\s}]+',
+        r'("?(?:refresh_token|access_token|password|code|otp|token)"?\s*[:=]\s*"?)[^"&,\s}]+',
         caseSensitive: false,
       ),
       (m) => '${m[1]}***',
