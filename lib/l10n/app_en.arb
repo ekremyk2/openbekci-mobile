@@ -1,0 +1,269 @@
+{
+  "@@locale": "en",
+  "appName": "OpenBekci",
+  "actionContinue": "Continue",
+  "actionBack": "Back",
+  "actionCancel": "Cancel",
+  "actionRetry": "Try again",
+  "actionSignOut": "Sign out",
+  "actionCopy": "Copy",
+  "stateEmptyTitle": "Nothing here yet",
+  "stateErrorTitle": "Something went wrong",
+  "stateOfflineTitle": "You are offline",
+  "stateOfflineBody": "Showing saved information. It will refresh when you are back online.",
+  "stateUpdatedAt": "Updated {when}",
+  "@stateUpdatedAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "errorDetails": "Details",
+  "errorCodeLabel": "Code: {code}",
+  "@errorCodeLabel": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "errorGeneric": "Something went wrong. Please try again.",
+  "errorCode_validation_failed": "Some of the information is not valid. Check the fields and try again.",
+  "errorCode_bad_request": "The request was not understood. Please try again.",
+  "errorCode_unauthenticated": "Your session has ended. Please sign in again.",
+  "errorCode_not_found": "We could not find what you are looking for.",
+  "errorCode_conflict": "This conflicts with the current state. Reload and try again.",
+  "errorCode_version_conflict": "This was changed by someone else. Reload and redo your change.",
+  "errorCode_idempotency_mismatch": "This request was already sent with different content.",
+  "errorCode_locked_period": "This period is closed and cannot be changed.",
+  "errorCode_insufficient_permission": "You do not have permission to do this.",
+  "errorCode_reauth_required": "Please confirm it is you to continue.",
+  "errorCode_invalid_grant": "The code, password or link is wrong or has expired.",
+  "errorCode_rate_limited": "Too many attempts. Please wait a moment and try again.",
+  "errorCode_site_offboarded": "This site is no longer active on this server.",
+  "errorCode_internal_error": "The server had a problem. Please try again later.",
+  "errorCode_sms_unavailable": "This server cannot send text messages right now.",
+  "errorCode_mail_unavailable": "This server cannot send email right now.",
+  "errorCode_payload_too_large": "The data is too large to send.",
+  "errorCode_timeout": "The server took too long to answer. Please try again.",
+  "errorCode_network": "Cannot reach the server. Check your connection.",
+  "errorCode_insecure_server": "This server must use HTTPS.",
+  "errorCode_not_openbekci": "That address does not look like an OpenBekci server.",
+  "fieldErrorRequired": "This field is required.",
+  "fieldErrorInvalid": "This value is not valid.",
+  "fieldErrorTooShort": "This value is too short.",
+  "fieldErrorTooLong": "This value is too long.",
+  "serverTitle": "Connect to your site",
+  "serverBody": "Enter the address of your OpenBekci server, or scan the QR code your manager gave you.",
+  "serverFieldLabel": "Server address",
+  "serverFieldHint": "example.org",
+  "serverConnect": "Connect",
+  "serverScanQr": "Scan QR code",
+  "serverChecking": "Checking the server…",
+  "serverPendingInvite": "Enter the server address to open your invitation.",
+  "serverPendingJoin": "Enter the server address to join your site.",
+  "serverPendingMagic": "Enter the server address to finish signing in.",
+  "scanTitle": "Scan QR code",
+  "scanHint": "Point the camera at the site or invitation QR code.",
+  "scanNotRecognized": "This QR code is not an OpenBekci link.",
+  "scanPermissionDenied": "Camera access is needed to scan. You can enter the address instead.",
+  "gateUpdateTitle": "Update the app",
+  "gateUpdateBody": "This server needs app version {min} or newer (you have {current}).",
+  "@gateUpdateBody": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "gateServerTitle": "Server not supported",
+  "gateServerBody": "This server runs version {version}, which this app cannot talk to. Ask your manager to update the server.",
+  "@gateServerBody": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "gateChangeServer": "Use another server",
+  "signInTitle": "Sign in",
+  "signInServerLine": "Signing in to {name}",
+  "@signInServerLine": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "signInMethodSms": "Text message code",
+  "signInMethodSmsHint": "We text a 6-digit code to your phone.",
+  "signInMethodPassword": "Password",
+  "signInMethodPasswordHint": "Use your email or phone and password.",
+  "signInMethodMagic": "Email link",
+  "signInMethodMagicHint": "We email you a link that signs you in.",
+  "signInMethodUnavailable": "Not available in this app yet",
+  "signInNoMethods": "This server offers no sign-in method this app supports.",
+  "smsPhoneLabel": "Phone number",
+  "smsPhoneHint": "+90 5xx xxx xx xx",
+  "smsSendCode": "Send code",
+  "smsCodeTitle": "Enter the code",
+  "smsCodeSent": "We sent a code to {phone}, if that number has an account.",
+  "@smsCodeSent": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "smsCodeLabel": "6-digit code",
+  "smsVerify": "Sign in",
+  "smsResend": "Send again",
+  "smsResendIn": "Send again in {seconds} s",
+  "@smsResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "passwordIdentifierLabel": "Email or phone",
+  "passwordLabel": "Password",
+  "passwordSignIn": "Sign in",
+  "passwordShow": "Show password",
+  "passwordHide": "Hide password",
+  "magicEmailLabel": "Email address",
+  "magicSend": "Send link",
+  "magicSentTitle": "Check your email",
+  "magicSentBody": "If {email} has an account, we sent a link. Open it on this phone to sign in.",
+  "@magicSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "magicConsuming": "Signing you in…",
+  "inviteTitle": "Your invitation",
+  "inviteBody": "{org} · {site}",
+  "@inviteBody": {
+    "placeholders": {
+      "org": {
+        "type": "String"
+      },
+      "site": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteUnit": "Unit {door}",
+  "@inviteUnit": {
+    "placeholders": {
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteExistingAccount": "You already have an account. Accepting links it to this site.",
+  "inviteNewAccount": "Choose a password to create your account.",
+  "inviteDisplayName": "Your name",
+  "invitePassword": "New password (at least 10 characters)",
+  "inviteAccept": "Accept invitation",
+  "inviteInvalid": "This invitation is invalid or has expired.",
+  "joinTitle": "Join {site}",
+  "@joinTitle": {
+    "placeholders": {
+      "site": {
+        "type": "String"
+      }
+    }
+  },
+  "joinOrg": "Managed by {org}",
+  "@joinOrg": {
+    "placeholders": {
+      "org": {
+        "type": "String"
+      }
+    }
+  },
+  "joinSignInFirst": "Sign in first, then choose your unit.",
+  "joinBlock": "Block",
+  "joinAllBlocks": "All blocks",
+  "joinSearchUnit": "Search door number",
+  "joinNoUnits": "No units found.",
+  "joinRoleTitle": "I am the",
+  "joinRoleOwner": "Owner",
+  "joinRoleTenant": "Tenant",
+  "joinRoleHousehold": "Household member",
+  "joinNote": "Note for your manager (optional)",
+  "joinSubmit": "Send request",
+  "joinUnitLine": "{block} · {door}",
+  "@joinUnitLine": {
+    "placeholders": {
+      "block": {
+        "type": "String"
+      },
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "claimWaitingTitle": "Waiting for approval",
+  "claimWaitingBody": "Your manager will review your request for unit {door}. You will get access as soon as it is approved.",
+  "@claimWaitingBody": {
+    "placeholders": {
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "claimApprovedTitle": "Approved",
+  "claimRejectedTitle": "Not approved",
+  "claimRejectedBody": "Your manager did not approve this request.",
+  "claimUnknownStatus": "Status: {status}",
+  "@claimUnknownStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "claimGoHome": "Go to home",
+  "homeTitle": "Home",
+  "homeWelcome": "Hello, {name}",
+  "@homeWelcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeNoUnits": "No units are linked to your account yet.",
+  "homePendingClaim": "Request for {door}: waiting for approval",
+  "@homePendingClaim": {
+    "placeholders": {
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "homePhaseNote": "More screens arrive in the next releases.",
+  "profileTitle": "Profile",
+  "profileName": "Name",
+  "profilePhone": "Phone",
+  "profileEmail": "Email",
+  "profileServer": "Server",
+  "profileOrganizations": "Organizations",
+  "profileUnits": "My units",
+  "profileSignOutConfirm": "Sign out of this server? Saved data on this phone will be deleted.",
+  "occupancyOwner": "Owner",
+  "occupancyTenant": "Tenant",
+  "occupancyHousehold": "Household member",
+  "occupancyFormer": "Former resident",
+  "occupancyUnknown": "Resident",
+  "navHome": "Home",
+  "navProfile": "Profile"
+}
