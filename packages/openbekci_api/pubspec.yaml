@@ -1,0 +1,21 @@
+name: openbekci_api
+description: >-
+  Dart client for the OpenBekci HTTP API. GENERATED from the pinned spec in
+  ../../spec by tool/generate_client.sh (openapi-generator dart-dio,
+  json_serializable). Do not edit lib/ by hand.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.7
+
+dependencies:
+  dio: ^5.7.0
+  copy_with_extension: ^7.1.0
+  json_annotation: ^4.9.0
+
+dev_dependencies:
+  build_runner: ^2.4.0
+  copy_with_extension_gen: ^7.1.0
+  json_serializable: ^6.9.3
+  test: ^1.25.0

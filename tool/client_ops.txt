@@ -1,0 +1,10 @@
+# operationId patterns (glob, '*' = any) the generated client covers. One per line.
+# Add the operations a phase needs, then run `tool/generate_client.ps1` (or .sh).
+instance.*
+auth.*
+me.*
+people.getJoinInfo
+people.listJoinUnits
+people.createUnitClaim
+people.previewInvitation
+people.acceptInvitation
