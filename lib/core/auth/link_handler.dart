@@ -42,12 +42,11 @@ class LinkHandler {
       return '/server';
     }
     if (pending == null || pending.origin != origin) {
-      try {
-        await connect(origin);
-      } on AppError {
-        _ref.read(pendingLinkProvider.notifier).set(link);
-        return '/server';
-      }
+      // A link never switches servers by itself (open-redirect / phishing
+      // guard): the server screen shows the host, the user confirms with
+      // Connect, and the link resumes from there.
+      _ref.read(pendingLinkProvider.notifier).set(link);
+      return '/server';
     }
     return switch (link) {
       InviteLink(:final token) => '/invite/${Uri.encodeComponent(token)}',
