@@ -115,7 +115,10 @@ flutter test               # unit, widget, contract, goldens; live tests skip th
   email link, invitation, site QR and claim, profile and sign-out, offline hint.
 - **Goldens** (`test/golden`): onboarding screens in light, dark, Turkish and an RTL pseudo-`ar` column, plus 200 %
   text. Fonts are the test font, so the images are the same on every OS. Update deliberately with
-  `flutter test --update-goldens test/golden` and review the diff; **CI never updates goldens**.
+  `flutter test --update-goldens test/golden` and review the diff; **CI never updates goldens**. The committed images
+  are the ones rendered on Linux (as CI does); text edges differ by about 1 % of the pixels on other platforms, so
+  there set `GOLDEN_TOLERANCE=0.02` to compare locally (CI uses 0.2 %). To refresh them, take the `*_testImage.png`
+  files from the `golden-failures` artifact of a CI run rather than regenerating on Windows or macOS.
 - **Live** (`test/live`): the real app (router, guards, Dio, token manager, generated client) over real HTTP against a
   running dev server. Skipped unless these are set:
 
