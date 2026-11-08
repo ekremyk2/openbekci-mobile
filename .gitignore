@@ -50,3 +50,6 @@ app.*.map.json
 # Generator cache and build output
 /.tool_cache/
 
+
+# Golden test failure output
+test/golden/failures/
