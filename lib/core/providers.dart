@@ -185,6 +185,9 @@ class SessionActions {
 
   /// Stores the account and its tokens after any sign-in method succeeded.
   Future<void> completeSignIn(Discovery server, SignInResult result) async {
+    // Never inherit another session's cached rows (a wipe interrupted by a
+    // crash, or a different user on the same instance).
+    await _ref.read(databaseProvider).clearAll();
     final store = _ref.read(accountStoreProvider);
     await store.writeRefreshToken(result.refreshToken);
     await _ref
@@ -227,10 +230,18 @@ class SessionActions {
 
   Future<void> _wipe() async {
     _ref.read(tokenManagerProvider)?.clearMemory();
-    await _ref.read(accountStoreProvider).clear();
-    await _ref.read(databaseProvider).clearAll();
-    _ref.read(pendingLinkProvider.notifier).set(null);
-    _ref.read(accountProvider.notifier).clear();
+    try {
+      await _ref.read(accountStoreProvider).clear();
+    } finally {
+      // The cache goes even if secure storage failed, and the UI always
+      // leaves the signed-in state.
+      try {
+        await _ref.read(databaseProvider).clearAll();
+      } finally {
+        _ref.read(pendingLinkProvider.notifier).set(null);
+        _ref.read(accountProvider.notifier).clear();
+      }
+    }
   }
 }
 
