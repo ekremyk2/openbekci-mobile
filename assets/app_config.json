@@ -1,0 +1,10 @@
+{
+  "app_name": "OpenBekci",
+  "default_server_url": null,
+  "relay_id": "official",
+  "support_url": "https://github.com/ekremyk2/openbekci-mobile",
+  "brand": {
+    "seed_color": "#1A73E8",
+    "logo_asset": null
+  }
+}

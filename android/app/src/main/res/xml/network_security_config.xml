@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- prod: HTTPS only. User-installed CAs are trusted so self-hosted sites can use a private CA
+     (mobile plan section 5.1). No certificate pinning (servers are arbitrary). -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system"/>
+            <certificates src="user"/>
+        </trust-anchors>
+    </base-config>
+</network-security-config>
