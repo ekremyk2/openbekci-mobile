@@ -250,7 +250,6 @@
       }
     }
   },
-  "homePhaseNote": "More screens arrive in the next releases.",
   "profileTitle": "Profile",
   "profileName": "Name",
   "profilePhone": "Phone",
@@ -265,5 +264,326 @@
   "occupancyFormer": "Former resident",
   "occupancyUnknown": "Resident",
   "navHome": "Home",
-  "navProfile": "Profile"
+  "navProfile": "Profile",
+  "aboutLicenses": "Open-source licenses",
+  "aboutTitle": "About",
+  "aboutVersion": "Version {version} ({build})",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
+  "accruedLateFeeToday": "Late fee accrued to today",
+  "actionCopyValue": "Copy {label}",
+  "@actionCopyValue": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "actionSave": "Save",
+  "announcementAttachments": "Attachments",
+  "announcementPinned": "Pinned",
+  "announcementTitle": "Announcement",
+  "announcementUnread": "Unread",
+  "announcementsEmpty": "No announcements yet.",
+  "announcementsTitle": "Announcements",
+  "appLockBody": "Ask for your fingerprint, face or device PIN when you open the app.",
+  "appLockEnable": "Lock the app",
+  "appLockTitle": "App lock",
+  "attachmentPhoto": "Photo",
+  "balanceToday": "Balance today",
+  "bankDetailsMissing": "The manager has not published bank details for this site yet.",
+  "bankDetailsTitle": "Bank details",
+  "bankHolder": "Account holder",
+  "bankIban": "IBAN",
+  "bankName": "Bank",
+  "bankReference": "Reference to use",
+  "closingBalance": "Closing balance",
+  "consentAccepted": "Accepted",
+  "consentDeclined": "Declined",
+  "consentDirectory": "Listed in the directory of {site}",
+  "@consentDirectory": {
+    "placeholders": {
+      "site": {
+        "type": "String"
+      }
+    }
+  },
+  "consentsBody": "Consents you have given or declined. You can change them at any time.",
+  "consentsOtherNote": "This server does not publish other consent texts yet.",
+  "consentsTitle": "Consents",
+  "copiedToClipboard": "Copied",
+  "creditLabel": "Credit",
+  "declareAmount": "Amount ({currency})",
+  "@declareAmount": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "declareBody": "Made the transfer? Tell the manager so they can match it. Nothing changes on your statement until they confirm.",
+  "declareDate": "Date of the transfer",
+  "declareNeedsConnection": "Needs a connection. If sending fails, try again: it will not be declared twice.",
+  "declareNote": "Note (optional)",
+  "declareReference": "Reference (optional)",
+  "declareSent": "Declared, awaiting confirmation",
+  "declareSentBody": "The manager will confirm it once the money arrives.",
+  "declareSubmit": "I've paid by transfer",
+  "declareTitle": "I've paid by transfer",
+  "declaredSection": "Declared, awaiting confirmation",
+  "directoryBody": "Neighbours see your name in the site directory only if you opt in.",
+  "directoryListMe": "List me in the directory",
+  "directoryShowPhone": "Show my phone number",
+  "directoryTitle": "Directory",
+  "documentGenerated": "Generated",
+  "documentOpening": "Opening…",
+  "documentShare": "Share",
+  "documentsEmpty": "No documents here.",
+  "documentsTitle": "Documents",
+  "folderSite": "Site folder",
+  "folderUnit": "Your unit's folder",
+  "formerPeriodNote": "You see your own period of residence only.",
+  "gatePhoneHelp": "The gate guard calls this number if you do not answer a visitor request in the app.",
+  "gatePhoneLabel": "Gate contact phone",
+  "homeAssemblyUntitled": "General assembly",
+  "homeBookings": "Bookings",
+  "homeComingSoon": "Coming soon",
+  "homeNextAssembly": "Next assembly",
+  "homeNoAssembly": "No assembly is scheduled.",
+  "homeNoMoneyAccess": "Balances are not shown to you. Ask the unit owner for access.",
+  "homeOpenTickets": "Open tickets",
+  "homeParcels": "Parcels waiting",
+  "homeSectionCommunity": "Community",
+  "homeSectionNews": "News and requests",
+  "homeUnreadAnnouncements": "Unread announcements",
+  "homeVisitors": "Visitors",
+  "householdNoMoney": "Household, no money access",
+  "householdSeesMoney": "Household, sees money",
+  "includesLateFee": "includes late fee",
+  "languageDevice": "Same as the device",
+  "languageTitle": "Language",
+  "lockFailed": "Could not confirm it is you.",
+  "lockReason": "Unlock OpenBekci",
+  "lockUnavailable": "This device has no screen lock or biometrics set up.",
+  "lockUnlock": "Unlock",
+  "lockedTitle": "OpenBekci is locked",
+  "methodBankTransfer": "Bank transfer",
+  "methodCard": "Card",
+  "methodCash": "Cash",
+  "moneyTitle": "Money",
+  "navMoney": "Money",
+  "navMore": "More",
+  "navNotifications": "Notifications",
+  "navTickets": "Tickets",
+  "nextDue": "Next due:",
+  "nextDueNone": "Nothing due",
+  "notBookedYet": "Not booked yet",
+  "notifAnnouncementPublished": "New announcement",
+  "notifBookingCancelled": "Booking cancelled",
+  "notifBookingConfirmed": "Booking confirmed",
+  "notifChargeDueSoon": "Charge due soon",
+  "notifChargeOverdue": "Charge overdue",
+  "notifClaimDecided": "Unit claim decided",
+  "notifClaimRequested": "Unit claim requested",
+  "notifDeliveryReceived": "Parcel received",
+  "notifDeliveryWaiting": "Parcel waiting",
+  "notifDunningReminder": "Payment reminder",
+  "notifMeetingAssemblyDue": "Assembly due",
+  "notifMeetingCalled": "Meeting called",
+  "notifMeetingDecisions": "Meeting decisions",
+  "notifPaymentConfirmed": "Payment confirmed",
+  "notifPaymentDeclared": "Payment declared",
+  "notifPaymentReceipt": "Payment receipt",
+  "notifPaymentRejected": "Payment not confirmed",
+  "notifStatementSent": "Statement sent",
+  "notifTermExpiring": "Term expiring",
+  "notifTicketCommented": "New comment on a ticket",
+  "notifTicketUpdated": "Ticket updated",
+  "notifVisitorApproval": "Visitor waiting for approval",
+  "notifVisitorArrived": "Visitor arrived",
+  "notifVisitorQrRotated": "Visitor code renewed",
+  "notificationsCannotMute": "Always on",
+  "notificationsEmpty": "No notifications.",
+  "notificationsMarkAll": "Mark all as read",
+  "notificationsMutesBody": "Choose which notifications you get. Sign-in codes and invitations cannot be turned off.",
+  "notificationsSettings": "Notification settings",
+  "notificationsTitle": "Notifications",
+  "openingBalance": "Opening balance",
+  "payByCard": "Pay by card",
+  "payByTransfer": "Pay by transfer",
+  "payTitle": "Pay by bank transfer",
+  "paymentConfirmed": "Confirmed",
+  "paymentDeclaredWaiting": "Declared, awaiting confirmation",
+  "paymentHistoryTitle": "Payments",
+  "paymentRefunded": "Refunded",
+  "paymentVoided": "Voided",
+  "paymentsEmpty": "No payments yet.",
+  "periodAll": "All",
+  "periodLast3Months": "Last 3 months",
+  "periodLastYear": "Last year",
+  "periodThisYear": "This year",
+  "profileContactsNote": "Your phone and email are your sign-in details; ask the manager to change them.",
+  "profileEditMe": "My details",
+  "profileEditMeBody": "Name, gate contact phone and language",
+  "receiptNo": "Receipt {no}",
+  "@receiptNo": {
+    "placeholders": {
+      "no": {
+        "type": "String"
+      }
+    }
+  },
+  "runningBalance": "Balance",
+  "saved": "Saved",
+  "sessionMobile": "Mobile app",
+  "sessionRevoke": "Sign out",
+  "sessionRevokeConfirm": "Sign this device out of your account?",
+  "sessionThisDevice": "This device",
+  "sessionWeb": "Web browser",
+  "sessionsTitle": "Signed-in devices",
+  "shareReceipt": "Share receipt",
+  "sideCardTitle": "Unit {door}",
+  "@sideCardTitle": {
+    "placeholders": {
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "sideChip": "{unit} · {side}",
+  "@sideChip": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      },
+      "side": {
+        "type": "String"
+      }
+    }
+  },
+  "sideOwner": "Owner side",
+  "sideTenant": "Tenant side",
+  "statementLines": "Statement",
+  "statementNoLines": "No entries in this period.",
+  "statementPdf": "PDF",
+  "stmtKindAdjustment": "Adjustment",
+  "stmtKindCharge": "Charge",
+  "stmtKindCredit": "Credit",
+  "stmtKindLateFee": "Late fee",
+  "stmtKindOpening": "Opening balance",
+  "stmtKindPayment": "Payment",
+  "stmtKindRefund": "Refund",
+  "stmtKindReversal": "Reversal",
+  "switchOrganization": "Switch organization",
+  "ticketCategory": "Category",
+  "ticketCommentHint": "Write a comment",
+  "ticketCommentSend": "Send comment",
+  "ticketComments": "{count, plural, =1{1 comment} other{{count} comments}}",
+  "@ticketComments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ticketCommon": "Common",
+  "ticketCommonHint": "Everyone in the site sees it and can add a +1.",
+  "ticketDescription": "Describe the problem",
+  "ticketDraftKept": "If sending fails, your text and photos are kept and the retry will not create a duplicate.",
+  "ticketMerged": "This ticket was merged into another one.",
+  "ticketNew": "New ticket",
+  "ticketNoThread": "No updates yet.",
+  "ticketNoUnit": "No unit",
+  "ticketPhotoCamera": "Camera",
+  "ticketPhotoCount": "{count} of {max} photos",
+  "@ticketPhotoCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "ticketPhotoGallery": "Gallery",
+  "ticketPhotoRemove": "Remove photo",
+  "ticketPhotos": "Photos",
+  "ticketPlusOne": "+1 ({count})",
+  "@ticketPlusOne": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ticketPrivate": "Private",
+  "ticketPrivateHint": "Only you and the management see it.",
+  "ticketStatusChanged": "Status: {from} to {to}",
+  "@ticketStatusChanged": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketStatusSet": "Status: {to}",
+  "@ticketStatusSet": {
+    "placeholders": {
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketSubmit": "Send ticket",
+  "ticketThread": "Updates",
+  "ticketTitle": "Ticket",
+  "ticketTitleLabel": "Title",
+  "ticketUnit": "Unit {door}",
+  "@ticketUnit": {
+    "placeholders": {
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketUnitOptional": "Unit (optional)",
+  "ticketVisibility": "Who can see it",
+  "ticketVoted": "+1 given ({count})",
+  "@ticketVoted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ticketVotes": "{count, plural, =0{No +1 yet} =1{1 +1} other{{count} +1}}",
+  "@ticketVotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ticketsAll": "All",
+  "ticketsClosed": "Closed",
+  "ticketsCommon": "Common",
+  "ticketsEmpty": "No tickets here.",
+  "ticketsEmptyTitle": "No tickets yet",
+  "ticketsMine": "Mine",
+  "ticketsOpen": "Open",
+  "ticketsTitle": "Tickets",
+  "totalDueToday": "Total due today",
+  "valueOther": "Other"
 }

@@ -1,3 +1,12 @@
+import 'package:openbekci_api/openbekci_api.dart'
+    show
+        FolderKindEnum,
+        PaymentMethodEnum,
+        PaymentStatusEnum,
+        SessionClientEnum,
+        StatementLineKindEnum,
+        TicketCategoryDefaultVisibilityEnum,
+        TicketVisibilityEnum;
 import 'package:openbekci_mobile/core/api/app_error.dart';
 import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
 
@@ -86,3 +95,110 @@ String? _byCode(AppLocalizations l, String code) {
   }
   return null;
 }
+
+// ---------------------------------------------------------------------------
+// Enum and code labels (mobile plan section 12: one place, with a fallback).
+//
+// Generated enums decode an unknown wire value to `unknownDefaultOpenApi`
+// (ADR 0001), which shows the neutral "Other" label; string-typed codes
+// (notification types, ticket status names) fall back to the raw value.
+// ---------------------------------------------------------------------------
+
+/// `owner` / `tenant` side of a unit; other values are shown as received.
+String sideLabel(AppLocalizations l, String kind) => switch (kind) {
+  'owner' => l.sideOwner,
+  'tenant' => l.sideTenant,
+  _ => kind,
+};
+
+String statementKindLabel(AppLocalizations l, StatementLineKindEnum kind) =>
+    switch (kind) {
+      StatementLineKindEnum.opening => l.stmtKindOpening,
+      StatementLineKindEnum.charge => l.stmtKindCharge,
+      StatementLineKindEnum.payment => l.stmtKindPayment,
+      StatementLineKindEnum.lateFee => l.stmtKindLateFee,
+      StatementLineKindEnum.credit => l.stmtKindCredit,
+      StatementLineKindEnum.refund => l.stmtKindRefund,
+      StatementLineKindEnum.adjustment => l.stmtKindAdjustment,
+      StatementLineKindEnum.reversal => l.stmtKindReversal,
+      StatementLineKindEnum.unknownDefaultOpenApi => l.valueOther,
+    };
+
+String paymentStatusLabel(AppLocalizations l, PaymentStatusEnum status) =>
+    switch (status) {
+      PaymentStatusEnum.pendingDeclared => l.paymentDeclaredWaiting,
+      PaymentStatusEnum.confirmed => l.paymentConfirmed,
+      PaymentStatusEnum.refunded => l.paymentRefunded,
+      PaymentStatusEnum.voided => l.paymentVoided,
+      PaymentStatusEnum.unknownDefaultOpenApi => l.valueOther,
+    };
+
+String paymentMethodLabel(AppLocalizations l, PaymentMethodEnum method) =>
+    switch (method) {
+      PaymentMethodEnum.cash => l.methodCash,
+      PaymentMethodEnum.bankTransfer => l.methodBankTransfer,
+      PaymentMethodEnum.card => l.methodCard,
+      PaymentMethodEnum.unknownDefaultOpenApi => l.valueOther,
+    };
+
+String ticketVisibilityLabel(
+  AppLocalizations l,
+  TicketVisibilityEnum visibility,
+) => switch (visibility) {
+  TicketVisibilityEnum.private => l.ticketPrivate,
+  TicketVisibilityEnum.common => l.ticketCommon,
+  TicketVisibilityEnum.unknownDefaultOpenApi => l.valueOther,
+};
+
+String folderKindLabel(AppLocalizations l, FolderKindEnum kind) =>
+    switch (kind) {
+      FolderKindEnum.site => l.folderSite,
+      FolderKindEnum.unit => l.folderUnit,
+      FolderKindEnum.unknownDefaultOpenApi => l.valueOther,
+    };
+
+String sessionClientLabel(AppLocalizations l, SessionClientEnum client) =>
+    switch (client) {
+      SessionClientEnum.web => l.sessionWeb,
+      SessionClientEnum.mobile => l.sessionMobile,
+      SessionClientEnum.unknownDefaultOpenApi => l.valueOther,
+    };
+
+/// Title of a notification type; unknown types show the raw type string.
+String notificationTypeLabel(AppLocalizations l, String type) => switch (type) {
+  'announcement.published' => l.notifAnnouncementPublished,
+  'charge.due_soon' => l.notifChargeDueSoon,
+  'charge.overdue' => l.notifChargeOverdue,
+  'dunning.reminder' => l.notifDunningReminder,
+  'payment.receipt' => l.notifPaymentReceipt,
+  'payment.declared' => l.notifPaymentDeclared,
+  'payment.confirmed' => l.notifPaymentConfirmed,
+  'payment.rejected' => l.notifPaymentRejected,
+  'statement.sent' => l.notifStatementSent,
+  'ticket.updated' => l.notifTicketUpdated,
+  'ticket.commented' => l.notifTicketCommented,
+  'claim.requested' => l.notifClaimRequested,
+  'claim.decided' => l.notifClaimDecided,
+  'meeting.called' => l.notifMeetingCalled,
+  'meeting.decisions' => l.notifMeetingDecisions,
+  'meeting.assembly_due' => l.notifMeetingAssemblyDue,
+  'delivery.waiting' => l.notifDeliveryWaiting,
+  'delivery.received' => l.notifDeliveryReceived,
+  'visitor.qr_rotated' => l.notifVisitorQrRotated,
+  'visitor.approval_requested' => l.notifVisitorApproval,
+  'visitor.arrived' => l.notifVisitorArrived,
+  'booking.confirmed' => l.notifBookingConfirmed,
+  'booking.cancelled' => l.notifBookingCancelled,
+  'term.expiring' => l.notifTermExpiring,
+  _ => type,
+};
+
+/// Label of a ticket category's default visibility, for the create form.
+String categoryVisibilityLabel(
+  AppLocalizations l,
+  TicketCategoryDefaultVisibilityEnum v,
+) => switch (v) {
+  TicketCategoryDefaultVisibilityEnum.private => l.ticketPrivate,
+  TicketCategoryDefaultVisibilityEnum.common => l.ticketCommon,
+  TicketCategoryDefaultVisibilityEnum.unknownDefaultOpenApi => l.valueOther,
+};

@@ -3,7 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:openbekci_mobile/core/instance/discovery.dart';
 import 'package:openbekci_mobile/core/providers.dart';
+import 'package:openbekci_mobile/features/announcements/presentation/announcements_screens.dart';
+import 'package:openbekci_mobile/features/documents/presentation/documents_screens.dart';
 import 'package:openbekci_mobile/features/home/home_screen.dart';
+import 'package:openbekci_mobile/features/money/presentation/money_screen.dart';
+import 'package:openbekci_mobile/features/money/presentation/pay_screens.dart';
+import 'package:openbekci_mobile/features/notifications/presentation/notifications_screens.dart';
 import 'package:openbekci_mobile/features/onboarding/application/onboarding_providers.dart';
 import 'package:openbekci_mobile/features/onboarding/presentation/gate_screen.dart';
 import 'package:openbekci_mobile/features/onboarding/presentation/invite_join_screens.dart';
@@ -11,6 +16,8 @@ import 'package:openbekci_mobile/features/onboarding/presentation/scan_screen.da
 import 'package:openbekci_mobile/features/onboarding/presentation/server_screen.dart';
 import 'package:openbekci_mobile/features/onboarding/presentation/sign_in_screens.dart';
 import 'package:openbekci_mobile/features/profile/profile_screen.dart';
+import 'package:openbekci_mobile/features/shell/presentation/app_shell.dart';
+import 'package:openbekci_mobile/features/tickets/presentation/tickets_screens.dart';
 
 /// Routes. Signed-out flow: `/server` -> `/sign-in` -> a method; links land on
 /// `/invite/:token`, `/join/:code` and `/magic/:token`.
@@ -71,10 +78,14 @@ class _RouterRefresh extends ChangeNotifier {
   }
 }
 
+/// Detail and form screens open over the tabs (no bottom navigation).
+final _rootKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = _RouterRefresh(ref);
   ref.onDispose(refresh.dispose);
   final router = GoRouter(
+    navigatorKey: _rootKey,
     initialLocation: Routes.splash,
     refreshListenable: refresh,
     redirect: (context, state) => redirectFor(ref, state.matchedLocation),
@@ -117,8 +128,136 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, state) => JoinScreen(code: state.pathParameters['code']!),
       ),
       GoRoute(path: Routes.claim, builder: (_, _) => const ClaimStatusScreen()),
-      GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
-      GoRoute(path: Routes.profile, builder: (_, _) => const ProfileScreen()),
+      StatefulShellRoute.indexedStack(
+        builder: (_, _, shell) => AppShell(shell: shell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/money',
+                builder: (_, state) =>
+                    MoneyScreen(initialSide: state.uri.queryParameters['side']),
+                routes: [
+                  GoRoute(
+                    path: 'pay',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, state) => PayScreen(
+                      sideId: state.uri.queryParameters['side'] ?? '',
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'payments',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, state) => PaymentsScreen(
+                      sideId: state.uri.queryParameters['side'] ?? '',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/tickets',
+                builder: (_, _) => const TicketsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, _) => const NewTicketScreen(),
+                  ),
+                  GoRoute(
+                    path: ':id',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, state) => TicketDetailScreen(
+                      ticketId: state.pathParameters['id']!,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/more',
+                builder: (_, _) => const MoreScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'announcements',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, _) => const AnnouncementsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: ':id',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, state) => AnnouncementDetailScreen(
+                          announcementId: state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'documents',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, _) => const DocumentsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'folder/:id',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, state) => DocumentsScreen(
+                          folderId: state.pathParameters['id'],
+                        ),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'notifications',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, _) => const NotificationsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'settings',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, _) => const NotificationSettingsScreen(),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'pdf',
+                    parentNavigatorKey: _rootKey,
+                    redirect: (_, state) =>
+                        state.extra is PdfArgs ? null : '/more/documents',
+                    builder: (_, state) =>
+                        PdfScreen(args: state.extra! as PdfArgs),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        path: Routes.profile,
+        builder: (_, _) => const ProfileScreen(),
+        routes: [
+          GoRoute(path: 'me', builder: (_, _) => const EditMeScreen()),
+          GoRoute(
+            path: 'directory',
+            builder: (_, _) => const DirectoryScreen(),
+          ),
+          GoRoute(path: 'sessions', builder: (_, _) => const SessionsScreen()),
+          GoRoute(path: 'lock', builder: (_, _) => const AppLockScreen()),
+          GoRoute(path: 'consents', builder: (_, _) => const ConsentsScreen()),
+          GoRoute(path: 'about', builder: (_, _) => const AboutScreen()),
+        ],
+      ),
     ],
   );
   ref.onDispose(router.dispose);

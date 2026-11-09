@@ -484,4 +484,674 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navProfile => 'Profile';
+
+  @override
+  String get aboutLicenses => 'Open-source licenses';
+
+  @override
+  String get aboutTitle => 'About';
+
+  @override
+  String aboutVersion(String version, String build) {
+    return 'Version $version ($build)';
+  }
+
+  @override
+  String get accruedLateFeeToday => 'Late fee accrued to today';
+
+  @override
+  String actionCopyValue(String label) {
+    return 'Copy $label';
+  }
+
+  @override
+  String get actionSave => 'Save';
+
+  @override
+  String get announcementAttachments => 'Attachments';
+
+  @override
+  String get announcementPinned => 'Pinned';
+
+  @override
+  String get announcementTitle => 'Announcement';
+
+  @override
+  String get announcementUnread => 'Unread';
+
+  @override
+  String get announcementsEmpty => 'No announcements yet.';
+
+  @override
+  String get announcementsTitle => 'Announcements';
+
+  @override
+  String get appLockBody =>
+      'Ask for your fingerprint, face or device PIN when you open the app.';
+
+  @override
+  String get appLockEnable => 'Lock the app';
+
+  @override
+  String get appLockTitle => 'App lock';
+
+  @override
+  String get attachmentPhoto => 'Photo';
+
+  @override
+  String get balanceToday => 'Balance today';
+
+  @override
+  String get bankDetailsMissing =>
+      'The manager has not published bank details for this site yet.';
+
+  @override
+  String get bankDetailsTitle => 'Bank details';
+
+  @override
+  String get bankHolder => 'Account holder';
+
+  @override
+  String get bankIban => 'IBAN';
+
+  @override
+  String get bankName => 'Bank';
+
+  @override
+  String get bankReference => 'Reference to use';
+
+  @override
+  String get closingBalance => 'Closing balance';
+
+  @override
+  String get consentAccepted => 'Accepted';
+
+  @override
+  String get consentDeclined => 'Declined';
+
+  @override
+  String consentDirectory(String site) {
+    return 'Listed in the directory of $site';
+  }
+
+  @override
+  String get consentsBody =>
+      'Consents you have given or declined. You can change them at any time.';
+
+  @override
+  String get consentsOtherNote =>
+      'This server does not publish other consent texts yet.';
+
+  @override
+  String get consentsTitle => 'Consents';
+
+  @override
+  String get copiedToClipboard => 'Copied';
+
+  @override
+  String get creditLabel => 'Credit';
+
+  @override
+  String declareAmount(String currency) {
+    return 'Amount ($currency)';
+  }
+
+  @override
+  String get declareBody =>
+      'Made the transfer? Tell the manager so they can match it. Nothing changes on your statement until they confirm.';
+
+  @override
+  String get declareDate => 'Date of the transfer';
+
+  @override
+  String get declareNeedsConnection =>
+      'Needs a connection. If sending fails, try again: it will not be declared twice.';
+
+  @override
+  String get declareNote => 'Note (optional)';
+
+  @override
+  String get declareReference => 'Reference (optional)';
+
+  @override
+  String get declareSent => 'Declared, awaiting confirmation';
+
+  @override
+  String get declareSentBody =>
+      'The manager will confirm it once the money arrives.';
+
+  @override
+  String get declareSubmit => 'I\'ve paid by transfer';
+
+  @override
+  String get declareTitle => 'I\'ve paid by transfer';
+
+  @override
+  String get declaredSection => 'Declared, awaiting confirmation';
+
+  @override
+  String get directoryBody =>
+      'Neighbours see your name in the site directory only if you opt in.';
+
+  @override
+  String get directoryListMe => 'List me in the directory';
+
+  @override
+  String get directoryShowPhone => 'Show my phone number';
+
+  @override
+  String get directoryTitle => 'Directory';
+
+  @override
+  String get documentGenerated => 'Generated';
+
+  @override
+  String get documentOpening => 'Opening…';
+
+  @override
+  String get documentShare => 'Share';
+
+  @override
+  String get documentsEmpty => 'No documents here.';
+
+  @override
+  String get documentsTitle => 'Documents';
+
+  @override
+  String get folderSite => 'Site folder';
+
+  @override
+  String get folderUnit => 'Your unit\'s folder';
+
+  @override
+  String get formerPeriodNote => 'You see your own period of residence only.';
+
+  @override
+  String get gatePhoneHelp =>
+      'The gate guard calls this number if you do not answer a visitor request in the app.';
+
+  @override
+  String get gatePhoneLabel => 'Gate contact phone';
+
+  @override
+  String get homeAssemblyUntitled => 'General assembly';
+
+  @override
+  String get homeBookings => 'Bookings';
+
+  @override
+  String get homeComingSoon => 'Coming soon';
+
+  @override
+  String get homeNextAssembly => 'Next assembly';
+
+  @override
+  String get homeNoAssembly => 'No assembly is scheduled.';
+
+  @override
+  String get homeNoMoneyAccess =>
+      'Balances are not shown to you. Ask the unit owner for access.';
+
+  @override
+  String get homeOpenTickets => 'Open tickets';
+
+  @override
+  String get homeParcels => 'Parcels waiting';
+
+  @override
+  String get homeSectionCommunity => 'Community';
+
+  @override
+  String get homeSectionNews => 'News and requests';
+
+  @override
+  String get homeUnreadAnnouncements => 'Unread announcements';
+
+  @override
+  String get homeVisitors => 'Visitors';
+
+  @override
+  String get householdNoMoney => 'Household, no money access';
+
+  @override
+  String get householdSeesMoney => 'Household, sees money';
+
+  @override
+  String get includesLateFee => 'includes late fee';
+
+  @override
+  String get languageDevice => 'Same as the device';
+
+  @override
+  String get languageTitle => 'Language';
+
+  @override
+  String get lockFailed => 'Could not confirm it is you.';
+
+  @override
+  String get lockReason => 'Unlock OpenBekci';
+
+  @override
+  String get lockUnavailable =>
+      'This device has no screen lock or biometrics set up.';
+
+  @override
+  String get lockUnlock => 'Unlock';
+
+  @override
+  String get lockedTitle => 'OpenBekci is locked';
+
+  @override
+  String get methodBankTransfer => 'Bank transfer';
+
+  @override
+  String get methodCard => 'Card';
+
+  @override
+  String get methodCash => 'Cash';
+
+  @override
+  String get moneyTitle => 'Money';
+
+  @override
+  String get navMoney => 'Money';
+
+  @override
+  String get navMore => 'More';
+
+  @override
+  String get navNotifications => 'Notifications';
+
+  @override
+  String get navTickets => 'Tickets';
+
+  @override
+  String get nextDue => 'Next due:';
+
+  @override
+  String get nextDueNone => 'Nothing due';
+
+  @override
+  String get notBookedYet => 'Not booked yet';
+
+  @override
+  String get notifAnnouncementPublished => 'New announcement';
+
+  @override
+  String get notifBookingCancelled => 'Booking cancelled';
+
+  @override
+  String get notifBookingConfirmed => 'Booking confirmed';
+
+  @override
+  String get notifChargeDueSoon => 'Charge due soon';
+
+  @override
+  String get notifChargeOverdue => 'Charge overdue';
+
+  @override
+  String get notifClaimDecided => 'Unit claim decided';
+
+  @override
+  String get notifClaimRequested => 'Unit claim requested';
+
+  @override
+  String get notifDeliveryReceived => 'Parcel received';
+
+  @override
+  String get notifDeliveryWaiting => 'Parcel waiting';
+
+  @override
+  String get notifDunningReminder => 'Payment reminder';
+
+  @override
+  String get notifMeetingAssemblyDue => 'Assembly due';
+
+  @override
+  String get notifMeetingCalled => 'Meeting called';
+
+  @override
+  String get notifMeetingDecisions => 'Meeting decisions';
+
+  @override
+  String get notifPaymentConfirmed => 'Payment confirmed';
+
+  @override
+  String get notifPaymentDeclared => 'Payment declared';
+
+  @override
+  String get notifPaymentReceipt => 'Payment receipt';
+
+  @override
+  String get notifPaymentRejected => 'Payment not confirmed';
+
+  @override
+  String get notifStatementSent => 'Statement sent';
+
+  @override
+  String get notifTermExpiring => 'Term expiring';
+
+  @override
+  String get notifTicketCommented => 'New comment on a ticket';
+
+  @override
+  String get notifTicketUpdated => 'Ticket updated';
+
+  @override
+  String get notifVisitorApproval => 'Visitor waiting for approval';
+
+  @override
+  String get notifVisitorArrived => 'Visitor arrived';
+
+  @override
+  String get notifVisitorQrRotated => 'Visitor code renewed';
+
+  @override
+  String get notificationsCannotMute => 'Always on';
+
+  @override
+  String get notificationsEmpty => 'No notifications.';
+
+  @override
+  String get notificationsMarkAll => 'Mark all as read';
+
+  @override
+  String get notificationsMutesBody =>
+      'Choose which notifications you get. Sign-in codes and invitations cannot be turned off.';
+
+  @override
+  String get notificationsSettings => 'Notification settings';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get openingBalance => 'Opening balance';
+
+  @override
+  String get payByCard => 'Pay by card';
+
+  @override
+  String get payByTransfer => 'Pay by transfer';
+
+  @override
+  String get payTitle => 'Pay by bank transfer';
+
+  @override
+  String get paymentConfirmed => 'Confirmed';
+
+  @override
+  String get paymentDeclaredWaiting => 'Declared, awaiting confirmation';
+
+  @override
+  String get paymentHistoryTitle => 'Payments';
+
+  @override
+  String get paymentRefunded => 'Refunded';
+
+  @override
+  String get paymentVoided => 'Voided';
+
+  @override
+  String get paymentsEmpty => 'No payments yet.';
+
+  @override
+  String get periodAll => 'All';
+
+  @override
+  String get periodLast3Months => 'Last 3 months';
+
+  @override
+  String get periodLastYear => 'Last year';
+
+  @override
+  String get periodThisYear => 'This year';
+
+  @override
+  String get profileContactsNote =>
+      'Your phone and email are your sign-in details; ask the manager to change them.';
+
+  @override
+  String get profileEditMe => 'My details';
+
+  @override
+  String get profileEditMeBody => 'Name, gate contact phone and language';
+
+  @override
+  String receiptNo(String no) {
+    return 'Receipt $no';
+  }
+
+  @override
+  String get runningBalance => 'Balance';
+
+  @override
+  String get saved => 'Saved';
+
+  @override
+  String get sessionMobile => 'Mobile app';
+
+  @override
+  String get sessionRevoke => 'Sign out';
+
+  @override
+  String get sessionRevokeConfirm => 'Sign this device out of your account?';
+
+  @override
+  String get sessionThisDevice => 'This device';
+
+  @override
+  String get sessionWeb => 'Web browser';
+
+  @override
+  String get sessionsTitle => 'Signed-in devices';
+
+  @override
+  String get shareReceipt => 'Share receipt';
+
+  @override
+  String sideCardTitle(String door) {
+    return 'Unit $door';
+  }
+
+  @override
+  String sideChip(String unit, String side) {
+    return '$unit · $side';
+  }
+
+  @override
+  String get sideOwner => 'Owner side';
+
+  @override
+  String get sideTenant => 'Tenant side';
+
+  @override
+  String get statementLines => 'Statement';
+
+  @override
+  String get statementNoLines => 'No entries in this period.';
+
+  @override
+  String get statementPdf => 'PDF';
+
+  @override
+  String get stmtKindAdjustment => 'Adjustment';
+
+  @override
+  String get stmtKindCharge => 'Charge';
+
+  @override
+  String get stmtKindCredit => 'Credit';
+
+  @override
+  String get stmtKindLateFee => 'Late fee';
+
+  @override
+  String get stmtKindOpening => 'Opening balance';
+
+  @override
+  String get stmtKindPayment => 'Payment';
+
+  @override
+  String get stmtKindRefund => 'Refund';
+
+  @override
+  String get stmtKindReversal => 'Reversal';
+
+  @override
+  String get switchOrganization => 'Switch organization';
+
+  @override
+  String get ticketCategory => 'Category';
+
+  @override
+  String get ticketCommentHint => 'Write a comment';
+
+  @override
+  String get ticketCommentSend => 'Send comment';
+
+  @override
+  String ticketComments(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count comments',
+      one: '1 comment',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ticketCommon => 'Common';
+
+  @override
+  String get ticketCommonHint =>
+      'Everyone in the site sees it and can add a +1.';
+
+  @override
+  String get ticketDescription => 'Describe the problem';
+
+  @override
+  String get ticketDraftKept =>
+      'If sending fails, your text and photos are kept and the retry will not create a duplicate.';
+
+  @override
+  String get ticketMerged => 'This ticket was merged into another one.';
+
+  @override
+  String get ticketNew => 'New ticket';
+
+  @override
+  String get ticketNoThread => 'No updates yet.';
+
+  @override
+  String get ticketNoUnit => 'No unit';
+
+  @override
+  String get ticketPhotoCamera => 'Camera';
+
+  @override
+  String ticketPhotoCount(int count, int max) {
+    return '$count of $max photos';
+  }
+
+  @override
+  String get ticketPhotoGallery => 'Gallery';
+
+  @override
+  String get ticketPhotoRemove => 'Remove photo';
+
+  @override
+  String get ticketPhotos => 'Photos';
+
+  @override
+  String ticketPlusOne(int count) {
+    return '+1 ($count)';
+  }
+
+  @override
+  String get ticketPrivate => 'Private';
+
+  @override
+  String get ticketPrivateHint => 'Only you and the management see it.';
+
+  @override
+  String ticketStatusChanged(String from, String to) {
+    return 'Status: $from to $to';
+  }
+
+  @override
+  String ticketStatusSet(String to) {
+    return 'Status: $to';
+  }
+
+  @override
+  String get ticketSubmit => 'Send ticket';
+
+  @override
+  String get ticketThread => 'Updates';
+
+  @override
+  String get ticketTitle => 'Ticket';
+
+  @override
+  String get ticketTitleLabel => 'Title';
+
+  @override
+  String ticketUnit(String door) {
+    return 'Unit $door';
+  }
+
+  @override
+  String get ticketUnitOptional => 'Unit (optional)';
+
+  @override
+  String get ticketVisibility => 'Who can see it';
+
+  @override
+  String ticketVoted(int count) {
+    return '+1 given ($count)';
+  }
+
+  @override
+  String ticketVotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count +1',
+      one: '1 +1',
+      zero: 'No +1 yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ticketsAll => 'All';
+
+  @override
+  String get ticketsClosed => 'Closed';
+
+  @override
+  String get ticketsCommon => 'Common';
+
+  @override
+  String get ticketsEmpty => 'No tickets here.';
+
+  @override
+  String get ticketsEmptyTitle => 'No tickets yet';
+
+  @override
+  String get ticketsMine => 'Mine';
+
+  @override
+  String get ticketsOpen => 'Open';
+
+  @override
+  String get ticketsTitle => 'Tickets';
+
+  @override
+  String get totalDueToday => 'Total due today';
+
+  @override
+  String get valueOther => 'Other';
 }

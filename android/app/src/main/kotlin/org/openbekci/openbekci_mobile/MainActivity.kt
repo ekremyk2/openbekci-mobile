@@ -1,5 +1,6 @@
 package org.openbekci.openbekci_mobile
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity()
+// local_auth (app lock) shows its prompt through a FragmentActivity.
+class MainActivity : FlutterFragmentActivity()

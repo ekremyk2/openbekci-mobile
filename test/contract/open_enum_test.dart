@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:openbekci_api/openbekci_api.dart';
+import 'package:openbekci_api/openbekci_api.dart' hide File;
 
 import '../support/fake_api.dart';
 

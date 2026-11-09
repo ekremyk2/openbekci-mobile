@@ -8,6 +8,8 @@ import 'package:openbekci_mobile/app/router.dart';
 import 'package:openbekci_mobile/app/theme/theme.dart';
 import 'package:openbekci_mobile/core/auth/link_handler.dart';
 import 'package:openbekci_mobile/core/providers.dart';
+import 'package:openbekci_mobile/features/profile/application/profile_providers.dart';
+import 'package:openbekci_mobile/features/shell/presentation/app_shell.dart';
 import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
 
 /// Root widget: MaterialApp.router, Material 3 theme from the brand tokens,
@@ -25,6 +27,7 @@ class _OpenBekciAppState extends ConsumerState<OpenBekciApp> {
   @override
   void initState() {
     super.initState();
+    unawaited(Future<void>(() => restoreLocale(ref)));
     _links = ref.read(incomingLinksProvider).listen((link) async {
       // Wait for the account to load so a signed-in user is not bounced.
       await ref.read(accountProvider.future);
@@ -63,6 +66,8 @@ class _OpenBekciAppState extends ConsumerState<OpenBekciApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) =>
+          AppLockGate(child: child ?? const SizedBox()),
       theme: buildTheme(seed: seed, brightness: Brightness.light),
       darkTheme: buildTheme(seed: seed, brightness: Brightness.dark),
     );

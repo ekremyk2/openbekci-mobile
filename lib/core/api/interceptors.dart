@@ -170,10 +170,13 @@ class RetryInterceptor extends Interceptor {
   ) async {
     final o = err.requestOptions;
     final count = (o.extra[ApiExtra.retryCount] as int?) ?? 0;
+    // A multipart body is consumed by its first attempt: the upload code
+    // rebuilds it and retries itself.
     final safe =
-        o.method == 'GET' ||
-        o.method == 'HEAD' ||
-        o.headers.containsKey('Idempotency-Key');
+        o.data is! FormData &&
+        (o.method == 'GET' ||
+            o.method == 'HEAD' ||
+            o.headers.containsKey('Idempotency-Key'));
     final error = AppError.from(err);
     final transient =
         error.retryable && error.status != 500; // 500 is not a transient signal
