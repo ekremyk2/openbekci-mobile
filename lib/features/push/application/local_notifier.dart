@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:openbekci_mobile/core/account/account.dart';
 import 'package:openbekci_mobile/features/push/domain/push_domain.dart';
 import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
 
@@ -296,11 +297,29 @@ String? notificationBodyOf(Map<String, Object?> payload) {
 /// runs in its own isolate, so it builds the generic notice by itself. The
 /// payload is content-free, so the title is the per-type generic one.
 @pragma('vm:entry-point')
-Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
-  final payload = PushPayload.tryParse(message.data);
+Future<void> firebaseBackgroundHandler(RemoteMessage message) =>
+    showBackgroundPush(message.data);
+
+/// Shows the generic notice of a push received without the app running, but
+/// only for the signed-in account's instance: with no account (signed out) or
+/// another instance's id the message is dropped, as in the foreground.
+/// [store] and [notifier] are seams for tests.
+Future<void> showBackgroundPush(
+  Map<Object?, Object?> data, {
+  AccountStore? store,
+  LocalNotifier? notifier,
+}) async {
+  final payload = PushPayload.tryParse(data);
   if (payload == null) return;
+  Account? account;
+  try {
+    account = await (store ?? SecureAccountStore()).readAccount();
+  } on Object {
+    return;
+  }
+  if (account == null || account.instanceId != payload.instanceId) return;
   final l = localizationsForDevice();
-  final notifier = FlutterLocalNotifier();
-  await notifier.init(l);
-  await notifier.show(genericNotice(payload, l));
+  final out = notifier ?? FlutterLocalNotifier();
+  await out.init(l);
+  await out.show(genericNotice(payload, l));
 }

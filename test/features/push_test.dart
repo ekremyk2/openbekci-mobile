@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:openbekci_api/openbekci_api.dart' hide Notification;
 import 'package:openbekci_mobile/app/app.dart';
 import 'package:openbekci_mobile/app/router.dart';
+import 'package:openbekci_mobile/core/account/account.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/features/community/application/community_providers.dart';
 import 'package:openbekci_mobile/features/notifications/application/notifications_providers.dart';
@@ -91,6 +92,48 @@ void main() {
       expect(PushPayload.fromTapPayload(p.tapPayload), p);
       expect(PushPayload.fromTapPayload('periodic'), isNull);
       expect(PushPayload.fromTapPayload(null), isNull);
+    });
+  });
+
+  group('push received without the app running', () {
+    Account account() => const Account(
+      serverOrigin: 'https://example.test',
+      instanceId: instanceId,
+      instanceName: 'Gul Sitesi',
+      userId: 'u1',
+    );
+
+    test('shows the generic notice for this accounts instance only', () async {
+      final shown = FakeLocalNotifier();
+      final store = MemoryAccountStore()..account = account();
+      await showBackgroundPush(pushData(), store: store, notifier: shown);
+      expect(shown.shown, hasLength(1));
+      expect(shown.shown.single.body, isNull, reason: 'content-free');
+      await showBackgroundPush(
+        pushData(instance: 'other-instance'),
+        store: store,
+        notifier: shown,
+      );
+      await showBackgroundPush(
+        {...pushData(), 'title': 'x', 'org_id': '../x'},
+        store: store,
+        notifier: shown,
+      );
+      expect(
+        shown.shown,
+        hasLength(1),
+        reason: 'foreign or malformed: ignored',
+      );
+    });
+
+    test('is dropped when signed out', () async {
+      final shown = FakeLocalNotifier();
+      await showBackgroundPush(
+        pushData(),
+        store: MemoryAccountStore(),
+        notifier: shown,
+      );
+      expect(shown.shown, isEmpty);
     });
   });
 
