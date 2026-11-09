@@ -6,13 +6,13 @@
 #
 # usage: tool/ci/retry_native_assets.sh <command> [args...]
 set -u
-attempts=3
+attempts=5
 for attempt in $(seq 1 "$attempts"); do
   if "$@"; then
     exit 0
   fi
   if [ "$attempt" -lt "$attempts" ]; then
-    delay=$((attempt * 30))
+    delay=$((attempt * 60))
     echo "::warning::attempt $attempt of $attempts failed; clearing downloaded native assets and retrying in ${delay}s"
     rm -rf .dart_tool/hooks_runner .dart_tool/native_assets
     sleep "$delay"
