@@ -1155,4 +1155,643 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ticketNoCategories =>
       'No ticket categories are set up for this site yet. Ask the manager.';
+
+  @override
+  String get bookingsTitle => 'Bookings';
+
+  @override
+  String get bookingsFacilities => 'Facilities';
+
+  @override
+  String get bookingsMine => 'My bookings';
+
+  @override
+  String get facilitiesEmpty => 'No facility can be booked here.';
+
+  @override
+  String get bookingsEmpty => 'You have no bookings.';
+
+  @override
+  String get facilityNotFound => 'This facility is no longer available.';
+
+  @override
+  String get bookingBook => 'Book';
+
+  @override
+  String get bookingUnit => 'Unit';
+
+  @override
+  String get bookingPickDay => 'Day';
+
+  @override
+  String get bookingNoDays => 'No day can be booked.';
+
+  @override
+  String get bookingDuration => 'Duration';
+
+  @override
+  String get bookingPickTime => 'Start time';
+
+  @override
+  String get bookingNoSlots => 'No time fits the opening hours.';
+
+  @override
+  String get bookingSummary => 'Your booking';
+
+  @override
+  String get bookingFee => 'Fee';
+
+  @override
+  String get bookingNoFee => 'Free of charge.';
+
+  @override
+  String get bookingConfirm => 'Confirm booking';
+
+  @override
+  String get bookingConfirmedDone => 'Booked. Your booking is confirmed.';
+
+  @override
+  String get bookingNeedsConnection =>
+      'Booking needs a connection. It is confirmed at once if the slot is free.';
+
+  @override
+  String get bookingConfirmed => 'Confirmed';
+
+  @override
+  String get bookingCancelled => 'Cancelled';
+
+  @override
+  String get bookingRefunded => 'Fee refunded';
+
+  @override
+  String get actionCancelBooking => 'Cancel booking';
+
+  @override
+  String get actionKeepBooking => 'Keep booking';
+
+  @override
+  String get cancelBookingTitle => 'Cancel this booking?';
+
+  @override
+  String get bookingCancelledDone => 'Booking cancelled.';
+
+  @override
+  String get feeFree => 'Free';
+
+  @override
+  String get refundNoFee => 'There is no fee, so nothing to refund.';
+
+  @override
+  String refundGiven(String amount) {
+    return 'Cancelling now refunds the fee of $amount to your account.';
+  }
+
+  @override
+  String refundKept(String amount, String until) {
+    return 'The fee of $amount is refunded if you cancel before $until; after that it is kept.';
+  }
+
+  @override
+  String refundNever(String amount) {
+    return 'The fee of $amount is not refunded on cancellation.';
+  }
+
+  @override
+  String durationMinutes(int m) {
+    return '$m min';
+  }
+
+  @override
+  String durationHours(int h) {
+    return '$h h';
+  }
+
+  @override
+  String durationHoursMinutes(int h, int m) {
+    return '$h h $m min';
+  }
+
+  @override
+  String ruleHours(String days, String start, String end) {
+    return 'Open $days, $start to $end';
+  }
+
+  @override
+  String ruleMaxDuration(String duration) {
+    return 'Up to $duration per booking';
+  }
+
+  @override
+  String ruleLeadTime(String duration) {
+    return 'Book at least $duration ahead';
+  }
+
+  @override
+  String ruleMaxDaysAhead(int n) {
+    return 'Up to $n days ahead';
+  }
+
+  @override
+  String ruleQuotaWeek(int n) {
+    return '$n per unit per week';
+  }
+
+  @override
+  String ruleQuotaMonth(int n) {
+    return '$n per unit per month';
+  }
+
+  @override
+  String ruleQuotaPerUnit(int n) {
+    return '$n per unit';
+  }
+
+  @override
+  String get bookingProblemClosed => 'Outside the opening hours.';
+
+  @override
+  String get bookingProblemTooLong => 'Longer than allowed.';
+
+  @override
+  String get bookingProblemTooSoon => 'Too soon: it needs more notice.';
+
+  @override
+  String get bookingProblemTooFar => 'Too far ahead.';
+
+  @override
+  String get bookingProblemTaken => 'Already taken.';
+
+  @override
+  String get bookingProblemQuota =>
+      'Your unit has used its quota for this period.';
+
+  @override
+  String get bookingProblemNotAllowed =>
+      'Your household role cannot book this facility.';
+
+  @override
+  String get visitorsTitle => 'Visitors';
+
+  @override
+  String get visitorsExpected => 'Expected';
+
+  @override
+  String get visitorsRecurring => 'Recurring';
+
+  @override
+  String get visitorsHistory => 'History';
+
+  @override
+  String get visitorsEmpty =>
+      'No visitors expected. Pre-register a guest to get a QR code for the gate.';
+
+  @override
+  String get visitorsHistoryEmpty => 'No past visitors.';
+
+  @override
+  String get visitorAdd => 'Pre-register a visitor';
+
+  @override
+  String get visitorAddRecurring => 'Add recurring visitor';
+
+  @override
+  String get visitorName => 'Name';
+
+  @override
+  String get visitorPlate => 'Plate (optional)';
+
+  @override
+  String get visitorWindow => 'When do they come?';
+
+  @override
+  String get visitorFrom => 'From';
+
+  @override
+  String get visitorUntil => 'Until';
+
+  @override
+  String get visitorRegister => 'Create QR code';
+
+  @override
+  String get visitorPass => 'Visitor pass';
+
+  @override
+  String get visitorNotFound => 'This visitor pass was not found.';
+
+  @override
+  String get visitorNoQr => 'No QR code is available for this pass.';
+
+  @override
+  String get visitorQrLabel => 'QR code for the gate';
+
+  @override
+  String get visitorQrHint =>
+      'Send the QR code to your guest. The guard scans it at the gate; it is valid for the time window and 30 minutes either side.';
+
+  @override
+  String get visitorShare => 'Share QR code';
+
+  @override
+  String get shareFailed => 'The share sheet could not be opened.';
+
+  @override
+  String visitorShareText(String name, String range, String site, String code) {
+    return 'Visitor pass for $name at $site: $range. Show this QR code at the gate. Code: $code';
+  }
+
+  @override
+  String get visitorCancel => 'Cancel this pass';
+
+  @override
+  String get visitorCancelled => 'Cancelled';
+
+  @override
+  String get visitorArrived => 'Arrived';
+
+  @override
+  String get visitorWalkIn => 'Walk-in';
+
+  @override
+  String get passUpcoming => 'Not valid yet';
+
+  @override
+  String get passValid => 'Valid now';
+
+  @override
+  String get passEnded => 'Expired';
+
+  @override
+  String get visitorStatusPreApproved => 'Expected';
+
+  @override
+  String get visitorStatusRequested => 'Waiting for your answer';
+
+  @override
+  String get visitorStatusApproved => 'Approved';
+
+  @override
+  String get visitorStatusDenied => 'Denied';
+
+  @override
+  String get visitorStatusExpired => 'Expired';
+
+  @override
+  String get recurringEmpty =>
+      'No recurring visitors. Add a cleaner, a carer or a regular guest.';
+
+  @override
+  String get recurringActive => 'Active';
+
+  @override
+  String get recurringRevoked => 'Revoked';
+
+  @override
+  String get recurringExpired => 'Expired';
+
+  @override
+  String get recurringDays => 'Days';
+
+  @override
+  String get recurringValidity => 'Valid for';
+
+  @override
+  String get validityNoEnd => 'No end date';
+
+  @override
+  String get validityMonth1 => '1 month';
+
+  @override
+  String get validityMonths3 => '3 months';
+
+  @override
+  String get validityYear1 => '1 year';
+
+  @override
+  String get recurringFrom => 'From';
+
+  @override
+  String get recurringTo => 'to';
+
+  @override
+  String get recurringQrHint =>
+      'This QR code stays valid on the chosen days and hours until you revoke it. Revoking takes effect at the gate at once.';
+
+  @override
+  String recurringShareText(
+    String name,
+    String when,
+    String site,
+    String code,
+  ) {
+    return 'Standing pass for $name at $site: $when. Show this QR code at the gate. Code: $code';
+  }
+
+  @override
+  String get recurringRevoke => 'Revoke';
+
+  @override
+  String get recurringRevokeTitle => 'Revoke this pass?';
+
+  @override
+  String recurringRevokeBody(String name) {
+    return '$name will no longer be let in with this QR code.';
+  }
+
+  @override
+  String get visitorApprovalTitle => 'Visitor at the gate';
+
+  @override
+  String visitorWaitingAtGate(String name) {
+    return '$name is waiting at the gate';
+  }
+
+  @override
+  String visitorRequestUnit(String door) {
+    return 'For unit $door';
+  }
+
+  @override
+  String get visitorAnswer => 'Answer';
+
+  @override
+  String get visitorApprove => 'Approve';
+
+  @override
+  String get visitorDeny => 'Deny';
+
+  @override
+  String visitorExpiresIn(String time) {
+    return 'Answer within $time';
+  }
+
+  @override
+  String get visitorRequestGone => 'This request is no longer open.';
+
+  @override
+  String get visitorResultApproved =>
+      'You approved this visitor. The guard lets them in.';
+
+  @override
+  String get visitorResultDenied => 'You denied this visitor.';
+
+  @override
+  String get visitorResultExpired => 'The time to answer ran out.';
+
+  @override
+  String get visitorGateContactTitle => 'The guard will call you';
+
+  @override
+  String visitorGateContactSet(String phone) {
+    return 'The guard calls your gate contact number, $phone.';
+  }
+
+  @override
+  String get visitorGateContactMissing =>
+      'You have not set a gate contact number, so the guard cannot call you. Add one in your profile.';
+
+  @override
+  String get visitorGateContactAdd => 'Add gate contact number';
+
+  @override
+  String get parcelsTitle => 'Parcels';
+
+  @override
+  String get parcelsWaiting => 'Waiting for you';
+
+  @override
+  String get parcelsRecent => 'Recently collected';
+
+  @override
+  String get parcelsEmpty => 'No parcels so far.';
+
+  @override
+  String get parcelsNoneWaiting => 'No parcel is waiting.';
+
+  @override
+  String get parcelNoDescription => 'Parcel';
+
+  @override
+  String parcelUnit(String door) {
+    return 'Unit $door';
+  }
+
+  @override
+  String get parcelReceived => 'Received';
+
+  @override
+  String get parcelCollected => 'Collected';
+
+  @override
+  String parcelCollectedBy(String name) {
+    return 'by $name';
+  }
+
+  @override
+  String get assemblyTitle => 'Assembly';
+
+  @override
+  String get assemblyEmpty => 'No assembly yet.';
+
+  @override
+  String get assemblyUpcoming => 'Upcoming';
+
+  @override
+  String get assemblyPast => 'Earlier assemblies';
+
+  @override
+  String get meetingKindGeneral => 'General assembly';
+
+  @override
+  String get meetingKindExtraordinary => 'Extraordinary assembly';
+
+  @override
+  String get meetingStatusDraft => 'Draft';
+
+  @override
+  String get meetingStatusCalled => 'Called';
+
+  @override
+  String get meetingStatusInSession => 'In session';
+
+  @override
+  String get meetingStatusClosed => 'Closed';
+
+  @override
+  String get meetingStatusCancelled => 'Cancelled';
+
+  @override
+  String get meetingWhen => 'When';
+
+  @override
+  String get meetingSecondCall => 'Second call';
+
+  @override
+  String get meetingWhere => 'Where';
+
+  @override
+  String get meetingCallLetter => 'Call letter (PDF)';
+
+  @override
+  String get meetingAgenda => 'Agenda';
+
+  @override
+  String get meetingAgendaEmpty => 'The agenda has not been published.';
+
+  @override
+  String get agendaVoted => 'Vote';
+
+  @override
+  String get pollsTitle => 'Pre-meeting polls';
+
+  @override
+  String get pollsNonBinding =>
+      'Your answer is not binding. One answer per unit.';
+
+  @override
+  String get pollsOwnersOnly => 'Only owners answer polls.';
+
+  @override
+  String get pollOpen => 'Open';
+
+  @override
+  String get pollClosed => 'Closed';
+
+  @override
+  String get pollNotOpen => 'Not open yet';
+
+  @override
+  String get pollClosesAt => 'Closes';
+
+  @override
+  String get pollYes => 'Yes';
+
+  @override
+  String get pollNo => 'No';
+
+  @override
+  String get pollAbstain => 'Abstain';
+
+  @override
+  String get pollAnswered => 'Answered';
+
+  @override
+  String get checkInTitle => 'Attendance check-in';
+
+  @override
+  String get checkInOpen => 'Show this QR code at the attendance desk.';
+
+  @override
+  String get checkInNotYet =>
+      'Check-in opens when the session starts. Keep this QR code ready.';
+
+  @override
+  String get checkInDone => 'Checked in';
+
+  @override
+  String get checkInQrLabel => 'Check-in QR code';
+
+  @override
+  String get minutesTitle => 'Minutes';
+
+  @override
+  String get minutesOpen => 'Open the minutes (PDF)';
+
+  @override
+  String get minutesNone => 'The minutes are not available yet.';
+
+  @override
+  String get decisionsTitle => 'Decisions';
+
+  @override
+  String get decisionsEmpty => 'No decisions to show.';
+
+  @override
+  String get decisionsResidentsOnly =>
+      'You see the decisions that concern residents.';
+
+  @override
+  String get decisionConcernsResidents => 'Concerns residents';
+
+  @override
+  String decisionNumber(int year, int no) {
+    return 'Decision $year/$no';
+  }
+
+  @override
+  String get outcomeAccepted => 'Accepted';
+
+  @override
+  String get outcomeRejected => 'Rejected';
+
+  @override
+  String get outcomeNoVote => 'No vote';
+
+  @override
+  String get outcomeNoted => 'Noted';
+
+  @override
+  String get webOpen => 'Open in web';
+
+  @override
+  String get webOpenBody => 'Opens the website and signs you in.';
+
+  @override
+  String get webOpenFailed => 'The browser could not be opened.';
+
+  @override
+  String get notifGeneric => 'New notification';
+
+  @override
+  String get notifAgentSilent => 'Gate agent silent';
+
+  @override
+  String get notifAgentClockSkew => 'Gate agent clock skew';
+
+  @override
+  String get notifAgentStopped => 'Gate agent stopped';
+
+  @override
+  String get notifWebhookFailing => 'Webhook endpoint failing';
+
+  @override
+  String get notifSignInCode => 'Sign-in code';
+
+  @override
+  String get notifInvitation => 'Invitation';
+
+  @override
+  String get notifPeriodicTitle => 'New notifications';
+
+  @override
+  String notifPeriodicBody(int count) {
+    return 'You have $count unread notifications.';
+  }
+
+  @override
+  String get notificationsMayBeDelayed => 'Notifications may be delayed';
+
+  @override
+  String get notificationsMayBeDelayedBody =>
+      'Push is not reaching this phone right now, so the app checks for news from time to time.';
+
+  @override
+  String get channelAnnouncements => 'Announcements';
+
+  @override
+  String get channelMoney => 'Payments and statements';
+
+  @override
+  String get channelTickets => 'Tickets';
+
+  @override
+  String get channelCommunity => 'Visitors, parcels and bookings';
+
+  @override
+  String get channelAssembly => 'Assembly';
+
+  @override
+  String get channelAccount => 'Account';
+
+  @override
+  String get channelSystem => 'System';
 }

@@ -2149,6 +2149,1152 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No ticket categories are set up for this site yet. Ask the manager.'**
   String get ticketNoCategories;
+
+  /// No description provided for @bookingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings'**
+  String get bookingsTitle;
+
+  /// No description provided for @bookingsFacilities.
+  ///
+  /// In en, this message translates to:
+  /// **'Facilities'**
+  String get bookingsFacilities;
+
+  /// No description provided for @bookingsMine.
+  ///
+  /// In en, this message translates to:
+  /// **'My bookings'**
+  String get bookingsMine;
+
+  /// No description provided for @facilitiesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No facility can be booked here.'**
+  String get facilitiesEmpty;
+
+  /// No description provided for @bookingsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no bookings.'**
+  String get bookingsEmpty;
+
+  /// No description provided for @facilityNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This facility is no longer available.'**
+  String get facilityNotFound;
+
+  /// No description provided for @bookingBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get bookingBook;
+
+  /// No description provided for @bookingUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get bookingUnit;
+
+  /// No description provided for @bookingPickDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get bookingPickDay;
+
+  /// No description provided for @bookingNoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'No day can be booked.'**
+  String get bookingNoDays;
+
+  /// No description provided for @bookingDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get bookingDuration;
+
+  /// No description provided for @bookingPickTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Start time'**
+  String get bookingPickTime;
+
+  /// No description provided for @bookingNoSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'No time fits the opening hours.'**
+  String get bookingNoSlots;
+
+  /// No description provided for @bookingSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Your booking'**
+  String get bookingSummary;
+
+  /// No description provided for @bookingFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee'**
+  String get bookingFee;
+
+  /// No description provided for @bookingNoFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Free of charge.'**
+  String get bookingNoFee;
+
+  /// No description provided for @bookingConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm booking'**
+  String get bookingConfirm;
+
+  /// No description provided for @bookingConfirmedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked. Your booking is confirmed.'**
+  String get bookingConfirmedDone;
+
+  /// No description provided for @bookingNeedsConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking needs a connection. It is confirmed at once if the slot is free.'**
+  String get bookingNeedsConnection;
+
+  /// No description provided for @bookingConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get bookingConfirmed;
+
+  /// No description provided for @bookingCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get bookingCancelled;
+
+  /// No description provided for @bookingRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee refunded'**
+  String get bookingRefunded;
+
+  /// No description provided for @actionCancelBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel booking'**
+  String get actionCancelBooking;
+
+  /// No description provided for @actionKeepBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep booking'**
+  String get actionKeepBooking;
+
+  /// No description provided for @cancelBookingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this booking?'**
+  String get cancelBookingTitle;
+
+  /// No description provided for @bookingCancelledDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking cancelled.'**
+  String get bookingCancelledDone;
+
+  /// No description provided for @feeFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get feeFree;
+
+  /// No description provided for @refundNoFee.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no fee, so nothing to refund.'**
+  String get refundNoFee;
+
+  /// No description provided for @refundGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelling now refunds the fee of {amount} to your account.'**
+  String refundGiven(String amount);
+
+  /// No description provided for @refundKept.
+  ///
+  /// In en, this message translates to:
+  /// **'The fee of {amount} is refunded if you cancel before {until}; after that it is kept.'**
+  String refundKept(String amount, String until);
+
+  /// No description provided for @refundNever.
+  ///
+  /// In en, this message translates to:
+  /// **'The fee of {amount} is not refunded on cancellation.'**
+  String refundNever(String amount);
+
+  /// No description provided for @durationMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{m} min'**
+  String durationMinutes(int m);
+
+  /// No description provided for @durationHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{h} h'**
+  String durationHours(int h);
+
+  /// No description provided for @durationHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{h} h {m} min'**
+  String durationHoursMinutes(int h, int m);
+
+  /// No description provided for @ruleHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {days}, {start} to {end}'**
+  String ruleHours(String days, String start, String end);
+
+  /// No description provided for @ruleMaxDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {duration} per booking'**
+  String ruleMaxDuration(String duration);
+
+  /// No description provided for @ruleLeadTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Book at least {duration} ahead'**
+  String ruleLeadTime(String duration);
+
+  /// No description provided for @ruleMaxDaysAhead.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {n} days ahead'**
+  String ruleMaxDaysAhead(int n);
+
+  /// No description provided for @ruleQuotaWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} per unit per week'**
+  String ruleQuotaWeek(int n);
+
+  /// No description provided for @ruleQuotaMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} per unit per month'**
+  String ruleQuotaMonth(int n);
+
+  /// No description provided for @ruleQuotaPerUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} per unit'**
+  String ruleQuotaPerUnit(int n);
+
+  /// No description provided for @bookingProblemClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside the opening hours.'**
+  String get bookingProblemClosed;
+
+  /// No description provided for @bookingProblemTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Longer than allowed.'**
+  String get bookingProblemTooLong;
+
+  /// No description provided for @bookingProblemTooSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Too soon: it needs more notice.'**
+  String get bookingProblemTooSoon;
+
+  /// No description provided for @bookingProblemTooFar.
+  ///
+  /// In en, this message translates to:
+  /// **'Too far ahead.'**
+  String get bookingProblemTooFar;
+
+  /// No description provided for @bookingProblemTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Already taken.'**
+  String get bookingProblemTaken;
+
+  /// No description provided for @bookingProblemQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'Your unit has used its quota for this period.'**
+  String get bookingProblemQuota;
+
+  /// No description provided for @bookingProblemNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your household role cannot book this facility.'**
+  String get bookingProblemNotAllowed;
+
+  /// No description provided for @visitorsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitors'**
+  String get visitorsTitle;
+
+  /// No description provided for @visitorsExpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected'**
+  String get visitorsExpected;
+
+  /// No description provided for @visitorsRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get visitorsRecurring;
+
+  /// No description provided for @visitorsHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get visitorsHistory;
+
+  /// No description provided for @visitorsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No visitors expected. Pre-register a guest to get a QR code for the gate.'**
+  String get visitorsEmpty;
+
+  /// No description provided for @visitorsHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No past visitors.'**
+  String get visitorsHistoryEmpty;
+
+  /// No description provided for @visitorAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-register a visitor'**
+  String get visitorAdd;
+
+  /// No description provided for @visitorAddRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Add recurring visitor'**
+  String get visitorAddRecurring;
+
+  /// No description provided for @visitorName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get visitorName;
+
+  /// No description provided for @visitorPlate.
+  ///
+  /// In en, this message translates to:
+  /// **'Plate (optional)'**
+  String get visitorPlate;
+
+  /// No description provided for @visitorWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'When do they come?'**
+  String get visitorWindow;
+
+  /// No description provided for @visitorFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get visitorFrom;
+
+  /// No description provided for @visitorUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Until'**
+  String get visitorUntil;
+
+  /// No description provided for @visitorRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Create QR code'**
+  String get visitorRegister;
+
+  /// No description provided for @visitorPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitor pass'**
+  String get visitorPass;
+
+  /// No description provided for @visitorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This visitor pass was not found.'**
+  String get visitorNotFound;
+
+  /// No description provided for @visitorNoQr.
+  ///
+  /// In en, this message translates to:
+  /// **'No QR code is available for this pass.'**
+  String get visitorNoQr;
+
+  /// No description provided for @visitorQrLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code for the gate'**
+  String get visitorQrLabel;
+
+  /// No description provided for @visitorQrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the QR code to your guest. The guard scans it at the gate; it is valid for the time window and 30 minutes either side.'**
+  String get visitorQrHint;
+
+  /// No description provided for @visitorShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share QR code'**
+  String get visitorShare;
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The share sheet could not be opened.'**
+  String get shareFailed;
+
+  /// No description provided for @visitorShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitor pass for {name} at {site}: {range}. Show this QR code at the gate. Code: {code}'**
+  String visitorShareText(String name, String range, String site, String code);
+
+  /// No description provided for @visitorCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this pass'**
+  String get visitorCancel;
+
+  /// No description provided for @visitorCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get visitorCancelled;
+
+  /// No description provided for @visitorArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get visitorArrived;
+
+  /// No description provided for @visitorWalkIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk-in'**
+  String get visitorWalkIn;
+
+  /// No description provided for @passUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Not valid yet'**
+  String get passUpcoming;
+
+  /// No description provided for @passValid.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid now'**
+  String get passValid;
+
+  /// No description provided for @passEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get passEnded;
+
+  /// No description provided for @visitorStatusPreApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected'**
+  String get visitorStatusPreApproved;
+
+  /// No description provided for @visitorStatusRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your answer'**
+  String get visitorStatusRequested;
+
+  /// No description provided for @visitorStatusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get visitorStatusApproved;
+
+  /// No description provided for @visitorStatusDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Denied'**
+  String get visitorStatusDenied;
+
+  /// No description provided for @visitorStatusExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get visitorStatusExpired;
+
+  /// No description provided for @recurringEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring visitors. Add a cleaner, a carer or a regular guest.'**
+  String get recurringEmpty;
+
+  /// No description provided for @recurringActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get recurringActive;
+
+  /// No description provided for @recurringRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoked'**
+  String get recurringRevoked;
+
+  /// No description provided for @recurringExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get recurringExpired;
+
+  /// No description provided for @recurringDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get recurringDays;
+
+  /// No description provided for @recurringValidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid for'**
+  String get recurringValidity;
+
+  /// No description provided for @validityNoEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'No end date'**
+  String get validityNoEnd;
+
+  /// No description provided for @validityMonth1.
+  ///
+  /// In en, this message translates to:
+  /// **'1 month'**
+  String get validityMonth1;
+
+  /// No description provided for @validityMonths3.
+  ///
+  /// In en, this message translates to:
+  /// **'3 months'**
+  String get validityMonths3;
+
+  /// No description provided for @validityYear1.
+  ///
+  /// In en, this message translates to:
+  /// **'1 year'**
+  String get validityYear1;
+
+  /// No description provided for @recurringFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get recurringFrom;
+
+  /// No description provided for @recurringTo.
+  ///
+  /// In en, this message translates to:
+  /// **'to'**
+  String get recurringTo;
+
+  /// No description provided for @recurringQrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This QR code stays valid on the chosen days and hours until you revoke it. Revoking takes effect at the gate at once.'**
+  String get recurringQrHint;
+
+  /// No description provided for @recurringShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Standing pass for {name} at {site}: {when}. Show this QR code at the gate. Code: {code}'**
+  String recurringShareText(String name, String when, String site, String code);
+
+  /// No description provided for @recurringRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get recurringRevoke;
+
+  /// No description provided for @recurringRevokeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke this pass?'**
+  String get recurringRevokeTitle;
+
+  /// No description provided for @recurringRevokeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will no longer be let in with this QR code.'**
+  String recurringRevokeBody(String name);
+
+  /// No description provided for @visitorApprovalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitor at the gate'**
+  String get visitorApprovalTitle;
+
+  /// No description provided for @visitorWaitingAtGate.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is waiting at the gate'**
+  String visitorWaitingAtGate(String name);
+
+  /// No description provided for @visitorRequestUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'For unit {door}'**
+  String visitorRequestUnit(String door);
+
+  /// No description provided for @visitorAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer'**
+  String get visitorAnswer;
+
+  /// No description provided for @visitorApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get visitorApprove;
+
+  /// No description provided for @visitorDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get visitorDeny;
+
+  /// No description provided for @visitorExpiresIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer within {time}'**
+  String visitorExpiresIn(String time);
+
+  /// No description provided for @visitorRequestGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This request is no longer open.'**
+  String get visitorRequestGone;
+
+  /// No description provided for @visitorResultApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'You approved this visitor. The guard lets them in.'**
+  String get visitorResultApproved;
+
+  /// No description provided for @visitorResultDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You denied this visitor.'**
+  String get visitorResultDenied;
+
+  /// No description provided for @visitorResultExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'The time to answer ran out.'**
+  String get visitorResultExpired;
+
+  /// No description provided for @visitorGateContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The guard will call you'**
+  String get visitorGateContactTitle;
+
+  /// No description provided for @visitorGateContactSet.
+  ///
+  /// In en, this message translates to:
+  /// **'The guard calls your gate contact number, {phone}.'**
+  String visitorGateContactSet(String phone);
+
+  /// No description provided for @visitorGateContactMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not set a gate contact number, so the guard cannot call you. Add one in your profile.'**
+  String get visitorGateContactMissing;
+
+  /// No description provided for @visitorGateContactAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add gate contact number'**
+  String get visitorGateContactAdd;
+
+  /// No description provided for @parcelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcels'**
+  String get parcelsTitle;
+
+  /// No description provided for @parcelsWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you'**
+  String get parcelsWaiting;
+
+  /// No description provided for @parcelsRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently collected'**
+  String get parcelsRecent;
+
+  /// No description provided for @parcelsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No parcels so far.'**
+  String get parcelsEmpty;
+
+  /// No description provided for @parcelsNoneWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'No parcel is waiting.'**
+  String get parcelsNoneWaiting;
+
+  /// No description provided for @parcelNoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel'**
+  String get parcelNoDescription;
+
+  /// No description provided for @parcelUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit {door}'**
+  String parcelUnit(String door);
+
+  /// No description provided for @parcelReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get parcelReceived;
+
+  /// No description provided for @parcelCollected.
+  ///
+  /// In en, this message translates to:
+  /// **'Collected'**
+  String get parcelCollected;
+
+  /// No description provided for @parcelCollectedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {name}'**
+  String parcelCollectedBy(String name);
+
+  /// No description provided for @assemblyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Assembly'**
+  String get assemblyTitle;
+
+  /// No description provided for @assemblyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No assembly yet.'**
+  String get assemblyEmpty;
+
+  /// No description provided for @assemblyUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get assemblyUpcoming;
+
+  /// No description provided for @assemblyPast.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier assemblies'**
+  String get assemblyPast;
+
+  /// No description provided for @meetingKindGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General assembly'**
+  String get meetingKindGeneral;
+
+  /// No description provided for @meetingKindExtraordinary.
+  ///
+  /// In en, this message translates to:
+  /// **'Extraordinary assembly'**
+  String get meetingKindExtraordinary;
+
+  /// No description provided for @meetingStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get meetingStatusDraft;
+
+  /// No description provided for @meetingStatusCalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Called'**
+  String get meetingStatusCalled;
+
+  /// No description provided for @meetingStatusInSession.
+  ///
+  /// In en, this message translates to:
+  /// **'In session'**
+  String get meetingStatusInSession;
+
+  /// No description provided for @meetingStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get meetingStatusClosed;
+
+  /// No description provided for @meetingStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get meetingStatusCancelled;
+
+  /// No description provided for @meetingWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get meetingWhen;
+
+  /// No description provided for @meetingSecondCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Second call'**
+  String get meetingSecondCall;
+
+  /// No description provided for @meetingWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where'**
+  String get meetingWhere;
+
+  /// No description provided for @meetingCallLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Call letter (PDF)'**
+  String get meetingCallLetter;
+
+  /// No description provided for @meetingAgenda.
+  ///
+  /// In en, this message translates to:
+  /// **'Agenda'**
+  String get meetingAgenda;
+
+  /// No description provided for @meetingAgendaEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The agenda has not been published.'**
+  String get meetingAgendaEmpty;
+
+  /// No description provided for @agendaVoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote'**
+  String get agendaVoted;
+
+  /// No description provided for @pollsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-meeting polls'**
+  String get pollsTitle;
+
+  /// No description provided for @pollsNonBinding.
+  ///
+  /// In en, this message translates to:
+  /// **'Your answer is not binding. One answer per unit.'**
+  String get pollsNonBinding;
+
+  /// No description provided for @pollsOwnersOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only owners answer polls.'**
+  String get pollsOwnersOnly;
+
+  /// No description provided for @pollOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get pollOpen;
+
+  /// No description provided for @pollClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get pollClosed;
+
+  /// No description provided for @pollNotOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Not open yet'**
+  String get pollNotOpen;
+
+  /// No description provided for @pollClosesAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes'**
+  String get pollClosesAt;
+
+  /// No description provided for @pollYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get pollYes;
+
+  /// No description provided for @pollNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get pollNo;
+
+  /// No description provided for @pollAbstain.
+  ///
+  /// In en, this message translates to:
+  /// **'Abstain'**
+  String get pollAbstain;
+
+  /// No description provided for @pollAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get pollAnswered;
+
+  /// No description provided for @checkInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance check-in'**
+  String get checkInTitle;
+
+  /// No description provided for @checkInOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Show this QR code at the attendance desk.'**
+  String get checkInOpen;
+
+  /// No description provided for @checkInNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in opens when the session starts. Keep this QR code ready.'**
+  String get checkInNotYet;
+
+  /// No description provided for @checkInDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in'**
+  String get checkInDone;
+
+  /// No description provided for @checkInQrLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in QR code'**
+  String get checkInQrLabel;
+
+  /// No description provided for @minutesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes'**
+  String get minutesTitle;
+
+  /// No description provided for @minutesOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the minutes (PDF)'**
+  String get minutesOpen;
+
+  /// No description provided for @minutesNone.
+  ///
+  /// In en, this message translates to:
+  /// **'The minutes are not available yet.'**
+  String get minutesNone;
+
+  /// No description provided for @decisionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Decisions'**
+  String get decisionsTitle;
+
+  /// No description provided for @decisionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No decisions to show.'**
+  String get decisionsEmpty;
+
+  /// No description provided for @decisionsResidentsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'You see the decisions that concern residents.'**
+  String get decisionsResidentsOnly;
+
+  /// No description provided for @decisionConcernsResidents.
+  ///
+  /// In en, this message translates to:
+  /// **'Concerns residents'**
+  String get decisionConcernsResidents;
+
+  /// No description provided for @decisionNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Decision {year}/{no}'**
+  String decisionNumber(int year, int no);
+
+  /// No description provided for @outcomeAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get outcomeAccepted;
+
+  /// No description provided for @outcomeRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get outcomeRejected;
+
+  /// No description provided for @outcomeNoVote.
+  ///
+  /// In en, this message translates to:
+  /// **'No vote'**
+  String get outcomeNoVote;
+
+  /// No description provided for @outcomeNoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Noted'**
+  String get outcomeNoted;
+
+  /// No description provided for @webOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in web'**
+  String get webOpen;
+
+  /// No description provided for @webOpenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens the website and signs you in.'**
+  String get webOpenBody;
+
+  /// No description provided for @webOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The browser could not be opened.'**
+  String get webOpenFailed;
+
+  /// No description provided for @notifGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'New notification'**
+  String get notifGeneric;
+
+  /// No description provided for @notifAgentSilent.
+  ///
+  /// In en, this message translates to:
+  /// **'Gate agent silent'**
+  String get notifAgentSilent;
+
+  /// No description provided for @notifAgentClockSkew.
+  ///
+  /// In en, this message translates to:
+  /// **'Gate agent clock skew'**
+  String get notifAgentClockSkew;
+
+  /// No description provided for @notifAgentStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Gate agent stopped'**
+  String get notifAgentStopped;
+
+  /// No description provided for @notifWebhookFailing.
+  ///
+  /// In en, this message translates to:
+  /// **'Webhook endpoint failing'**
+  String get notifWebhookFailing;
+
+  /// No description provided for @notifSignInCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in code'**
+  String get notifSignInCode;
+
+  /// No description provided for @notifInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation'**
+  String get notifInvitation;
+
+  /// No description provided for @notifPeriodicTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New notifications'**
+  String get notifPeriodicTitle;
+
+  /// No description provided for @notifPeriodicBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {count} unread notifications.'**
+  String notifPeriodicBody(int count);
+
+  /// No description provided for @notificationsMayBeDelayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications may be delayed'**
+  String get notificationsMayBeDelayed;
+
+  /// No description provided for @notificationsMayBeDelayedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Push is not reaching this phone right now, so the app checks for news from time to time.'**
+  String get notificationsMayBeDelayedBody;
+
+  /// No description provided for @channelAnnouncements.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcements'**
+  String get channelAnnouncements;
+
+  /// No description provided for @channelMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments and statements'**
+  String get channelMoney;
+
+  /// No description provided for @channelTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'Tickets'**
+  String get channelTickets;
+
+  /// No description provided for @channelCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitors, parcels and bookings'**
+  String get channelCommunity;
+
+  /// No description provided for @channelAssembly.
+  ///
+  /// In en, this message translates to:
+  /// **'Assembly'**
+  String get channelAssembly;
+
+  /// No description provided for @channelAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get channelAccount;
+
+  /// No description provided for @channelSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get channelSystem;
 }
 
 class _AppLocalizationsDelegate

@@ -157,6 +157,7 @@ Map<String, Object?> discoveryJson({
     'unified_push': false,
   },
   'packs': <String>[],
+  'pack_details': <Object?>[],
   'branding': {'primary_color': ?primaryColor},
   'relay_enrollment': {'challenge': null},
 };

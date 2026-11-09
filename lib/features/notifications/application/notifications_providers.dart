@@ -143,6 +143,18 @@ String? routeForNotification(AppNotification n, {required String orgId}) {
       type.startsWith('dunning.')) {
     return '/money';
   }
+  if (type == 'visitor.approval_requested') {
+    final r = id('request_id');
+    return r == null ? '/more/visitors' : '/more/visitors/requests/$r';
+  }
+  if (type.startsWith('visitor.')) return '/more/visitors';
+  if (type.startsWith('delivery.')) return '/more/parcels';
+  if (type.startsWith('booking.')) return '/more/bookings';
+  if (type.startsWith('meeting.')) {
+    final m = id('meeting_id');
+    return m == null ? '/more/assembly' : '/more/assembly/$m';
+  }
+  if (type == 'term.expiring') return '/more/assembly';
   return null;
 }
 

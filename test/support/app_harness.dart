@@ -18,6 +18,7 @@ import 'package:openbekci_mobile/core/links/app_link.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/features/onboarding/application/onboarding_providers.dart';
 import 'package:openbekci_mobile/features/onboarding/data/join_repository.dart';
+import 'package:openbekci_mobile/features/push/application/push_service.dart';
 
 import 'fake_api.dart';
 
@@ -256,6 +257,7 @@ class TestApp {
     List<Override> extra = const [],
     this.flavor = Flavor.prod,
     AppDatabase? database,
+    bool pushEnabled = false,
   }) : _ownsDb = database == null {
     store = MemoryAccountStore();
     if (signedIn) {
@@ -299,6 +301,8 @@ class TestApp {
       serverConnectorProvider.overrideWithValue(connector),
       joinRepositoryProvider.overrideWithValue(join),
       incomingLinksProvider.overrideWithValue(links.stream),
+      // Widget tests that do not exercise push run without its timers.
+      pushEnabledProvider.overrideWithValue(pushEnabled),
       ...extra,
     ];
   }

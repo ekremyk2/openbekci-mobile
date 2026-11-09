@@ -4,12 +4,25 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Push through Firebase (the `prod` store build): the google-services plugin reads
+// `google-services.json`, which is never committed (see README, "Push"). Without the file
+// the plugin is not applied, the build still works and push stays off (periodic fetch).
+if (
+    file("google-services.json").exists() ||
+        file("src/prod/google-services.json").exists() ||
+        file("src/dev/google-services.json").exists()
+) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 android {
     namespace = "org.openbekci.openbekci_mobile"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        // flutter_local_notifications needs java.time on older Android versions.
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -46,6 +59,12 @@ android {
             dimension = "env"
             resValue("string", "app_name", "OpenBekci")
         }
+        // foss: no Google services; push through UnifiedPush (lib/main_foss.dart). Same application id as
+        // prod: they are two builds of one app, never installed together.
+        create("foss") {
+            dimension = "env"
+            resValue("string", "app_name", "OpenBekci")
+        }
     }
 
     buildTypes {
@@ -61,6 +80,16 @@ kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
+}
+
+// The UnifiedPush connector ships Tink's JVM artifact; flutter_secure_storage ships the Android one.
+// Both on the classpath fail the build with duplicate classes: keep the Android one.
+configurations.all {
+    exclude(group = "com.google.crypto.tink", module = "tink")
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }
 
 flutter {

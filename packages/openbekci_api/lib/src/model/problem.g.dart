@@ -210,5 +210,7 @@ const _$ProblemCodeEnumEnumMap = {
   ProblemCodeEnum.scanUnavailable: 'scan_unavailable',
   ProblemCodeEnum.agentOffline: 'agent_offline',
   ProblemCodeEnum.agentSessionExpired: 'agent_session_expired',
+  ProblemCodeEnum.apiKeyRevoked: 'api_key_revoked',
+  ProblemCodeEnum.apiKeyExpired: 'api_key_expired',
   ProblemCodeEnum.unknownDefaultOpenApi: 'unknown_default_open_api',
 };

@@ -566,7 +566,14 @@ void main() {
         routeForNotification(n('payment.confirmed'), orgId: 'o'),
         '/money',
       );
-      expect(routeForNotification(n('visitor.arrived'), orgId: 'o'), isNull);
+      expect(
+        routeForNotification(n('visitor.arrived'), orgId: 'o'),
+        '/more/visitors',
+      );
+      expect(
+        routeForNotification(n('access.agent_silent'), orgId: 'o'),
+        isNull,
+      );
       expect(routeForNotification(n('brand.new_type'), orgId: 'o'), isNull);
     });
 

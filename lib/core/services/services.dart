@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Hands a file to the platform share sheet (statement PDFs, documents,
 /// visitor QR codes in phase C). A seam so tests do not need the plugin.
@@ -16,6 +20,7 @@ abstract interface class ShareService {
     required Uint8List bytes,
     required String filename,
     required String mime,
+    String? text,
   });
 }
 
@@ -27,12 +32,16 @@ class PlatformShareService implements ShareService {
     required Uint8List bytes,
     required String filename,
     required String mime,
+    String? text,
   }) async {
     final dir = await getTemporaryDirectory();
     final file = File(p.join(dir.path, _safeName(filename)));
     await file.writeAsBytes(bytes, flush: true);
     await SharePlus.instance.share(
-      ShareParams(files: [XFile(file.path, mimeType: mime)]),
+      ShareParams(
+        text: text,
+        files: [XFile(file.path, mimeType: mime)],
+      ),
     );
   }
 }
@@ -156,4 +165,69 @@ class PlatformLockAuthenticator implements LockAuthenticator {
 
 final lockAuthenticatorProvider = Provider<LockAuthenticator>(
   (ref) => const PlatformLockAuthenticator(),
+);
+
+/// Opens a URL in the browser (the web-login link). A seam so tests do not
+/// need the plugin.
+abstract interface class UrlOpener {
+  Future<bool> open(Uri uri);
+}
+
+class PlatformUrlOpener implements UrlOpener {
+  const new();
+
+  @override
+  Future<bool> open(Uri uri) async {
+    try {
+      return await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } on Object {
+      return false;
+    }
+  }
+}
+
+final urlOpenerProvider = Provider<UrlOpener>(
+  (ref) => const PlatformUrlOpener(),
+);
+
+/// Renders `data` as a QR code PNG with a white quiet zone, for the share
+/// sheet (an image the guest can show at the gate). A seam: tests give bytes
+/// without rasterizing.
+abstract interface class QrImageService {
+  Future<Uint8List> png(String data, {int size});
+}
+
+class PlatformQrImageService implements QrImageService {
+  const new();
+
+  @override
+  Future<Uint8List> png(String data, {int size = 720}) async {
+    final painter = QrPainter(
+      data: data,
+      version: QrVersions.auto,
+      errorCorrectionLevel: QrErrorCorrectLevel.M,
+      eyeStyle: const QrEyeStyle(color: Color(0xFF000000)),
+      dataModuleStyle: const QrDataModuleStyle(color: Color(0xFF000000)),
+      gapless: true,
+    );
+    // A white frame around the code: scanners need the quiet zone.
+    final pad = size ~/ 8;
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    final total = size + 2 * pad;
+    canvas
+      ..drawRect(
+        Rect.fromLTWH(0, 0, total.toDouble(), total.toDouble()),
+        Paint()..color = const Color(0xFFFFFFFF),
+      )
+      ..translate(pad.toDouble(), pad.toDouble());
+    painter.paint(canvas, Size(size.toDouble(), size.toDouble()));
+    final image = await recorder.endRecording().toImage(total, total);
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    return bytes!.buffer.asUint8List();
+  }
+}
+
+final qrImageServiceProvider = Provider<QrImageService>(
+  (ref) => const PlatformQrImageService(),
 );

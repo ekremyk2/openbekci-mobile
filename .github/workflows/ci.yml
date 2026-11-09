@@ -16,7 +16,7 @@ jobs:
   check:
     name: Analyze, test, build
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -39,8 +39,27 @@ jobs:
           key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock', 'packages/openbekci_api/pubspec.yaml') }}
           restore-keys: pub-${{ runner.os }}-
 
+      # Native-asset hooks (pdfium_dart, sqlite3) download prebuilt libraries
+      # into .dart_tool. Cache them so a flaky github.com does not break the
+      # build; the cache is only saved after a green job, so a truncated file
+      # is never stored.
+      - name: Cache native-asset hook outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner
+            .dart_tool/native_assets
+          key: native-assets-${{ runner.os }}-${{ hashFiles('pubspec.lock', 'packages/openbekci_api/pubspec.yaml') }}
+          restore-keys: native-assets-${{ runner.os }}-
+
       - name: flutter pub get
         run: flutter pub get
+
+      # `flutter test` and `flutter build` both run the native-asset hooks
+      # (downloads from github.com): fetch them once, with retries, before the
+      # checks. A small test file is enough to trigger the hook build.
+      - name: Fetch native assets (with retry)
+        run: bash tool/ci/retry_native_assets.sh flutter test test/core/format_test.dart
 
       - name: Format
         run: dart format --output=none --set-exit-if-changed lib test tool integration_test
@@ -65,7 +84,7 @@ jobs:
         run: git diff --exit-code -- test/golden
 
       - name: Build dev debug APK
-        run: flutter build apk --debug --flavor dev -t lib/main_dev.dart
+        run: bash tool/ci/retry_native_assets.sh flutter build apk --debug --flavor dev -t lib/main_dev.dart
 
       - uses: actions/upload-artifact@v4
         with:

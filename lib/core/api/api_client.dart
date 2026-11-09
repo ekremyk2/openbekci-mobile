@@ -22,7 +22,9 @@ class ApiClient {
       money = MoneyApi(dio),
       operations = OperationsApi(dio),
       tenancy = TenancyApi(dio),
-      codes = CodesApi(dio);
+      codes = CodesApi(dio),
+      community = CommunityApi(dio),
+      governance = GovernanceApi(dio);
 
   /// Builds a client. Pass [tokens] for authenticated use; without it only
   /// anonymous endpoints work (discovery, sign-in).
@@ -69,6 +71,8 @@ class ApiClient {
   final OperationsApi operations;
   final TenancyApi tenancy;
   final CodesApi codes;
+  final CommunityApi community;
+  final GovernanceApi governance;
 
   /// GETs a binary body (statement PDF, a file's content) as bytes. The
   /// generated operations of the same endpoints decode JSON, so downloads go

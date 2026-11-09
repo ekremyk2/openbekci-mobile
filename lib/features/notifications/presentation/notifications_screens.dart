@@ -12,6 +12,7 @@ import 'package:openbekci_mobile/core/widgets/cached_view.dart';
 import 'package:openbekci_mobile/core/widgets/display.dart';
 import 'package:openbekci_mobile/core/widgets/states.dart';
 import 'package:openbekci_mobile/features/notifications/application/notifications_providers.dart';
+import 'package:openbekci_mobile/features/push/application/push_service.dart';
 import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
 
 /// In-app notification center with read state (O5).
@@ -22,7 +23,8 @@ class NotificationsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final ctx = ref.watch(orgContextProvider);
-    final unread = ref.watch(unreadCountProvider).value?.data ?? 0;
+    final unread = ref.watch(displayUnreadProvider);
+    final delayed = ref.watch(pushDelayedHintProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(l.notificationsTitle),
@@ -56,6 +58,20 @@ class NotificationsScreen extends ConsumerWidget {
       ),
       body: CachedView<List<AppNotification>>(
         provider: notificationsProvider,
+        header: delayed
+            ? Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 0),
+                child: Card(
+                  key: const Key('delayedHint'),
+                  color: Theme.of(context).colorScheme.tertiaryContainer,
+                  child: ListTile(
+                    leading: const Icon(Icons.schedule),
+                    title: Text(l.notificationsMayBeDelayed),
+                    subtitle: Text(l.notificationsMayBeDelayedBody),
+                  ),
+                ),
+              )
+            : null,
         isEmpty: (list) => list.isEmpty,
         emptyIcon: Icons.notifications_none,
         emptyMessage: l.notificationsEmpty,

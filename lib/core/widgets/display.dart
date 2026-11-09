@@ -109,3 +109,28 @@ class SkeletonList extends StatelessWidget {
     );
   }
 }
+
+/// A range of instants in the site's timezone (`Nov 21, 2026, 14:00 - 16:00`).
+class SiteRange extends StatelessWidget {
+  const new({
+    required this.start,
+    required this.end,
+    required this.timezone,
+    this.style,
+    super.key,
+  });
+
+  final DateTime start;
+  final DateTime end;
+  final String timezone;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    return Text(
+      formatSiteRange(start, end, timezone: timezone, locale: locale),
+      style: style,
+    );
+  }
+}

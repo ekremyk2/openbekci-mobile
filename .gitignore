@@ -53,3 +53,8 @@ app.*.map.json
 
 # Golden test failure output
 test/golden/failures/
+
+# Firebase configuration of a build: never committed (README, "Push")
+google-services.json
+**/google-services.json
+GoogleService-Info.plist

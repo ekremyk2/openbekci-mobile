@@ -87,3 +87,40 @@ String formatSiteCalendarDate(String isoDate, {required String locale}) {
   if (p == null) return isoDate;
   return DateFormat.yMMMd(locale).format(DateTime(p.year, p.month, p.day));
 }
+
+/// Wall-clock time (`14:30`) of [instant] in the site's timezone.
+String formatSiteTime(
+  DateTime instant, {
+  required String timezone,
+  required String locale,
+}) => DateFormat.Hm(locale).format(inSiteZone(instant, timezone));
+
+/// A date with the weekday (`Sat, Nov 21`) in the site's timezone.
+String formatSiteDay(
+  DateTime instant, {
+  required String timezone,
+  required String locale,
+}) => DateFormat.MMMEd(locale).format(inSiteZone(instant, timezone));
+
+/// `Nov 21, 2026, 14:00 - 16:00` (the end shows its date only when it falls on
+/// another day), all in the site's timezone.
+String formatSiteRange(
+  DateTime start,
+  DateTime end, {
+  required String timezone,
+  required String locale,
+}) {
+  final s = inSiteZone(start, timezone);
+  final e = inSiteZone(end, timezone);
+  final sameDay = s.year == e.year && s.month == e.month && s.day == e.day;
+  final from = formatSiteDate(
+    start,
+    timezone: timezone,
+    locale: locale,
+    withTime: true,
+  );
+  final to = sameDay
+      ? formatSiteTime(end, timezone: timezone, locale: locale)
+      : formatSiteDate(end, timezone: timezone, locale: locale, withTime: true);
+  return '$from \u2013 $to';
+}

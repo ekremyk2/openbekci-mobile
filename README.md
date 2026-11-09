@@ -6,13 +6,15 @@ a self-hosted server, chosen at first launch through the discovery document. Lic
 Plans: `docs/plans/03-mobile.md` in the core repository (`ekremyk2/OpenBekci`). This repository consumes a **pinned
 OpenAPI spec**; it never builds against the core working tree.
 
-Status: **phase B (resident core)**. On top of phase A (server entry, site QR scan, sign-in by SMS code, password, email
+Status: **phase C (community, governance, push)**, on top of phase B (resident core). On top of phase A (server entry, site QR scan, sign-in by SMS code, password, email
 link and invitation, unit claim, token refresh, read cache): home per organization, the statement per debtor side with
 the late fee accrued to today and a PDF, pay by bank transfer with the "I've paid by transfer" declaration, tickets
 (per-site workflow statuses, private or common, "+1", photos), announcements with read receipts, documents (including
 the unit's private folder and generated files), the notification center with mutes, and the profile (my details, gate
-contact phone, directory opt-in, sessions, app lock, consents, about). Bookings, visitors, parcels and governance
-(phase C) and card checkout (phase D) are not built yet; the home shows read-only placeholders for them.
+contact phone, directory opt-in, sessions, app lock, consents, about). Phase C adds bookings (rules, slot picker, fee preview, cancel with the refund rule), visitors (pre-registration with a
+shared QR, recurring visitors, approve or deny from a notification), parcels, governance (assembly with agenda and call
+letter, pre-meeting polls, check-in QR, decisions, minutes), device registration, push handling and the "Open in web"
+action. Card checkout (phase D) is not built yet.
 
 ## Requirements
 
@@ -60,6 +62,24 @@ To run a local server see `server/README.md` in the core repository (`tools/dev-
 (Android intent filter); so do the same paths on a server's own URL once App Links are verified for a domain (the
 hosted domain is not configured yet, see `AndroidManifest.xml`). Pasting `https://host/invite/<token>` into the server
 field works everywhere.
+
+## Push
+
+`lib/features/push`: the push layer is written against a `PushTransport` (FCM, UnifiedPush or a fake), a `LocalNotifier`
+(Android channels per area, Approve / Deny buttons) and a `PushController` (registration after sign-in and on token
+change, `DELETE /v1/me/devices/{id}` on sign-out, generic per-type titles, `GET /v1/me/notifications/{id}` to replace the
+text while the app runs, taps routed by type, badge from the payload, periodic fetch of the unread count with the
+"notifications may be delayed" hint when registration fails, the instance has no relay or nothing arrived for six hours).
+
+- **prod** (`lib/main_prod.dart`) uses Firebase Cloud Messaging through the relay. **No `google-services.json` is committed**
+  (it is in `.gitignore`). To build with push, put the Firebase project's file at `android/app/google-services.json`
+  (or `android/app/src/prod/google-services.json`); the Gradle script applies the google-services plugin only when a file
+  exists. Without it the build works and the app uses periodic fetching.
+- **dev** and **foss** (`lib/main_dev.dart`, `lib/main_foss.dart`) use UnifiedPush (`push_kind: unifiedpush`, the endpoint
+  URL as token; the server posts the payload to it). With no distributor app installed they use periodic fetching. The
+  `foss` Gradle flavor exists, but the Firebase libraries are still linked into it (never initialized); a Google-free
+  binary needs the Firebase dependencies split out (follow-up).
+- Dev flavor without Firebase: tests use a fake transport that delivers payloads (`test/support/push_harness.dart`).
 
 ## Layout
 
@@ -146,6 +166,11 @@ flutter test               # unit, widget, contract, goldens; live tests skip th
   statement per side with the accrued late fee, a declared transfer, a ticket with a photo, "+1", a comment, the
   announcement read receipt, all checked through the admin API), as the tenant (tenant side only) and as the household
   member (no money). Start the server from the core repository as for the phase A suite.
+- **Community, governance and push, live** (`test/live/live_community_test.dart`): books a facility with a fee and cancels
+  it (refund checked), pre-registers a visitor and reads its `obk1.` QR token, answers a guard-created approval request,
+  lists a guard-logged parcel, answers a poll and reads the check-in token, registers a `unifiedpush` device pointing at a
+  local HTTP endpoint and asserts that the server posts exactly the six payload keys to it. Start the server with
+  `OPENBEKCI_PUSH_ALLOW_PRIVATE=true` and an organization administrator account (same variables as above).
 - **Integration** (`integration_test/app_test.dart`): an on-device smoke test; needs an emulator or phone.
 
 ## CI
@@ -183,3 +208,18 @@ flutter test               # unit, widget, contract, goldens; live tests skip th
 - `tickets`: residents get the ticket list of the **site**; "my unit's" private tickets are whatever the server returns
   (own private plus all common).
 - `GET /v1/orgs/{org}/folders` without `parent_id` is assumed to list every folder (the tree is built client side).
+
+## Known gaps against the backend contract (phase C)
+
+- **No booking preview endpoint.** The fee shown before confirming is the facility's flat fee, and the refund rule comes from
+  `cancel_refund_cutoff_hours`; the app computes both. Quota, lead time and hours are mirrored client side, the server decides.
+- **`MyPoll.answered_units` has no answer**, so the app shows "answered" per unit but cannot show which answer; it remembers
+  what this device sent.
+- **`GET /v1/orgs/{org}/visitor-approval-requests/{id}` does not exist**; the approval screen reads the list (two pages).
+- The generated client **sends `null` as the body** of an optional request body that is not given (`communityCancelBooking`):
+  the server answers 422. The app always sends `{}`. Query `date-time` values were sent as `DateTime.toString()`
+  (`2026-11-08 21:00:00.000Z`, a 422): `tool/prune_spec.dart` now makes them strings.
+- **Push payload carries no text**, so a background message on Android can only show the generic title; the text is fetched
+  while the app runs. Notification buttons open the app (they need the session), then the answer is sent at once.
+- Background fetch (WorkManager) for the periodic fallback is not built: the fallback runs while the app process lives.
+- The `foss` flavor still links Firebase (see Push).

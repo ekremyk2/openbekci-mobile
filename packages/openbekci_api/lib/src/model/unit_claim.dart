@@ -47,6 +47,14 @@ class UnitClaim {
     required  this.createdAt,
 
     required  this.updatedAt,
+
+     this.orgName,
+
+     this.siteId,
+
+     this.siteName,
+
+     this.blockName,
   });
 
   @JsonKey(
@@ -221,6 +229,58 @@ class UnitClaim {
 
 
 
+      /// Organization label; filled by `people.listMyUnitClaims`.
+  @JsonKey(
+    
+    name: r'org_name',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? orgName;
+
+
+
+      /// Filled by `people.listMyUnitClaims`.
+  @JsonKey(
+    
+    name: r'site_id',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? siteId;
+
+
+
+      /// Filled by `people.listMyUnitClaims`.
+  @JsonKey(
+    
+    name: r'site_name',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? siteName;
+
+
+
+      /// Filled by `people.listMyUnitClaims`.
+  @JsonKey(
+    
+    name: r'block_name',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? blockName;
+
+
+
 
 
     @override
@@ -238,7 +298,11 @@ class UnitClaim {
       other.decisionNote == decisionNote &&
       other.note == note &&
       other.createdAt == createdAt &&
-      other.updatedAt == updatedAt;
+      other.updatedAt == updatedAt &&
+      other.orgName == orgName &&
+      other.siteId == siteId &&
+      other.siteName == siteName &&
+      other.blockName == blockName;
 
     @override
     int get hashCode =>
@@ -255,7 +319,11 @@ class UnitClaim {
         (decisionNote == null ? 0 : decisionNote.hashCode) +
         (note == null ? 0 : note.hashCode) +
         createdAt.hashCode +
-        updatedAt.hashCode;
+        updatedAt.hashCode +
+        orgName.hashCode +
+        siteId.hashCode +
+        siteName.hashCode +
+        blockName.hashCode;
 
   factory UnitClaim.fromJson(Map<String, dynamic> json) => _$UnitClaimFromJson(json);
 

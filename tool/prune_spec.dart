@@ -127,7 +127,8 @@ void main(List<String> args) {
 
 /// Fixes where the generator's output cannot talk to the served contract.
 ///
-/// * `format: date` on a query parameter or on `PaymentDeclare.paid_on` (values
+/// * `format: date` on a query parameter, on `PaymentDeclare.paid_on` and on
+///   `RecurringVisitorCreate.valid_from` / `valid_to` (values
 ///   the app sends) becomes a plain string: the generated Dart would send a
 ///   full ISO timestamp, the server wants `YYYY-MM-DD`. Response dates stay
 ///   `DateTime` (they parse).
@@ -138,9 +139,12 @@ void _applyContractFixups(Map<String, Object?> spec) {
   void params(Object? node) {
     if (node is Map) {
       final schema = node['schema'];
-      if (node.containsKey('in') &&
+      // Query dates and instants the app sends: the generated Dart would
+      // send `DateTime.toString()` (`2026-11-08 21:00:00.000Z`, a 422), the
+      // server wants RFC 3339 / `YYYY-MM-DD`.
+      if (node['in'] == 'query' &&
           schema is Map &&
-          schema['format'] == 'date') {
+          (schema['format'] == 'date' || schema['format'] == 'date-time')) {
         schema.remove('format');
       }
       node.values.forEach(params);
@@ -158,6 +162,15 @@ void _applyContractFixups(Map<String, Object?> spec) {
   if (declare is Map) {
     final paidOn = (declare['properties'] as Map?)?['paid_on'];
     if (paidOn is Map) paidOn.remove('format');
+  }
+  final recurring = schemas['RecurringVisitorCreate'];
+  if (recurring is Map) {
+    // Dates the app sends (the recurring visitor's validity) stay strings.
+    final props = recurring['properties'] as Map?;
+    for (final key in ['valid_from', 'valid_to']) {
+      final p = props?[key];
+      if (p is Map) p.remove('format');
+    }
   }
   if (schemas.containsKey('DebtorRef')) {
     schemas['DebtorRef'] = {
