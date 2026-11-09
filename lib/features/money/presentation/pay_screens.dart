@@ -38,9 +38,12 @@ class _PayScreenState extends ConsumerState<PayScreen> with SubmitState {
   bool _paidOnReady = false;
   bool _prefilled = false;
 
-  /// Generated once per form: a retry after a timeout reuses it, so the
-  /// transfer cannot be declared twice.
-  late final String _key = HeadersInterceptor.newId(Random.secure());
+  /// One key per declaration: a retry of the same request (a timeout) reuses
+  /// it, so the transfer cannot be declared twice; a request whose content
+  /// changed (an edited amount, date or text) is a new declaration and gets
+  /// a new key, or the server would answer the first one.
+  String _key = HeadersInterceptor.newId(Random.secure());
+  String? _keyFor;
   Payment? _done;
 
   @override
@@ -76,6 +79,18 @@ class _PayScreenState extends ConsumerState<PayScreen> with SubmitState {
     }
     final repo = ref.read(moneyRepositoryProvider);
     if (repo == null || ctx.siteId == null) return;
+    final fingerprint = [
+      target.id,
+      minor,
+      ctx.currency,
+      _isoDate(_paidOn),
+      _reference.text.trim(),
+      _note.text.trim(),
+    ].join('|');
+    if (_keyFor != null && _keyFor != fingerprint) {
+      _key = HeadersInterceptor.newId(Random.secure());
+    }
+    _keyFor = fingerprint;
     await submit(() async {
       final payment = await repo.declare(
         orgId: ctx.orgId,

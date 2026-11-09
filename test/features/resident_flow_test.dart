@@ -277,6 +277,35 @@ void main() {
       expect(body['reference'], 'GUL-12');
       expect(body['site_id'], siteId);
     });
+
+    testWidgets('a retry with an edited amount is a new declaration with a '
+        'new Idempotency-Key', (tester) async {
+      final r = ResidentApp();
+      var calls = 0;
+      r.adapter.on('POST /v1/orgs/$orgId/payments:declare', (_) {
+        calls++;
+        if (calls <= 2) return FakeResponse.problem(409, 'conflict');
+        return FakeResponse(201, paymentJson());
+      });
+      await pumpResident(tester, r);
+      await open(tester, '/money/pay?side=$unit12:owner');
+      await typeInto(tester, 'declareAmount', '500,00');
+      await tapKey(tester, 'declareSubmit');
+      await tapKey(tester, 'declareSubmit');
+      await typeInto(tester, 'declareAmount', '450,00');
+      await tapKey(tester, 'declareSubmit');
+      expect(find.byKey(const Key('declareDone')), findsOneWidget);
+
+      final posts = r.seen('POST /v1/orgs/$orgId/payments:declare');
+      expect(posts, hasLength(3));
+      final keys = [for (final p in posts) p.headers['Idempotency-Key']];
+      expect(keys[0], keys[1]);
+      expect(keys[2], isNot(keys[0]));
+      expect((bodyOf(posts.last)! as Map)['amount'], {
+        'amount': 45000,
+        'currency': 'TRY',
+      });
+    });
   });
 
   group('tickets', () {
