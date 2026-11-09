@@ -43,7 +43,7 @@ class MeApi {
     required String orgId,
     required String occupancyId,
     String? idempotencyKey,
-    DateTime? validTo,
+    String? validTo,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
