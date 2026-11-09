@@ -7,6 +7,7 @@ import 'package:openbekci_api/openbekci_api.dart' hide Notification;
 import 'package:openbekci_mobile/core/api/app_error.dart';
 import 'package:openbekci_mobile/core/l10n/codes.dart';
 import 'package:openbekci_mobile/core/org/org_context.dart';
+import 'package:openbekci_mobile/core/org/scope.dart';
 import 'package:openbekci_mobile/core/widgets/cached_view.dart';
 import 'package:openbekci_mobile/core/widgets/display.dart';
 import 'package:openbekci_mobile/core/widgets/states.dart';
@@ -83,7 +84,10 @@ class NotificationsScreen extends ConsumerWidget {
                 withTime: true,
               ),
               onTap: () async {
-                final route = routeForNotification(n);
+                final org = ref.read(scopeProvider)?.orgId;
+                final route = org == null
+                    ? null
+                    : routeForNotification(n, orgId: org);
                 if (n.readAt == null) await markNotificationRead(ref, n.id);
                 if (route != null && context.mounted) {
                   if (route.split('/').length > 2) {

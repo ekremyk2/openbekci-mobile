@@ -120,20 +120,21 @@ Future<void> setNotificationMutes(WidgetRef ref, List<String> muted) async {
 /// screen for it (the center then just marks it read). Understands the
 /// payload ids of the notification types residents get and the server's
 /// `link` (`/orgs/{org}/tickets/{id}`); unknown types never navigate.
-String? routeForNotification(AppNotification n) {
+String? routeForNotification(AppNotification n, {required String orgId}) {
+  // A link that names another organization is not ours to open.
+  final linkOrg = _linkId(n.link, 'orgs');
+  if (linkOrg != null && linkOrg != orgId) return null;
   final payload = n.payload;
-  String? id(String key) {
-    final v = payload[key];
-    return v is String && v.isNotEmpty ? v : null;
-  }
+  String? id(String key) => _safeId(payload[key]);
 
   final type = n.type;
   if (type.startsWith('announcement.')) {
-    final a = id('announcement_id') ?? _linkId(n.link, 'announcements');
+    final a =
+        id('announcement_id') ?? _safeId(_linkId(n.link, 'announcements'));
     return a == null ? '/more/announcements' : '/more/announcements/$a';
   }
   if (type.startsWith('ticket.')) {
-    final t = id('ticket_id') ?? _linkId(n.link, 'tickets');
+    final t = id('ticket_id') ?? _safeId(_linkId(n.link, 'tickets'));
     return t == null ? '/tickets' : '/tickets/$t';
   }
   if (type.startsWith('payment.') ||
@@ -144,6 +145,10 @@ String? routeForNotification(AppNotification n) {
   }
   return null;
 }
+
+/// An id that is safe to put in a route path (no separators, no query).
+String? _safeId(Object? v) =>
+    v is String && RegExp(r'^[A-Za-z0-9_-]{1,64}$').hasMatch(v) ? v : null;
 
 String? _linkId(String? link, String segment) {
   if (link == null) return null;
