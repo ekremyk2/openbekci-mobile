@@ -3,8 +3,7 @@ name: Release
 # A tag `v<VERSION>` builds the signed prod App Bundle and attaches it to a GitHub release.
 # There is no store upload: the Play and App Store steps are manual (docs/release.md).
 on:
-  push:
-    tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write
