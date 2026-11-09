@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:openbekci_api/openbekci_api.dart' hide Notification;
+import 'package:openbekci_mobile/core/api/app_error.dart';
 import 'package:openbekci_mobile/core/l10n/codes.dart';
 import 'package:openbekci_mobile/core/org/org_context.dart';
 import 'package:openbekci_mobile/core/providers.dart';
@@ -74,8 +75,17 @@ class HomeScreen extends ConsumerWidget {
                     onRetry: () => ref.invalidate(meProvider),
                   );
           }
-          if (ctx == null) {
-            return _NoOrganization(me: data, offline: state.isOffline);
+          final dash = ref.watch(dashboardProvider).value;
+          // No dashboard to show (the user is in no organization yet, or the
+          // server has no summary for them): the units and claims of phase A
+          // stay visible, with the reason underneath.
+          if (ctx == null || (dash?.data == null && dash?.error != null)) {
+            return _NoOrganization(
+              me: data,
+              offline: state.isOffline,
+              error: dash?.error,
+              onRetry: () => ref.invalidate(dashboardProvider),
+            );
           }
           return CachedView<MeDashboard>(
             provider: dashboardProvider,
@@ -351,10 +361,17 @@ class OrgSwitcher extends ConsumerWidget {
 /// A signed-in user who belongs to no organization yet: the units and the
 /// pending claims of phase A.
 class _NoOrganization extends ConsumerWidget {
-  const new({required this.me, required this.offline});
+  const new({
+    required this.me,
+    required this.offline,
+    this.error,
+    this.onRetry,
+  });
 
   final Me me;
   final bool offline;
+  final AppError? error;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -395,6 +412,11 @@ class _NoOrganization extends ConsumerWidget {
                     title: Text(o.unitLabel),
                     subtitle: Text(occupancyLabel(l, o.kind)),
                   ),
+                ),
+              if (error != null && !offline)
+                SizedBox(
+                  height: 320,
+                  child: ErrorState(error: error!, onRetry: onRetry),
                 ),
             ],
           ),

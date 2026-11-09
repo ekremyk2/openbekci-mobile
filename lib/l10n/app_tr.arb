@@ -340,5 +340,6 @@
   "ticketsOpen": "Açık",
   "ticketsTitle": "Talepler",
   "totalDueToday": "Bugün ödenecek toplam",
-  "valueOther": "Diğer"
+  "valueOther": "Diğer",
+  "ticketNoCategories": "Bu site için henüz talep kategorisi tanımlanmadı. Yöneticiye başvurun."
 }

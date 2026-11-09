@@ -50,3 +50,4 @@ operations.setNotificationMutes
 operations.uploadFile
 operations.getFileMeta
 operations.downloadFile
+money.listCharges

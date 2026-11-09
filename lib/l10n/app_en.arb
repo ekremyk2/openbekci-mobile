@@ -585,5 +585,6 @@
   "ticketsOpen": "Open",
   "ticketsTitle": "Tickets",
   "totalDueToday": "Total due today",
-  "valueOther": "Other"
+  "valueOther": "Other",
+  "ticketNoCategories": "No ticket categories are set up for this site yet. Ask the manager."
 }

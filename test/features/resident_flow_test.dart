@@ -24,8 +24,8 @@ void main() {
       );
       await pumpResident(tester, r);
       expect(find.text('Gul Yonetim'), findsOneWidget);
-      expect(find.byKey(Key('side_${unit12}_owner')), findsOneWidget);
-      expect(find.byKey(Key('side_${unit12}_tenant')), findsOneWidget);
+      expect(find.byKey(const Key('side_${unit12}_owner')), findsOneWidget);
+      expect(find.byKey(const Key('side_${unit12}_tenant')), findsOneWidget);
       // Balance includes the fee accrued so far.
       expect(find.textContaining('1,500.00'), findsOneWidget);
       expect(find.text('includes late fee'), findsOneWidget);
@@ -62,7 +62,7 @@ void main() {
     ) async {
       final r = ResidentApp();
       await pumpResident(tester, r);
-      expect(find.byKey(Key('side_${unit12}_owner')), findsOneWidget);
+      expect(find.byKey(const Key('side_${unit12}_owner')), findsOneWidget);
       // Second launch, network gone: same database, dashboard fails.
       r.adapter.on('GET /v1/orgs/$orgId/me/dashboard', (_) {
         throw StateError('offline');
@@ -71,7 +71,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('navHome')));
       await tester.pumpAndSettle();
-      expect(find.byKey(Key('side_${unit12}_owner')), findsOneWidget);
+      expect(find.byKey(const Key('side_${unit12}_owner')), findsOneWidget);
     });
   });
 
@@ -101,6 +101,59 @@ void main() {
       expect(all.last.queryParameters['from'], '2000-01-01');
     });
 
+    testWidgets('a server that refuses residents on the statement is served '
+        'from charges and payments', (tester) async {
+      final r = ResidentApp();
+      r.adapter
+        ..answer(
+          'GET /v1/orgs/$orgId/units/$unit12/statements/owner',
+          FakeResponse.problem(403, 'insufficient_permission'),
+        )
+        ..answer(
+          'GET /v1/orgs/$orgId/charges',
+          FakeResponse.ok(
+            pageOf([
+              {
+                'id': 'c1',
+                'org_id': orgId,
+                'site_id': siteId,
+                'plan_id': null,
+                'unit_id': unit12,
+                'unit_door_number': '12',
+                'debtor_kind': 'owner',
+                'debtor_person_id': personId,
+                'debtor_display_name': 'Ayse',
+                'charge_type': 'dues',
+                'period': null,
+                'amount': money(100000),
+                'paid': money(0),
+                'balance': money(100000),
+                'due_date': '2026-10-01',
+                'description': 'October dues',
+                'allocation_basis': null,
+                'journal_entry_id': '0192a3f0-1000-7000-8000-0000000000ff',
+                'status': 'open',
+                'cancelled_reason': null,
+                'created_at': '2026-01-01T00:00:00Z',
+                'updated_at': '2026-01-01T00:00:00Z',
+                'effective_debtor': {
+                  'debtor_kind': 'owner',
+                  'display_name': 'Ayse',
+                  'person_id': personId,
+                  'source': 'charge',
+                },
+              },
+            ]),
+          ),
+        );
+      await pumpResident(tester, r);
+      await tester.tap(find.byKey(const Key('navMoney')));
+      await tester.pumpAndSettle();
+      expect(find.text('October dues'), findsOneWidget);
+      expect(find.byKey(const Key('totalDue')), findsOneWidget);
+      expect(find.byKey(const Key('accruedLine')), findsOneWidget);
+    });
+
     testWidgets('PDF goes to the share sheet', (tester) async {
       final r = ResidentApp();
       r.adapter.answer(
@@ -113,7 +166,7 @@ void main() {
       // The same path with format=pdf answers bytes.
       r.adapter.on('GET /v1/orgs/$orgId/units/$unit12/statements/owner', (o) {
         if (o.queryParameters['format'] == 'pdf') {
-          return const FakeResponse(200, null);
+          return const FakeResponse(200);
         }
         return FakeResponse.ok(statementJson());
       });
@@ -130,7 +183,6 @@ void main() {
           occupancies: [
             occupancyJson(
               kind: 'former_occupant',
-              side: 'owner',
               from: '2025-03-01',
               to: '2026-02-28',
             ),
@@ -214,7 +266,7 @@ void main() {
       expect(posts.length, greaterThanOrEqualTo(2));
       final keys = {for (final p in posts) p.headers['Idempotency-Key']};
       expect(keys, hasLength(1));
-      final body = bodyOf(posts.last) as Map;
+      final body = bodyOf(posts.last)! as Map;
       expect(body['amount'], {'amount': 50000, 'currency': 'TRY'});
       expect(body['debtor'], {
         'mode': 'unit_side',
@@ -261,7 +313,7 @@ void main() {
         )
         ..answer(
           'PUT /v1/orgs/$orgId/tickets/0192a3f0-1000-7000-8000-0000000000d1/vote',
-          FakeResponse.ok({
+          const FakeResponse.ok({
             'ticket_id': '0192a3f0-1000-7000-8000-0000000000d1',
             'vote_count': 5,
             'voted': true,
@@ -307,8 +359,8 @@ void main() {
       final post = r.seen(
         'POST /v1/orgs/$orgId/tickets/0192a3f0-1000-7000-8000-0000000000d1/comments',
       );
-      expect((bodyOf(post.single) as Map)['body'], 'Thanks');
-      expect((bodyOf(post.single) as Map)['visibility'], 'public');
+      expect((bodyOf(post.single)! as Map)['body'], 'Thanks');
+      expect((bodyOf(post.single)! as Map)['visibility'], 'public');
     });
 
     testWidgets('creates a ticket with a compressed photo upload', (
@@ -370,7 +422,7 @@ void main() {
       final upload = r.seen('POST /v1/orgs/$orgId/files').single;
       expect(upload.headers['Idempotency-Key'], isNotNull);
       final post = r.seen('POST /v1/orgs/$orgId/tickets').single;
-      final body = bodyOf(post) as Map;
+      final body = bodyOf(post)! as Map;
       expect(body['attachment_file_ids'], [
         '0192a3f0-1000-7000-8000-0000000000f9',
       ]);
@@ -385,7 +437,7 @@ void main() {
     testWidgets('opening an unread announcement sends the read receipt', (
       tester,
     ) async {
-      final id = '0192a3f0-1000-7000-8000-0000000000a9';
+      const id = '0192a3f0-1000-7000-8000-0000000000a9';
       final r = ResidentApp();
       r.adapter
         ..answer(
@@ -399,7 +451,7 @@ void main() {
       await pumpResident(tester, r);
       await open(tester, '/more/announcements');
       expect(find.text('Water cut on Saturday'), findsOneWidget);
-      await tester.tap(find.byKey(Key('announcement_$id')));
+      await tester.tap(find.byKey(const Key('announcement_$id')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('announcementBody')), findsOneWidget);
       expect(find.text('schedule.pdf'), findsOneWidget);
@@ -412,7 +464,7 @@ void main() {
     testWidgets('an already read announcement sends no second receipt', (
       tester,
     ) async {
-      final id = '0192a3f0-1000-7000-8000-0000000000a9';
+      const id = '0192a3f0-1000-7000-8000-0000000000a9';
       final r = ResidentApp();
       r.adapter.answer(
         'GET /v1/orgs/$orgId/announcements/$id',
@@ -478,10 +530,7 @@ void main() {
             ]),
           ),
         )
-        ..on(
-          'GET /v1/orgs/$orgId/files/file1',
-          (_) => const FakeResponse(200, null),
-        );
+        ..on('GET /v1/orgs/$orgId/files/file1', (_) => const FakeResponse(200));
       await pumpResident(tester, r);
       await open(tester, '/more/documents');
       expect(find.text('Minutes'), findsOneWidget);
@@ -528,7 +577,7 @@ void main() {
         )
         ..answer(
           'POST /v1/orgs/$orgId/me/notifications/n1:read',
-          FakeResponse.ok({
+          const FakeResponse.ok({
             'id': 'n1',
             'site_id': null,
             'type': 'payment.confirmed',
@@ -540,7 +589,7 @@ void main() {
         )
         ..answer(
           'GET /v1/orgs/$orgId/me/notification-mutes',
-          FakeResponse.ok({
+          const FakeResponse.ok({
             'muted_types': ['ticket.updated'],
             'unmutable_types': ['auth.otp'],
             'available_types': [
@@ -552,7 +601,7 @@ void main() {
         )
         ..answer(
           'PUT /v1/orgs/$orgId/me/notification-mutes',
-          FakeResponse.ok({
+          const FakeResponse.ok({
             'muted_types': ['payment.receipt', 'ticket.updated'],
             'unmutable_types': ['auth.otp'],
             'available_types': [
@@ -583,7 +632,7 @@ void main() {
       await tester.tap(find.byKey(const Key('mute_payment.receipt')));
       await tester.pumpAndSettle();
       final put = r.seen('PUT /v1/orgs/$orgId/me/notification-mutes').single;
-      expect((bodyOf(put) as Map)['muted_types'], [
+      expect((bodyOf(put)! as Map)['muted_types'], [
         'payment.receipt',
         'ticket.updated',
       ]);
@@ -648,7 +697,7 @@ void main() {
         ..answer('GET /v1/orgs/$orgId/me/person', FakeResponse.ok(person))
         ..answer(
           'PUT /v1/orgs/$orgId/me/directory-consent',
-          FakeResponse.ok({
+          const FakeResponse.ok({
             'site_id': siteId,
             'consent': true,
             'show_phone': false,
@@ -657,7 +706,7 @@ void main() {
         ..answer('PATCH /v1/orgs/$orgId/me/person', FakeResponse.ok(person));
       await pumpResident(tester, r);
       await open(tester, '/profile/directory');
-      await tester.tap(find.byKey(Key('directory_$siteId')));
+      await tester.tap(find.byKey(const Key('directory_$siteId')));
       await tester.pumpAndSettle();
       final put = r.seen('PUT /v1/orgs/$orgId/me/directory-consent').single;
       expect(bodyOf(put), {
@@ -671,7 +720,7 @@ void main() {
       await tapKey(tester, 'meSave');
       final patch = r.seen('PATCH /v1/orgs/$orgId/me/person').single;
       expect(patch.headers['If-Match'], '"7"');
-      expect((bodyOf(patch) as Map)['gate_contact_phone'], '+905551112233');
+      expect((bodyOf(patch)! as Map)['gate_contact_phone'], '+905551112233');
     });
 
     testWidgets('app lock toggles through the authenticator', (tester) async {
@@ -709,7 +758,7 @@ void main() {
         findsOneWidget,
       );
       expect(find.textContaining('Owner side'), findsOneWidget);
-      expect(find.byKey(Key('org_$orgId')), findsOneWidget);
+      expect(find.byKey(const Key('org_$orgId')), findsOneWidget);
       await open(tester, '/profile/consents');
       expect(find.byKey(const Key('consentsNote')), findsOneWidget);
       await open(tester, '/profile/about');

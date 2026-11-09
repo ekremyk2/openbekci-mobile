@@ -160,3 +160,130 @@ List<Payment> declaredPayments(Iterable<Payment> payments) => [
   for (final p in payments)
     if (p.status == PaymentStatusEnum.pendingDeclared) p,
 ];
+
+/// The statement of one side built from the ledger lists a resident may read
+/// (`GET /charges` and `GET /payments`), for servers whose statement endpoint
+/// refuses residents (it checks `units.read`). Charges are debits on their due
+/// date, confirmed payments credits on the day received; the running balance
+/// starts from zero at the first entry and the period filter only cuts the
+/// lines (the opening balance carries what came before). The accrued late fee
+/// and the total due come from the dashboard side, which the server computes.
+Statement statementFromLedger({
+  required StatementTarget target,
+  required List<Charge> charges,
+  required List<Payment> payments,
+  required String currency,
+  required String today,
+  String? from,
+  String? to,
+  MySide? side,
+}) {
+  Money money(int amount) => Money(amount: amount, currency: currency);
+  final kind = target.kind == 'owner'
+      ? StatementLineDebtorKindEnum.owner
+      : StatementLineDebtorKindEnum.tenant;
+  final events =
+      <_LedgerEvent>[
+        for (final c in charges)
+          if (c.status != ChargeStatusEnum.cancelled)
+            _LedgerEvent(
+              date: c.dueDate,
+              debit: true,
+              amount: c.amount.amount,
+              text: (c.description ?? '').isEmpty
+                  ? c.chargeType.value
+                  : c.description!,
+              type: 'charge',
+              id: c.id,
+            ),
+        for (final p in payments)
+          if (p.status == PaymentStatusEnum.confirmed)
+            _LedgerEvent(
+              date: p.receivedOn,
+              debit: false,
+              amount: p.gross.amount,
+              text: p.reference ?? '',
+              type: 'payment',
+              id: p.id,
+            ),
+      ]..sort((a, b) {
+        final byDate = DateTime(
+          a.date.year,
+          a.date.month,
+          a.date.day,
+        ).compareTo(DateTime(b.date.year, b.date.month, b.date.day));
+        if (byDate != 0) return byDate;
+        return a.debit == b.debit ? 0 : (a.debit ? -1 : 1);
+      });
+  final fromDate = from == null ? null : DateTime.parse(from);
+  final toDate = to == null ? DateTime.parse(today) : DateTime.parse(to);
+  var balance = 0;
+  var opening = 0;
+  final lines = <StatementLine>[];
+  for (final e in events) {
+    final day = DateTime(e.date.year, e.date.month, e.date.day);
+    balance += e.debit ? e.amount : -e.amount;
+    if (fromDate != null && day.isBefore(fromDate)) {
+      opening = balance;
+      continue;
+    }
+    if (day.isAfter(toDate)) continue;
+    lines.add(
+      StatementLine(
+        date: day,
+        kind: e.debit
+            ? StatementLineKindEnum.charge
+            : StatementLineKindEnum.payment,
+        description: e.text,
+        refType: e.type,
+        refId: e.id,
+        debtorKind: kind,
+        debtorDisplayName: null,
+        principal: money(e.debit ? e.amount : 0),
+        lateFee: money(0),
+        debit: money(e.debit ? e.amount : 0),
+        credit: money(e.debit ? 0 : e.amount),
+        balance: money(balance),
+      ),
+    );
+  }
+  final closing = lines.isEmpty ? opening : lines.last.balance.amount;
+  final fee = side?.accruedLateFee.amount ?? 0;
+  return Statement(
+    debtor: DebtorRef(
+      mode: DebtorRefModeEnum.unitSide,
+      unitId: target.unitId,
+      debtorKind: target.kind == 'owner'
+          ? DebtorRefDebtorKindEnum.owner
+          : DebtorRefDebtorKindEnum.tenant,
+    ),
+    from:
+        fromDate ??
+        (events.isEmpty ? DateTime.parse(today) : events.first.date),
+    to: toDate,
+    openingBalance: money(opening),
+    lines: lines,
+    closingBalance: money(closing),
+    accruedLateFee: money(fee),
+    totalDue: side?.total ?? money(closing + fee),
+    credit: money(closing < 0 ? -closing : 0),
+  );
+}
+
+class _LedgerEvent {
+  const new({
+    required this.date,
+    required this.debit,
+    required this.amount,
+    required this.text,
+    required this.type,
+    required this.id,
+  });
+
+  final DateTime date;
+  final bool debit;
+  final int amount;
+  final String text;
+  final String type;
+  final String id;
+}

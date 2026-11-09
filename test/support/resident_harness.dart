@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart' show RequestOptions;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image/image.dart' as img;
 import 'package:openbekci_mobile/app/app.dart';
 import 'package:openbekci_mobile/app/router.dart';
 import 'package:openbekci_mobile/core/services/services.dart';
@@ -31,7 +33,7 @@ class FakeShare implements ShareService {
 
 /// Camera and gallery stand-in.
 class FakePhotoPicker implements PhotoPicker {
-  FakePhotoPicker(this.photos);
+  new(this.photos);
 
   final List<PickedPhoto> photos;
 
@@ -45,7 +47,7 @@ class FakePhotoPicker implements PhotoPicker {
 }
 
 class FakeLock implements LockAuthenticator {
-  FakeLock({this.available = true, this.result = LockResult.success});
+  new({this.available = true, this.result = LockResult.success});
 
   bool available;
   LockResult result;
@@ -61,21 +63,16 @@ class FakeLock implements LockAuthenticator {
   }
 }
 
-/// A 1x1 transparent PNG, enough for `Image.memory` and for the photo
-/// compressor (which re-encodes it as JPEG).
-final tinyPng = Uint8List.fromList(const [
-  0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, //
-  0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-  0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,
-  0x0d, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0xf8, 0xff, 0xff, 0x3f,
-  0x00, 0x05, 0xfe, 0x02, 0xfe, 0xa7, 0x35, 0x81, 0x84, 0x00, 0x00, 0x00,
-  0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
-]);
+/// A small valid PNG, for `Image.memory` and the photo compressor (which
+/// re-encodes it as JPEG).
+final tinyPng = Uint8List.fromList(
+  img.encodePng(img.Image(width: 4, height: 4)),
+);
 
 /// A signed-in resident app against a [FakeAdapter] that answers the resident
-/// core endpoints from [fixtures]. Override single answers on `app.adapter`.
+/// core endpoints from the fixtures. Override single answers on `app.adapter`.
 class ResidentApp {
-  ResidentApp({
+  new({
     Map<String, Object?>? me,
     Map<String, Object?>? dashboard,
     List<Override> extra = const [],
@@ -127,7 +124,7 @@ class ResidentApp {
       )
       ..answer(
         'GET /v1/orgs/$orgId/me/notifications/unread-count',
-        FakeResponse.ok({'unread': 3, 'visitor_approvals_pending': 0}),
+        const FakeResponse.ok({'unread': 3, 'visitor_approvals_pending': 0}),
       )
       ..answer(
         'GET /v1/orgs/$orgId/me/notifications',
@@ -158,12 +155,12 @@ class ResidentApp {
   FakeAdapter get adapter => app.adapter;
 
   /// Requests seen for `'METHOD /path'`.
-  List<dynamic> seen(String key) => adapter.seen(key);
+  List<RequestOptions> seen(String key) => adapter.seen(key);
 }
 
 void phoneSize(WidgetTester tester, {double scale = 1}) {
   tester.view
-    ..physicalSize = Size(390 * 3, 844 * 3)
+    ..physicalSize = const Size(390 * 3, 844 * 3)
     ..devicePixelRatio = 3;
   addTearDown(tester.view.reset);
 }
@@ -215,7 +212,7 @@ Future<void> open(WidgetTester tester, String location) async {
 
 /// The decoded JSON body of a recorded request (generated clients send a
 /// JSON string).
-Object? bodyOf(dynamic request) {
-  final data = (request as dynamic).data;
+Object? bodyOf(RequestOptions request) {
+  final data = request.data;
   return data is String ? json.decode(data) : data;
 }

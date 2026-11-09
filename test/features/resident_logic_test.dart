@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image/image.dart' as img;
 import 'package:openbekci_api/openbekci_api.dart' hide File, Notification;
 import 'package:openbekci_mobile/core/org/org_context.dart';
 import 'package:openbekci_mobile/core/services/services.dart';
@@ -9,7 +10,6 @@ import 'package:openbekci_mobile/features/money/domain/money_logic.dart';
 import 'package:openbekci_mobile/features/notifications/application/notifications_providers.dart';
 import 'package:openbekci_mobile/features/shell/presentation/app_shell.dart';
 import 'package:openbekci_mobile/features/tickets/domain/tickets_logic.dart';
-import 'package:image/image.dart' as img;
 
 import '../support/fixtures.dart';
 
@@ -148,6 +148,98 @@ void main() {
         isTrue,
       );
     });
+  });
+
+  group('statement from the ledger lists (servers that refuse residents)', () {
+    Charge charge(
+      String id,
+      int amount,
+      String due, {
+      String status = 'open',
+    }) => Charge.fromJson({
+      'id': id,
+      'org_id': orgId,
+      'site_id': siteId,
+      'plan_id': null,
+      'unit_id': unit12,
+      'unit_door_number': '12',
+      'debtor_kind': 'owner',
+      'debtor_person_id': personId,
+      'debtor_display_name': 'Ayse',
+      'charge_type': 'dues',
+      'period': null,
+      'amount': money(amount),
+      'paid': money(0),
+      'balance': money(amount),
+      'due_date': due,
+      'description': 'Dues $due',
+      'allocation_basis': null,
+      'journal_entry_id': '0192a3f0-1000-7000-8000-0000000000ff',
+      'status': status,
+      'cancelled_reason': null,
+      'created_at': '2026-01-01T00:00:00Z',
+      'updated_at': '2026-01-01T00:00:00Z',
+      'effective_debtor': {
+        'debtor_kind': 'owner',
+        'display_name': 'Ayse',
+        'person_id': personId,
+        'source': 'charge',
+      },
+    });
+    const target = StatementTarget(
+      unitId: unit12,
+      unitLabel: '12',
+      kind: 'owner',
+    );
+    final payments = [
+      Payment.fromJson(
+        paymentJson(id: 'p1', status: 'confirmed', amount: 20000),
+      ),
+      Payment.fromJson(paymentJson(id: 'p2', amount: 30000)),
+    ];
+
+    test('running balance, declared and cancelled entries left out', () {
+      final st = statementFromLedger(
+        target: target,
+        charges: [
+          charge('c1', 100000, '2026-10-01'),
+          charge('c2', 50000, '2026-09-01', status: 'cancelled'),
+        ],
+        payments: payments,
+        currency: 'TRY',
+        today: '2026-11-09',
+        side: MySide.fromJson(sideJson(total: 85000)),
+      );
+      expect(st.lines.map((l) => l.kind), [
+        StatementLineKindEnum.charge,
+        StatementLineKindEnum.payment,
+      ]);
+      expect(st.lines.map((l) => l.balance.amount), [100000, 80000]);
+      expect(st.closingBalance.amount, 80000);
+      expect(st.accruedLateFee.amount, 5000);
+      expect(st.totalDue.amount, 85000);
+    });
+
+    test(
+      'the period only cuts lines; what came before is the opening balance',
+      () {
+        final st = statementFromLedger(
+          target: target,
+          charges: [
+            charge('c0', 70000, '2026-01-01'),
+            charge('c1', 100000, '2026-10-01'),
+          ],
+          payments: const [],
+          currency: 'TRY',
+          today: '2026-11-09',
+          from: '2026-06-01',
+          to: '2026-11-09',
+        );
+        expect(st.openingBalance.amount, 70000);
+        expect(st.lines.single.balance.amount, 170000);
+        expect(st.totalDue.amount, 170000);
+      },
+    );
   });
 
   group('tickets', () {

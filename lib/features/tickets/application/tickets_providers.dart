@@ -320,7 +320,7 @@ Future<Ticket> submitTicketDraft(WidgetRef ref) async {
       title: draft.title.trim(),
       description: draft.description.trim(),
       unitId: draft.unitId,
-      visibility: draft.visibility,
+      // No visibility: residents get the category's (only managers choose).
       attachmentFileIds: [
         for (final p in draft.photos)
           if (p.fileId != null) p.fileId!,

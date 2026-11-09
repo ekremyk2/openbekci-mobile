@@ -3,8 +3,10 @@ import 'package:openbekci_api/openbekci_api.dart' hide Notification;
 import 'package:openbekci_mobile/core/api/api_client.dart';
 import 'package:openbekci_mobile/core/cache/cache_policy.dart';
 import 'package:openbekci_mobile/core/cache/cached.dart';
+import 'package:openbekci_mobile/core/org/org_context.dart';
 import 'package:openbekci_mobile/core/org/scope.dart';
 import 'package:openbekci_mobile/core/providers.dart';
+import 'package:openbekci_mobile/features/home/application/home_providers.dart';
 import 'package:openbekci_mobile/features/money/data/money_repository.dart';
 import 'package:openbekci_mobile/features/money/domain/money_logic.dart';
 
@@ -31,13 +33,43 @@ final statementProvider =
         key:
             'org/${scope.orgId}/statement/${q.unitId}/${q.kind}/'
             '${q.from ?? '-'}/${q.to ?? '-'}',
-        fetch: (api) async => (await MoneyRepository(api).statement(
-          orgId: scope.orgId,
-          unitId: q.unitId,
-          kind: q.kind,
-          from: q.from,
-          to: q.to,
-        )).toJson(),
+        fetch: (api) async {
+          final ctx = ref.read(orgContextProvider);
+          final siteId = scope.siteId;
+          final timezone = ctx?.timezone ?? 'UTC';
+          final side = ref
+              .read(dashboardProvider)
+              .value
+              ?.data
+              ?.sides
+              .where(
+                (x) => x.unitId == q.unitId && x.debtorKind.value == q.kind,
+              )
+              .firstOrNull;
+          final statement = siteId == null
+              ? await MoneyRepository(api).statement(
+                  orgId: scope.orgId,
+                  unitId: q.unitId,
+                  kind: q.kind,
+                  from: q.from,
+                  to: q.to,
+                )
+              : await MoneyRepository(api).statementOrLedger(
+                  orgId: scope.orgId,
+                  siteId: siteId,
+                  currency: ctx?.currency ?? 'TRY',
+                  today: _isoDate(siteToday(timezone)),
+                  target: StatementTarget(
+                    unitId: q.unitId,
+                    unitLabel: '',
+                    kind: q.kind,
+                  ),
+                  from: q.from,
+                  to: q.to,
+                  side: side,
+                );
+          return statement.toJson();
+        },
         decode: (j) => Statement.fromJson((j! as Map).cast<String, dynamic>()),
       );
     });
@@ -101,3 +133,8 @@ final paymentCapabilitiesProvider = Provider<PaymentCapabilities>((ref) {
       ? PaymentCapabilities.none
       : PaymentCapabilities.fromPacks(doc.packs);
 });
+
+String _isoDate(DateTime d) =>
+    '${d.year.toString().padLeft(4, '0')}-'
+    '${d.month.toString().padLeft(2, '0')}-'
+    '${d.day.toString().padLeft(2, '0')}';

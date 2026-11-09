@@ -438,9 +438,6 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get homePhaseNote => 'Diğer ekranlar sonraki sürümlerde gelecek.';
-
-  @override
   String get profileTitle => 'Profil';
 
   @override
@@ -1154,4 +1151,8 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get valueOther => 'Diğer';
+
+  @override
+  String get ticketNoCategories =>
+      'Bu site için henüz talep kategorisi tanımlanmadı. Yöneticiye başvurun.';
 }

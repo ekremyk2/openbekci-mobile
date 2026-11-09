@@ -10,6 +10,7 @@ import 'package:openbekci_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'dart:typed_data';
+import 'package:openbekci_api/src/model/charge_list.dart';
 import 'package:openbekci_api/src/model/payment.dart';
 import 'package:openbekci_api/src/model/payment_declare.dart';
 import 'package:openbekci_api/src/model/payment_list.dart';
@@ -432,6 +433,124 @@ _responseData = rawData == null ? null : deserialize<Statement, Statement>(rawDa
     }
 
     return Response<Statement>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// List charges
+  /// **Release 0.1.** List charges.  Residents (&#x60;statements.read_own&#x60;) get only their own side(s) of their own unit(s): the server restricts the result to the caller&#39;s sides (household: only with &#x60;may_see_money&#x60;; former occupants: their period) and ignores &#x60;person_id&#x60; of anyone else.  Permission (any one of): &#x60;money.read&#x60;, &#x60;statements.read_own&#x60;.
+  ///
+  /// Parameters:
+  /// * [orgId] - Organization id.
+  /// * [siteId] - The site this resource belongs to.
+  /// * [unitId] - Filter by unit.
+  /// * [debtorKind] - Debtor side of the unit: owner or tenant.
+  /// * [personId] - Filter by person.
+  /// * [planId] - Filter by `plan_id`.
+  /// * [status] - Filter by `status`.
+  /// * [period] - Filter by month, `YYYY-MM`.
+  /// * [chargeType] - Filter by `charge_type`.
+  /// * [dueFrom] - Filter by `due_from`.
+  /// * [dueTo] - Filter by `due_to`.
+  /// * [overdue] - Only charges past their due date that are still open or partially paid.
+  /// * [side] - Debtor side of the unit (alias of `debtor_kind`).
+  /// * [limit] - Page size.
+  /// * [cursor] - Opaque cursor from a previous page `next_cursor`.
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [ChargeList] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<ChargeList>> moneyListCharges({ 
+    required String orgId,
+    required String siteId,
+    String? unitId,
+    String? debtorKind,
+    String? personId,
+    String? planId,
+    String? status,
+    String? period,
+    String? chargeType,
+    String? dueFrom,
+    String? dueTo,
+    bool? overdue,
+    String? side,
+    int? limit = 50,
+    String? cursor,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/v1/orgs/{org_id}/charges'.replaceAll('{' r'org_id' '}', orgId.toString());
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _queryParameters = <String, dynamic>{
+      r'site_id': siteId,
+      if (unitId != null) r'unit_id': unitId,
+      if (debtorKind != null) r'debtor_kind': debtorKind,
+      if (personId != null) r'person_id': personId,
+      if (planId != null) r'plan_id': planId,
+      if (status != null) r'status': status,
+      if (period != null) r'period': period,
+      if (chargeType != null) r'charge_type': chargeType,
+      if (dueFrom != null) r'due_from': dueFrom,
+      if (dueTo != null) r'due_to': dueTo,
+      if (overdue != null) r'overdue': overdue,
+      if (side != null) r'side': side,
+      if (limit != null) r'limit': limit,
+      if (cursor != null) r'cursor': cursor,
+    };
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      queryParameters: _queryParameters,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    ChargeList? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<ChargeList, ChargeList>(rawData, 'ChargeList', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<ChargeList>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

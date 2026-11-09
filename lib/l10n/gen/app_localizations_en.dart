@@ -437,9 +437,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get homePhaseNote => 'More screens arrive in the next releases.';
-
-  @override
   String get profileTitle => 'Profile';
 
   @override
@@ -1154,4 +1151,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get valueOther => 'Other';
+
+  @override
+  String get ticketNoCategories =>
+      'No ticket categories are set up for this site yet. Ask the manager.';
 }

@@ -830,12 +830,6 @@ abstract class AppLocalizations {
   /// **'Request for {door}: waiting for approval'**
   String homePendingClaim(String door);
 
-  /// No description provided for @homePhaseNote.
-  ///
-  /// In en, this message translates to:
-  /// **'More screens arrive in the next releases.'**
-  String get homePhaseNote;
-
   /// No description provided for @profileTitle.
   ///
   /// In en, this message translates to:
@@ -2149,6 +2143,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get valueOther;
+
+  /// No description provided for @ticketNoCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'No ticket categories are set up for this site yet. Ask the manager.'**
+  String get ticketNoCategories;
 }
 
 class _AppLocalizationsDelegate

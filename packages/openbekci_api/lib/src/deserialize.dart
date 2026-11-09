@@ -1,4 +1,5 @@
 import 'package:openbekci_api/src/model/address.dart';
+import 'package:openbekci_api/src/model/allocation_basis.dart';
 import 'package:openbekci_api/src/model/announcement.dart';
 import 'package:openbekci_api/src/model/announcement_attachment.dart';
 import 'package:openbekci_api/src/model/announcement_audience.dart';
@@ -9,6 +10,8 @@ import 'package:openbekci_api/src/model/auth_user.dart';
 import 'package:openbekci_api/src/model/bank_details.dart';
 import 'package:openbekci_api/src/model/branding.dart';
 import 'package:openbekci_api/src/model/change_password_request.dart';
+import 'package:openbekci_api/src/model/charge.dart';
+import 'package:openbekci_api/src/model/charge_list.dart';
 import 'package:openbekci_api/src/model/code_label.dart';
 import 'package:openbekci_api/src/model/codes.dart';
 import 'package:openbekci_api/src/model/credentials.dart';
@@ -19,6 +22,7 @@ import 'package:openbekci_api/src/model/discovery_document.dart';
 import 'package:openbekci_api/src/model/document.dart';
 import 'package:openbekci_api/src/model/document_list.dart';
 import 'package:openbekci_api/src/model/document_visibility.dart';
+import 'package:openbekci_api/src/model/effective_debtor.dart';
 import 'package:openbekci_api/src/model/file.dart';
 import 'package:openbekci_api/src/model/file_links.dart';
 import 'package:openbekci_api/src/model/file_variant.dart';
@@ -122,6 +126,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return (value is double ? value : double.parse('$value')) as ReturnType;
         case 'Address':
           return Address.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AllocationBasis':
+          return AllocationBasis.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Announcement':
           return Announcement.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AnnouncementAttachment':
@@ -142,6 +148,10 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return Branding.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ChangePasswordRequest':
           return ChangePasswordRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Charge':
+          return Charge.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ChargeList':
+          return ChargeList.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CodeLabel':
           return CodeLabel.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Codes':
@@ -162,6 +172,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return DocumentList.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DocumentVisibility':
           return DocumentVisibility.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'EffectiveDebtor':
+          return EffectiveDebtor.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'File':
           return File.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'FileLinks':

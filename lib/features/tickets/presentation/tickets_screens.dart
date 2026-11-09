@@ -591,6 +591,14 @@ class _NewTicketState extends ConsumerState<NewTicketScreen> with SubmitState {
                 (d) => d.copyWith(categoryId: v, clearVisibility: true),
               ),
             ),
+            if (categories != null && active.isEmpty)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(top: 4),
+                child: Text(
+                  l.ticketNoCategories,
+                  key: const Key('noCategories'),
+                ),
+              ),
             const SizedBox(height: 12),
             TextField(
               key: const Key('ticketTitleField'),
@@ -644,35 +652,28 @@ class _NewTicketState extends ConsumerState<NewTicketScreen> with SubmitState {
                 ),
               ),
             const SizedBox(height: 12),
-            Text(l.ticketVisibility, style: theme.textTheme.titleSmall),
-            const SizedBox(height: 4),
-            SegmentedButton<TicketCreateVisibilityEnum>(
-              key: const Key('ticketVisibility'),
-              segments: [
-                ButtonSegment(
-                  value: TicketCreateVisibilityEnum.private,
-                  label: Text(l.ticketPrivate),
-                  icon: const Icon(Icons.lock_outline),
+            // The server gives residents the category's visibility (only
+            // managers may choose), so it is shown, not asked.
+            if (category != null)
+              ListTile(
+                key: const Key('ticketVisibility'),
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  effectiveVisibility == TicketCreateVisibilityEnum.common
+                      ? Icons.groups_outlined
+                      : Icons.lock_outline,
                 ),
-                ButtonSegment(
-                  value: TicketCreateVisibilityEnum.common,
-                  label: Text(l.ticketCommon),
-                  icon: const Icon(Icons.groups_outlined),
+                title: Text(
+                  effectiveVisibility == TicketCreateVisibilityEnum.common
+                      ? l.ticketCommon
+                      : l.ticketPrivate,
                 ),
-              ],
-              selected: {effectiveVisibility},
-              onSelectionChanged: (s) =>
-                  notifier.update((d) => d.copyWith(visibility: s.first)),
-            ),
-            Padding(
-              padding: const EdgeInsetsDirectional.only(top: 4),
-              child: Text(
-                effectiveVisibility == TicketCreateVisibilityEnum.common
-                    ? l.ticketCommonHint
-                    : l.ticketPrivateHint,
-                style: theme.textTheme.bodySmall,
+                subtitle: Text(
+                  effectiveVisibility == TicketCreateVisibilityEnum.common
+                      ? l.ticketCommonHint
+                      : l.ticketPrivateHint,
+                ),
               ),
-            ),
             SectionTitle(l.ticketPhotos),
             Wrap(
               spacing: 8,
