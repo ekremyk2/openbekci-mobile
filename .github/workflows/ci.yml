@@ -61,6 +61,9 @@ jobs:
       - name: Fetch native assets (with retry)
         run: bash tool/ci/retry_native_assets.sh flutter test test/core/format_test.dart
 
+      - name: Localization (missing keys, hard-coded strings)
+        run: bash tool/ci/check_l10n.sh
+
       - name: Format
         run: dart format --output=none --set-exit-if-changed lib test tool integration_test
 
