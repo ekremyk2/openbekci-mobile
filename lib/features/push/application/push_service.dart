@@ -11,6 +11,7 @@ import 'package:openbekci_mobile/core/instance/discovery.dart';
 import 'package:openbekci_mobile/core/org/org_context.dart';
 import 'package:openbekci_mobile/core/org/scope.dart';
 import 'package:openbekci_mobile/core/providers.dart';
+import 'package:openbekci_mobile/features/community/application/community_providers.dart';
 import 'package:openbekci_mobile/features/notifications/application/notifications_providers.dart';
 import 'package:openbekci_mobile/features/push/application/local_notifier.dart';
 import 'package:openbekci_mobile/features/push/application/push_transport.dart';
@@ -220,6 +221,7 @@ class PushController extends Notifier<PushStatus> {
     final api = ref.read(apiProvider);
     final userId = _userId;
     if (api == null || userId == null) return;
+    final gen = _generation;
     final info = ref.read(appInfoProvider);
     final locale =
         ref.read(localeProvider) ?? PlatformDispatcher.instance.locale;
@@ -237,6 +239,16 @@ class PushController extends Notifier<PushStatus> {
           ),
         ),
       );
+      if (gen != _generation) {
+        // Signed out (or switched) while the request was in flight: do not
+        // leave a registration behind for a session that is going away.
+        try {
+          await unwrapVoid(() => api.me.meDeleteDevice(id: device.id));
+        } on Object {
+          // Offline: the server drops it with the session.
+        }
+        return;
+      }
       try {
         final prefs = await SharedPreferences.getInstance();
         final key = '$pushDevicePrefPrefix/$userId';
@@ -412,9 +424,18 @@ class PushController extends Notifier<PushStatus> {
       }
     }
     final decision = tap.actionId;
+    const requestPrefix = '/more/visitors/requests/';
     if ((decision == 'approve' || decision == 'deny') &&
-        route.startsWith('/more/visitors/requests/')) {
-      route = '$route?decision=$decision';
+        payload.type == 'visitor.approval_requested' &&
+        route.startsWith(requestPrefix)) {
+      // The one place that arms an automatic answer (not the route).
+      ref
+          .read(pendingDecisionsProvider)
+          .arm(
+            route.substring(requestPrefix.length),
+            approve: decision == 'approve',
+            now: _now(),
+          );
     }
     _open(router, route);
   }

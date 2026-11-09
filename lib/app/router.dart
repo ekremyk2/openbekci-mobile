@@ -255,7 +255,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                         parentNavigatorKey: _rootKey,
                         builder: (_, state) => ApprovalRequestScreen(
                           requestId: state.pathParameters['id']!,
-                          decision: state.uri.queryParameters['decision'],
                         ),
                       ),
                     ],

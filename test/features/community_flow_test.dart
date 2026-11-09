@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:openbekci_mobile/core/services/services.dart';
 import 'package:openbekci_mobile/features/community/application/community_providers.dart';
@@ -466,14 +467,38 @@ void main() {
       await teardown(tester);
     });
 
-    testWidgets('a button of the notification answers at once', (tester) async {
+    testWidgets('a link with ?decision= never answers by itself', (
+      tester,
+    ) async {
+      final r = build();
+      await pumpResident(tester, r);
+      for (final d in ['approve', 'deny']) {
+        await open(tester, '/more/visitors/requests/$requestId?decision=$d');
+        expect(
+          r.seen(
+            'POST /v1/orgs/$orgId/visitor-approval-requests/$requestId:decide',
+          ),
+          isEmpty,
+          reason: 'a URL is not the notification button',
+        );
+        expect(find.byKey(const Key('approve')), findsOneWidget);
+        expect(find.byKey(const Key('deny')), findsOneWidget);
+      }
+      await teardown(tester);
+    });
+
+    testWidgets('an armed notification button answers once', (tester) async {
       final r = build();
       r.adapter.answer(
         'POST /v1/orgs/$orgId/visitor-approval-requests/$requestId:decide',
         FakeResponse.ok(approvalRequestJson(status: 'denied')),
       );
       await pumpResident(tester, r);
-      await open(tester, '/more/visitors/requests/$requestId?decision=deny');
+      final element = tester.element(find.byType(Scaffold).first);
+      ProviderScope.containerOf(element)
+          .read(pendingDecisionsProvider)
+          .arm(requestId, approve: false, now: clockNow);
+      await open(tester, '/more/visitors/requests/$requestId');
       final posts = r.seen(
         'POST /v1/orgs/$orgId/visitor-approval-requests/$requestId:decide',
       );
@@ -481,6 +506,17 @@ void main() {
       expect((bodyOf(posts.single)! as Map)['decision'], 'deny');
       expect(find.byKey(const Key('resultDenied')), findsOneWidget);
       await teardown(tester);
+    });
+
+    test('an armed answer is for one request, once, and expires', () {
+      final d = PendingDecisions();
+      final t = DateTime.utc(2026, 11, 9, 12);
+      d.arm('r1', approve: true, now: t);
+      expect(d.take('r2', t), isNull);
+      expect(d.take('r1', t.add(PendingDecisions.ttl)), isNull);
+      d.arm('r1', approve: true, now: t);
+      expect(d.take('r1', t.add(const Duration(seconds: 5))), isTrue);
+      expect(d.take('r1', t), isNull, reason: 'one answer per tap');
     });
 
     testWidgets('after the expiry the gate contact hint shows the number', (

@@ -144,9 +144,10 @@ String _bookingFingerprint(
   String unitId,
   DateTime start,
   DateTime end,
+  DebtorKindForFee? debtor,
 ) =>
     'booking:$facilityId:$unitId:${start.toUtc().toIso8601String()}:'
-    '${end.toUtc().toIso8601String()}';
+    '${end.toUtc().toIso8601String()}:${debtor?.name ?? ''}';
 
 /// Books [facility] for [unitId]: confirms instantly. The `Idempotency-Key`
 /// is kept per request, so a retry after a timeout returns the first
@@ -165,7 +166,7 @@ Future<Booking> createBooking(
     throw const AppError(code: 'unauthenticated');
   }
   final keys = ref.read(idempotencyKeysProvider);
-  final fp = _bookingFingerprint(facility.id, unitId, start, end);
+  final fp = _bookingFingerprint(facility.id, unitId, start, end, debtor);
   final booking = await unwrap(
     () => api.community.communityCreateBooking(
       orgId: scope.orgId,
@@ -425,6 +426,45 @@ Future<RecurringVisitor> revokeRecurringVisitor(
   ref.invalidate(recurringVisitorsProvider);
   return out;
 }
+
+/// A decision the user chose on a button of the notification itself. Only the
+/// notification path arms it (in memory, one answer, short-lived); a deep link
+/// or a tapped URL cannot, so opening `/more/visitors/requests/{id}` from
+/// anywhere else never answers by itself.
+class PendingDecisions {
+  static const ttl = Duration(minutes: 2);
+
+  String? _requestId;
+  bool _approve = false;
+  DateTime? _armedAt;
+
+  void arm(String requestId, {required bool approve, required DateTime now}) {
+    _requestId = requestId;
+    _approve = approve;
+    _armedAt = now;
+  }
+
+  /// The armed answer for [requestId], once; `null` when there is none, it
+  /// is for another request or it is older than [ttl].
+  bool? take(String requestId, DateTime now) {
+    final id = _requestId;
+    final at = _armedAt;
+    if (id != requestId || at == null) return null;
+    if (now.difference(at).abs() >= ttl) return null;
+    _requestId = null;
+    _armedAt = null;
+    return _approve;
+  }
+
+  void clear() {
+    _requestId = null;
+    _armedAt = null;
+  }
+}
+
+final pendingDecisionsProvider = Provider<PendingDecisions>(
+  (ref) => PendingDecisions(),
+);
 
 /// Answers an approval request. After expiry the server answers 409
 /// `conflict`: the screen then shows the gate-contact hint.

@@ -585,6 +585,28 @@ void main() {
       await teardown(tester);
     });
 
+    testWidgets(
+      'a plain tap on the approval notification asks, never answers',
+      (tester) async {
+        final r = build();
+        await pumpResident(tester, r);
+        transport.deliver(pushData());
+        await tester.pumpAndSettle();
+        final payload = PushPayload.tryParse(pushData())!;
+        notifier.tap(LocalTap(payload: payload.tapPayload));
+        await tester.pumpAndSettle();
+        expect(topLocation(tester), '/more/visitors/requests/$requestId');
+        expect(
+          r.seen(
+            'POST /v1/orgs/$orgId/visitor-approval-requests/$requestId:decide',
+          ),
+          isEmpty,
+        );
+        expect(find.byKey(const Key('approve')), findsOneWidget);
+        await teardown(tester);
+      },
+    );
+
     testWidgets('a failed registration shows the delayed hint and polls', (
       tester,
     ) async {

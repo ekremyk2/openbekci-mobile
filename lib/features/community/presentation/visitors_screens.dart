@@ -925,13 +925,9 @@ class RecurringVisitorScreen extends ConsumerWidget {
 /// The approve / deny screen of a visitor at the gate: who, the countdown to
 /// the expiry, and the gate-contact hint once it ran out (C2).
 class ApprovalRequestScreen extends ConsumerStatefulWidget {
-  const new({required this.requestId, this.decision, super.key});
+  const new({required this.requestId, super.key});
 
   final String requestId;
-
-  /// `approve` or `deny` when the user tapped a button of the notification:
-  /// the answer is sent as soon as the request is on screen and pending.
-  final String? decision;
 
   @override
   ConsumerState<ApprovalRequestScreen> createState() => _ApprovalState();
@@ -1009,13 +1005,14 @@ class _ApprovalState extends ConsumerState<ApprovalRequestScreen>
     if (_expiredByServer && phase == ApprovalPhase.pending) {
       phase = ApprovalPhase.expired;
     }
-    final wanted = widget.decision;
-    if (!_autoSent &&
-        phase == ApprovalPhase.pending &&
-        (wanted == 'approve' || wanted == 'deny') &&
-        !busy) {
-      _autoSent = true;
-      scheduleMicrotask(() => _decide(request, approve: wanted == 'approve'));
+    // Answers by itself only for a button of the notification (armed in
+    // memory by the push layer), never because of anything in the route.
+    if (!_autoSent && phase == ApprovalPhase.pending && !busy) {
+      final approve = ref.read(pendingDecisionsProvider).take(request.id, now);
+      if (approve != null) {
+        _autoSent = true;
+        scheduleMicrotask(() => _decide(request, approve: approve));
+      }
     }
     return Scaffold(
       appBar: AppBar(title: Text(l.visitorApprovalTitle)),
