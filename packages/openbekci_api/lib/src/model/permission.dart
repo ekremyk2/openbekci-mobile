@@ -19,6 +19,10 @@ enum Permission {
   announcementsPeriodPublish(r'announcements.publish'),
   @JsonValue(r'announcements.read')
   announcementsPeriodRead(r'announcements.read'),
+  @JsonValue(r'apikeys.manage')
+  apikeysPeriodManage(r'apikeys.manage'),
+  @JsonValue(r'apikeys.read')
+  apikeysPeriodRead(r'apikeys.read'),
   @JsonValue(r'attendance.manage')
   attendancePeriodManage(r'attendance.manage'),
   @JsonValue(r'audit.read')
@@ -115,6 +119,10 @@ enum Permission {
   orgPeriodManage(r'org.manage'),
   @JsonValue(r'org.read')
   orgPeriodRead(r'org.read'),
+  @JsonValue(r'packs.manage')
+  packsPeriodManage(r'packs.manage'),
+  @JsonValue(r'packs.read')
+  packsPeriodRead(r'packs.read'),
   @JsonValue(r'payments.declare')
   paymentsPeriodDeclare(r'payments.declare'),
   @JsonValue(r'payments.record')
@@ -187,6 +195,10 @@ enum Permission {
   visitorsPeriodManage(r'visitors.manage'),
   @JsonValue(r'visitors.read')
   visitorsPeriodRead(r'visitors.read'),
+  @JsonValue(r'webhooks.manage')
+  webhooksPeriodManage(r'webhooks.manage'),
+  @JsonValue(r'webhooks.read')
+  webhooksPeriodRead(r'webhooks.read'),
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

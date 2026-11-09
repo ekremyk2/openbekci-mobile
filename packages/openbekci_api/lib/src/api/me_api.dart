@@ -9,18 +9,163 @@ import 'dart:convert';
 import 'package:openbekci_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
+import 'package:openbekci_api/src/model/device.dart';
+import 'package:openbekci_api/src/model/device_register.dart';
 import 'package:openbekci_api/src/model/invitation_list.dart';
 import 'package:openbekci_api/src/model/me.dart';
 import 'package:openbekci_api/src/model/occupancy.dart';
 import 'package:openbekci_api/src/model/occupancy_list.dart';
 import 'package:openbekci_api/src/model/problem.dart';
 import 'package:openbekci_api/src/model/session_list.dart';
+import 'package:openbekci_api/src/model/web_login_link.dart';
+import 'package:openbekci_api/src/model/web_login_link_create.dart';
 
 class MeApi {
 
   final Dio _dio;
 
   const MeApi(this._dio);
+
+  /// Get a one-time link that signs the browser in
+  /// **Release 0.4.** The mobile app asks for a one-time token and opens &#x60;{BASE_URL}/login/link/{token}?next&#x3D;/orgs/{org_id}/...&#x60; in the browser for anything deeper than the app offers (mobile section 7.2). The token is single use, valid for a few minutes, bound to the calling session (it stops working when that session is signed out) and stored hashed. A new link voids the session&#39;s earlier open ones.  Permission: any signed-in caller (&#x60;sessions.manage_own&#x60;).  Problems: &#x60;validation_failed&#x60; (422, &#x60;next&#x60; is not an in-app &#x60;/orgs/{org_id}/...&#x60; path), &#x60;rate_limited&#x60; (429).
+  ///
+  /// Parameters:
+  /// * [webLoginLinkCreate] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [WebLoginLink] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<WebLoginLink>> meCreateWebLoginLink({ 
+    WebLoginLinkCreate? webLoginLinkCreate,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/v1/me/web-login-link';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(webLoginLinkCreate);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    WebLoginLink? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<WebLoginLink, WebLoginLink>(rawData, 'WebLoginLink', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<WebLoginLink>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Unregister a push device
+  /// **Release 0.4.** Deletes one of the caller&#39;s devices (sign-out of the app does this, then revokes the session). A device of another user is 404.  Permission: any signed-in caller (&#x60;sessions.manage_own&#x60;).  Problems: &#x60;not_found&#x60; (404).
+  ///
+  /// Parameters:
+  /// * [id] - Id of the device (from `me.registerDevice`).
+  /// * [idempotencyKey] - Client-generated unique key; replays within 7 days return the stored response.
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future]
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<void>> meDeleteDevice({ 
+    required String id,
+    String? idempotencyKey,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/v1/me/devices/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _options = Options(
+      method: r'DELETE',
+      headers: <String, dynamic>{
+        if (idempotencyKey != null) r'Idempotency-Key': idempotencyKey,
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    return _response;
+  }
 
   /// End a household member&#39;s occupancy
   /// **Release 0.1.** Ends the occupancy of a household member of the caller&#39;s own unit (&#x60;kind &#x3D; household&#x60; only) and withdraws their access and money visibility from that day. Owner and tenant occupancies are ended by managers (&#x60;people.deleteOccupancy&#x60;, &#x60;people.moveOut&#x60;).  Permission: &#x60;occupancies.household&#x60; (own unit, household occupancies only).  Problems: &#x60;conflict&#x60; (409, not a household occupancy or already ended).
@@ -408,6 +553,100 @@ _responseData = rawData == null ? null : deserialize<SessionList, SessionList>(r
     }
 
     return Response<SessionList>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Register or update a push device
+  /// **Release 0.4.** Registers the caller&#39;s push token (FCM, APNs or a UnifiedPush endpoint), or updates the existing row of the same token and enables it again. The token is stored encrypted and never returned. The device is tied to the calling session: signing that session out unregisters it.  Permission: any signed-in caller (&#x60;sessions.manage_own&#x60;).  Problems: &#x60;validation_failed&#x60; (422), &#x60;rate_limited&#x60; (429).
+  ///
+  /// Parameters:
+  /// * [deviceRegister] 
+  /// * [idempotencyKey] - Client-generated unique key; replays within 7 days return the stored response.
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [Device] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<Device>> meRegisterDevice({ 
+    required DeviceRegister deviceRegister,
+    String? idempotencyKey,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/v1/me/devices';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        if (idempotencyKey != null) r'Idempotency-Key': idempotencyKey,
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(deviceRegister);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    Device? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<Device, Device>(rawData, 'Device', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<Device>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

@@ -31,10 +31,14 @@ tags:
     description: Site, portfolio and resident dashboards.
   - name: access
     description: Agents, access points, credentials, access events and manual open (release 0.3).
+  - name: integrations
+    description: Organization API keys and signed outbound webhooks (release 0.4).
   - name: agent
     description: 'Agent transport: enrolment, WebSocket, long-poll, token rotation (release 0.3; message schemas in api/agent-protocol/v1).'
   - name: money
     description: Ledger, billing, payments, expenses, collections, statements and reports.
+  - name: packs
+    description: Packs compiled into the server and their per-organization enablement and settings (release 0.4).
   - name: platform
     description: Instance operation (platform administrators).
 paths:
@@ -87,7 +91,7 @@ paths:
         `code` this verifies the credentials and sets the session cookie `obk_session`
         (httpOnly, SameSite=Lax, Secure except in development). `sms_otp` without
         `code` sends a code by SMS and `magic_link` emails a link (`client`
-        selects the web or `openbekci://` link); both answer 202 whether or not
+        selects the web or `openbekci://<host>/…` link); both answer 202 whether or not
         the account exists. Wrong credentials
         of any kind answer 401 `invalid_grant`; repeated failures lock the
         identifier out (429 `rate_limited` with `Retry-After`).
@@ -238,7 +242,7 @@ paths:
       description: |
         Emails a link valid for 15 minutes when an account has this address. The
         answer is the same whether or not it does. The link is
-        `{BASE_URL}/login/magic?token=...`, or `openbekci://login/magic?token=...`
+        `{BASE_URL}/login/magic?token=...`, or `openbekci://<host>/login/magic?token=...` (`<host>` is the instance's BASE_URL host)
         for `client=mobile`. 503 `mail_unavailable` when the instance has no email
         configuration. Limited per address and per client address.
       tags:
@@ -499,6 +503,164 @@ paths:
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
+  /v1/me/devices:
+    post:
+      operationId: me.registerDevice
+      summary: Register or update a push device
+      description: |-
+        **Release 0.4.** Registers the caller's push token (FCM, APNs or a UnifiedPush endpoint), or updates the existing row of the same token and enables it again. The token is stored encrypted and never returned. The device is tied to the calling session: signing that session out unregisters it.
+
+        Permission: any signed-in caller (`sessions.manage_own`).
+
+        Problems: `validation_failed` (422), `rate_limited` (429).
+      tags:
+        - me
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        - sessions.manage_own
+      x-idempotent: optional
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRegister'
+      responses:
+        '200':
+          description: The device, created or updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/me/devices/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Id of the device (from `me.registerDevice`).
+        schema:
+          type: string
+          format: uuid
+    delete:
+      operationId: me.deleteDevice
+      summary: Unregister a push device
+      description: |-
+        **Release 0.4.** Deletes one of the caller's devices (sign-out of the app does this, then revokes the session). A device of another user is 404.
+
+        Permission: any signed-in caller (`sessions.manage_own`).
+
+        Problems: `not_found` (404).
+      tags:
+        - me
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        - sessions.manage_own
+      x-idempotent: optional
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '204':
+          description: The device was deleted.
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/me/web-login-link:
+    post:
+      operationId: me.createWebLoginLink
+      summary: Get a one-time link that signs the browser in
+      description: |-
+        **Release 0.4.** The mobile app asks for a one-time token and opens `{BASE_URL}/login/link/{token}?next=/orgs/{org_id}/...` in the browser for anything deeper than the app offers (mobile section 7.2). The token is single use, valid for a few minutes, bound to the calling session (it stops working when that session is signed out) and stored hashed. A new link voids the session's earlier open ones.
+
+        Permission: any signed-in caller (`sessions.manage_own`).
+
+        Problems: `validation_failed` (422, `next` is not an in-app `/orgs/{org_id}/...` path), `rate_limited` (429).
+      tags:
+        - me
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        - sessions.manage_own
+      x-idempotent: none
+      x-stability: preview
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebLoginLinkCreate'
+      responses:
+        '201':
+          description: The link; shown once.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebLoginLink'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        '429':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/auth/web-login-link:exchange:
+    post:
+      operationId: auth.exchangeWebLoginLink
+      summary: Exchange a web-login link token for a browser session
+      description: |-
+        **Release 0.4.** The web route `/login/link/{token}` posts the token here and receives the session cookie. Single use; an unknown, used or expired token, or one whose issuing session was signed out, is 401 `invalid_grant`. The response is never replayed from the idempotency store.
+
+        Problems: `invalid_grant` (401), `rate_limited` (429).
+      tags:
+        - auth
+      security: []
+      x-idempotent: none
+      x-stability: preview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebLoginLinkExchange'
+      responses:
+        '200':
+          description: Signed in; the session cookie is set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        '429':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
   /v1/orgs/{org_id}/audit:
     parameters:
       - $ref: '#/components/parameters/OrgId'
@@ -558,6 +720,203 @@ paths:
         '403':
           $ref: '#/components/responses/Problem'
         '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/packs:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+    get:
+      operationId: packs.list
+      summary: List the packs
+      description: |-
+        **Release 0.4.** Every pack compiled into the server with its manifest, its settings schema (JSON Schema with `x-ui`
+        and `x-secret`) and the organization's enablement and settings. Secret fields are never returned: `secrets_set` names
+        the ones that are set.
+
+        Permission: `packs.read`.
+      tags:
+        - packs
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - packs.read
+      x-stability: preview
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/packs/{pack_id}/enable:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: pack_id
+        in: path
+        required: true
+        description: Id of the pack, for example `tr`.
+        schema:
+          type: string
+    post:
+      operationId: packs.enable
+      summary: Enable a pack
+      description: |-
+        **Release 0.4.** Enable the pack for the organization with settings. The settings are validated against the pack's
+        schema and its own checks (for example a live credential test), the presets of the pack are applied to the settings
+        the organization's sites have not changed, and the pack's own setup runs. Enabling an enabled pack updates its
+        settings and re-applies presets to settings still holding a pack default. Audited; secret values are not.
+
+        Permission: `packs.manage`.
+
+        Problems: `validation_failed` (422), `not_found` (404, unknown pack), `pack_error` (500).
+      tags:
+        - packs
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - packs.manage
+      x-idempotent: optional
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackEnableRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pack'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/packs/{pack_id}/disable:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: pack_id
+        in: path
+        required: true
+        description: Id of the pack, for example `tr`.
+        schema:
+          type: string
+    post:
+      operationId: packs.disable
+      summary: Disable a pack
+      description: |-
+        **Release 0.4.** Disable the pack for the organization. Its data and settings are kept, its providers and importers
+        stop being offered, its routes answer 404, and the settings its presets filled stay as the sites' own. Disabling a
+        pack that is not enabled changes nothing. Removing the data is a separate operator command
+        (`openbekci admin packs purge`).
+
+        Permission: `packs.manage`.
+
+        Problems: `not_found` (404, unknown pack), `pack_error` (500).
+      tags:
+        - packs
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - packs.manage
+      x-idempotent: optional
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pack'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/packs/{pack_id}/settings:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: pack_id
+        in: path
+        required: true
+        description: Id of the pack, for example `tr`.
+        schema:
+          type: string
+    put:
+      operationId: packs.updateSettings
+      summary: Update the settings of a pack
+      description: |-
+        **Release 0.4.** Replace the non-secret settings of one scope (`org`, or `site` with `site_id`). Secret fields
+        (`x-secret`) keep their stored value unless named in `values`; a `null` clears one. The result never contains secret
+        values. The pack must be enabled (`conflict`, 409, otherwise).
+
+        Permission: `packs.manage`.
+
+        Problems: `validation_failed` (422), `not_found` (404), `conflict` (409), `pack_error` (500).
+      tags:
+        - packs
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - packs.manage
+      x-idempotent: optional
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackSettingsUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackSettings'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
           $ref: '#/components/responses/Problem'
         '422':
           $ref: '#/components/responses/Problem'
@@ -4468,6 +4827,55 @@ paths:
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
+  /v1/join/{code}:sign-up:
+    parameters:
+      - name: code
+        in: path
+        required: true
+        description: Id of the code.
+        schema:
+          type: string
+    post:
+      operationId: people.joinSignUp
+      summary: Sign up through a site's join code
+      description: |-
+        **Release 0.1.** Public. A resident who scanned the site's QR code creates an account here (setup-people S4,
+        path 2): give a phone number or an email address (and optionally a name). The server sends a six-digit SMS code
+        (phone) or a sign-in link (email, `client=mobile` makes it an `openbekci://<host>/…` link). Completing it through
+        `auth.createToken` (`sms_otp` with the code, or `magic_link`) or `auth.createSession` opens a session with no
+        organization yet; the unit claim (`people.createUnitClaim`) then uses the same join code, and the manager approves.
+
+        The answer is 202 whether the contact is new or already has an account: an existing account simply gets the
+        ordinary sign-in code or link, and no second account is created. A new contact gets a pending account that becomes
+        active only when the code or link is used. An unknown, expired, disabled, rotated or used-up join code answers the
+        same 404 as `people.getJoinInfo`. Limited per join code, per contact and per client address.
+
+        Problems: `not_found` (404), `validation_failed` (422), `rate_limited` (429), `sms_unavailable` or
+        `mail_unavailable` (503).
+      tags:
+        - people
+      security: []
+      x-idempotent: optional
+      x-stability: stable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinSignUpRequest'
+      responses:
+        '202':
+          description: Accepted; a code or link was sent to the contact.
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        '429':
+          $ref: '#/components/responses/Problem'
+        '503':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
   /v1/join/{code}/claims:
     parameters:
       - name: code
@@ -4516,6 +4924,51 @@ paths:
         '422':
           $ref: '#/components/responses/Problem'
         '429':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/me/unit-claims:
+    get:
+      operationId: people.listMyUnitClaims
+      summary: List my unit claims across organizations
+      description: |-
+        **Release 0.1.** Lets a freshly signed-up resident see "waiting for approval": every claim of the caller, in any
+        organization, newest last, with the organization, site, block and unit labels. Served by the platform pool; only
+        the caller's own claims are returned.
+
+        Problems: `unauthenticated` (401), `validation_failed` (422).
+      tags:
+        - people
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        - me.read
+      x-stability: stable
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            x-known-values:
+              - pending
+              - approved
+              - rejected
+          description: Filter by `status`.
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitClaimList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '422':
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
@@ -7834,6 +8287,49 @@ paths:
         '403':
           $ref: '#/components/responses/Problem'
         '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/me/notifications/{notification_id}:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: notification_id
+        in: path
+        required: true
+        description: Id of the notification.
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: operations.getNotification
+      summary: Read one notification
+      description: |-
+        **Release 0.1.** One of the caller's notifications, a single-row read cheap enough for a push handler (`notification_id` of the push payload). Another person's notification is 404.
+
+        Permission: `notifications.read`.
+
+        Problems: `not_found` (404).
+      tags:
+        - operations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        member:
+          - notifications.read
+      x-stability: stable
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
@@ -13894,6 +14390,541 @@ paths:
         '404':
           $ref: '#/components/responses/Problem'
         '409':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/api-keys:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+    get:
+      operationId: integrations.listApiKeys
+      summary: List API keys
+      description: |-
+        **Release 0.4.** Lists the organization's API keys: prefix and metadata only, never a secret.
+
+        Permission: `apikeys.read`.
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - apikeys.read
+      x-stability: preview
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            x-known-values:
+              - active
+              - revoked
+              - expired
+          description: Filter by `status`.
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+    post:
+      operationId: integrations.createApiKey
+      summary: Create an API key
+      description: |-
+        **Release 0.4.** Creates a key and returns its secret exactly once. The scopes must be
+        permissions the caller holds; the key never exceeds the creating administrator's grants.
+
+        Sensitive (backend section 16): answers 403 `reauth_required` unless the session re-authenticated in the last 10 minutes (`POST /v1/auth/reauth`). An API key cannot create keys.
+
+        Permission: `apikeys.manage`.
+
+        Problems: `reauth_required` (403), `validation_failed` (422).
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - apikeys.manage
+      x-idempotent: none
+      x-stability: preview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyCreated'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/api-keys/{key_id}:rotate:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: key_id
+        in: path
+        required: true
+        description: Id of the API key.
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: integrations.rotateApiKey
+      summary: Rotate an API key
+      description: |-
+        **Release 0.4.** Replaces the key's prefix and secret and returns the new secret exactly
+        once. The old token stops working at once (401 `unauthenticated`). The key keeps its id,
+        scopes, site and expiry. A revoked key cannot be rotated.
+
+        Sensitive (backend section 16): answers 403 `reauth_required` unless the session re-authenticated in the last 10 minutes (`POST /v1/auth/reauth`).
+
+        Permission: `apikeys.manage`.
+
+        Problems: `reauth_required` (403), `conflict` (409, the key is revoked).
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - apikeys.manage
+      x-idempotent: none
+      x-stability: preview
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyCreated'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/api-keys/{key_id}:revoke:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: key_id
+        in: path
+        required: true
+        description: Id of the API key.
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: integrations.revokeApiKey
+      summary: Revoke an API key
+      description: |-
+        **Release 0.4.** Revokes the key; its token answers 401 `api_key_revoked` from then on.
+        Revoking a revoked key returns it unchanged.
+
+        Sensitive (backend section 16): answers 403 `reauth_required` unless the session re-authenticated in the last 10 minutes (`POST /v1/auth/reauth`).
+
+        Permission: `apikeys.manage`.
+
+        Problems: `reauth_required` (403).
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - apikeys.manage
+      x-idempotent: optional
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/webhook-endpoints:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+    get:
+      operationId: integrations.listWebhookEndpoints
+      summary: List webhook endpoints
+      description: |-
+        **Release 0.4.** Lists the organization's outbound webhook endpoints.
+
+        Permission: `webhooks.read`.
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - webhooks.read
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookEndpointList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+    post:
+      operationId: integrations.createWebhookEndpoint
+      summary: Create a webhook endpoint
+      description: |-
+        **Release 0.4.** Creates an endpoint and returns its signing secret exactly once. The URL
+        must be `https` and its host must not resolve to a private, loopback or link-local address
+        (field `url`: `https_required`, `forbidden_target`, `unresolvable`, `invalid_url`).
+        At most 20 endpoints per organization.
+
+        Permission: `webhooks.manage`.
+
+        Problems: `validation_failed` (422), `conflict` (409, too many endpoints).
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - webhooks.manage
+      x-idempotent: none
+      x-stability: preview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEndpointCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookEndpointCreated'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/webhook-endpoints/{endpoint_id}:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: endpoint_id
+        in: path
+        required: true
+        description: Id of the webhook endpoint.
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: integrations.getWebhookEndpoint
+      summary: Get a webhook endpoint
+      description: |-
+        **Release 0.4.** Get a webhook endpoint (never its secret).
+
+        Permission: `webhooks.read`.
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - webhooks.read
+      x-stability: preview
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookEndpoint'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+    patch:
+      operationId: integrations.updateWebhookEndpoint
+      summary: Change a webhook endpoint
+      description: |-
+        **Release 0.4.** Change the URL, the subscribed events, the description or `active`.
+        Changing the URL or re-activating the endpoint clears its failing mark.
+
+        Permission: `webhooks.manage`.
+
+        Problems: `version_conflict` (409), `validation_failed` (422).
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - webhooks.manage
+      x-idempotent: optional
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEndpointUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookEndpoint'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+    delete:
+      operationId: integrations.deleteWebhookEndpoint
+      summary: Delete a webhook endpoint
+      description: |-
+        **Release 0.4.** Deletes the endpoint and its delivery log. Deliveries still queued for it are dropped.
+
+        Permission: `webhooks.manage`.
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - webhooks.manage
+      x-idempotent: optional
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/webhook-endpoints/{endpoint_id}:test:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: endpoint_id
+        in: path
+        required: true
+        description: Id of the webhook endpoint.
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: integrations.testWebhookEndpoint
+      summary: Send a ping event to a webhook endpoint
+      description: |-
+        **Release 0.4.** Queues a `ping` event to the endpoint (also when it is inactive) and returns
+        the pending delivery. Its outcome shows in the delivery log. A `ping` has the same envelope,
+        headers and signature as every other event.
+
+        Permission: `webhooks.manage`.
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - webhooks.manage
+      x-idempotent: none
+      x-stability: preview
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookDelivery'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/webhook-endpoints/{endpoint_id}:rotate-secret:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: endpoint_id
+        in: path
+        required: true
+        description: Id of the webhook endpoint.
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: integrations.rotateWebhookEndpointSecret
+      summary: Rotate a webhook endpoint's signing secret
+      description: |-
+        **Release 0.4.** Replaces the endpoint's signing secret and returns the new one exactly once.
+        The replaced secret keeps signing for 24 hours (`previous_secret_expires_at`): every delivery
+        in that time carries both signatures (`OpenBekci-Signature: t=...,v1=<new>,v1=<old>`), so a
+        receiver that accepts any matching `v1` can switch without a gap. Rotating again inside the
+        window replaces the overlap with the secret that was current a moment ago; the oldest secret
+        stops signing at once.
+
+        Permission: `webhooks.manage` (a person; an API key cannot manage webhook endpoints).
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - webhooks.manage
+      x-idempotent: none
+      x-stability: preview
+      responses:
+        '200':
+          description: The new secret, shown once.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookEndpointCreated'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/webhook-endpoints/{endpoint_id}/deliveries:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: endpoint_id
+        in: path
+        required: true
+        description: Id of the webhook endpoint.
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: integrations.listWebhookDeliveries
+      summary: List the deliveries of a webhook endpoint
+      description: |-
+        **Release 0.4.** The delivery log, newest first: status, attempts, last response code and error,
+        and the next retry time while a delivery is pending.
+
+        Permission: `webhooks.read`.
+      tags:
+        - integrations
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - webhooks.read
+      x-stability: preview
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            x-known-values:
+              - pending
+              - succeeded
+              - failed
+          description: Filter by `status`.
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookDeliveryList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
@@ -21507,6 +22538,8 @@ components:
             - scan_unavailable
             - agent_offline
             - agent_session_expired
+            - api_key_revoked
+            - api_key_expired
         detail:
           type: string
           description: Human-readable explanation, not for machine parsing.
@@ -21680,6 +22713,28 @@ components:
       type: object
       description: Instance policies. Empty until later phases add some.
       additionalProperties: true
+    InstancePack:
+      type: object
+      required:
+        - id
+        - version
+        - min_sdk
+        - countries
+        - enabled
+      properties:
+        id:
+          type: string
+        version:
+          type: string
+        min_sdk:
+          type: string
+        countries:
+          type: array
+          items:
+            type: string
+        enabled:
+          type: boolean
+          description: Enabled for at least one organization of the instance.
     Instance:
       description: Authenticated twin of the discovery document, with policies.
       allOf:
@@ -21687,9 +22742,15 @@ components:
         - type: object
           required:
             - policies
+            - pack_details
           properties:
             policies:
               $ref: '#/components/schemas/InstancePolicies'
+            pack_details:
+              type: array
+              description: The packs compiled into this server (`packs` lists the ones enabled for at least one organization).
+              items:
+                $ref: '#/components/schemas/InstancePack'
     AuthUser:
       type: object
       description: The signed-in account (instance-wide, not per organization).
@@ -21750,7 +22811,7 @@ components:
             - web
             - mobile
           default: web
-          description: '`mobile` makes an emailed link use the `openbekci://` scheme.'
+          description: '`mobile` makes an emailed link use the `openbekci://<host>/…` form (the instance host first).'
         device_name:
           type: string
           maxLength: 128
@@ -21874,7 +22935,7 @@ components:
             - web
             - mobile
           default: web
-          description: '`mobile` makes the link use the `openbekci://` scheme instead of the web URL.'
+          description: '`mobile` makes the link use the `openbekci://<host>/…` form (the instance host first) instead of the web URL.'
     MagicLinkConsumeRequest:
       type: object
       required:
@@ -22101,6 +23162,121 @@ components:
         last_used_at: null
         expires_at: '2026-03-01T09:00:00Z'
         current: false
+    DeviceRegister:
+      type: object
+      description: |
+        A push registration of the signed-in app (backend section 4.12, mobile section 9).
+        One row per (user, token): registering a token again updates the row and
+        enables it. The token is stored encrypted and is never returned.
+      required:
+        - push_kind
+        - token
+      properties:
+        push_kind:
+          type: string
+          description: '`fcm` and `apns` go through the relay named by `relay_id`; `unifiedpush` posts to the endpoint URL held in `token`. Open on input; the known values are listed here.'
+          x-known-values:
+            - fcm
+            - apns
+            - unifiedpush
+        token:
+          type: string
+          minLength: 1
+          maxLength: 4096
+          description: The FCM or APNs device token, or the https endpoint URL of the UnifiedPush distributor.
+          x-secret: true
+        relay_id:
+          type: string
+          pattern: ^[A-Za-z0-9_.-]{1,64}$
+          description: The relay of the app build (`app_config.json`; `official` in the store build). Required for `fcm` and `apns`, ignored for `unifiedpush`.
+        app_version:
+          type: string
+          maxLength: 64
+        locale:
+          type: string
+          maxLength: 16
+          example: tr
+      example:
+        push_kind: fcm
+        token: fcm-device-token
+        relay_id: official
+        app_version: 1.0.0
+        locale: tr
+    Device:
+      type: object
+      description: A registered push device. The token is never returned.
+      required:
+        - id
+        - push_kind
+        - relay_id
+        - app_version
+        - locale
+        - enabled
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        push_kind:
+          type: string
+          x-known-values:
+            - fcm
+            - apns
+            - unifiedpush
+        relay_id:
+          type: string
+          nullable: true
+        app_version:
+          type: string
+          nullable: true
+        locale:
+          type: string
+          nullable: true
+        enabled:
+          type: boolean
+          description: False after the relay reported the token invalid; registering the token again enables the device.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    WebLoginLinkCreate:
+      type: object
+      properties:
+        next:
+          type: string
+          maxLength: 512
+          description: An in-app path under `/orgs/{org_id}/...` the web app opens after signing in; any other value (another host, a scheme, a path outside `/orgs/`) is 422.
+          example: /orgs/0192a3f0-1000-7000-8000-000000000001/tickets
+    WebLoginLink:
+      type: object
+      description: A one-time link that signs the caller's browser in. Single use, bound to the issuing session, valid for a few minutes. Shown once.
+      required:
+        - token
+        - url
+        - expires_at
+      properties:
+        token:
+          type: string
+        url:
+          type: string
+          description: '`{BASE_URL}/login/link/{token}`, with `?next=` when `next` was given.'
+        expires_at:
+          type: string
+          format: date-time
+    WebLoginLinkExchange:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          maxLength: 200
+        device_name:
+          type: string
+          maxLength: 128
     SessionList:
       type: object
       required:
@@ -22202,6 +23378,8 @@ components:
         - access.view_events
         - announcements.publish
         - announcements.read
+        - apikeys.manage
+        - apikeys.read
         - attendance.manage
         - audit.read
         - audit.report
@@ -22250,6 +23428,8 @@ components:
         - occupancies.read
         - org.manage
         - org.read
+        - packs.manage
+        - packs.read
         - payments.declare
         - payments.record
         - people.erase
@@ -22286,6 +23466,8 @@ components:
         - visitors.decide
         - visitors.manage
         - visitors.read
+        - webhooks.manage
+        - webhooks.read
     AuditChange:
       type: object
       description: |
@@ -22328,14 +23510,20 @@ components:
           type: string
           format: uuid
           nullable: true
+        actor_key_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: The API key that caused the event (`actor_kind` is `api_key`); null otherwise. `actor_user_id` is null then, so a key's actions are never attributed to its creator.
         actor_kind:
           type: string
           x-open-enum: true
-          description: 'Open enum: user, system, job.'
+          description: 'Open enum: user, system, job, api_key.'
           enum:
             - user
             - system
             - job
+            - api_key
         action:
           type: string
           description: '`<area>.<verb>`, for example `org.update`.'
@@ -24529,6 +25717,159 @@ components:
           additionalProperties: true
           nullable: true
           description: Pack-defined settings (schema-driven in 0.4).
+        pack_defaults:
+          type: object
+          description: |
+            The settings a pack filled in (presets) that still hold the value the pack wrote, by settings key, for the
+            "pack default" marker. A setting the site edited is its own and is not listed. Absent without packs.
+          additionalProperties:
+            type: object
+            required:
+              - pack
+              - value
+            properties:
+              pack:
+                type: string
+                description: Id of the pack that wrote the value.
+              value:
+                description: The value the pack wrote.
+    Pack:
+      type: object
+      description: |
+        A pack compiled into this server, with the organization's enablement and settings.
+        `settings_schemas` holds the JSON Schema 2020-12 of the `org` and `site` scope settings (extensions `x-ui` and
+        `x-secret`); only the scopes the pack has settings for are present.
+      required:
+        - id
+        - version
+        - min_sdk
+        - countries
+        - provides
+        - enabled
+        - enabled_at
+        - settings_schemas
+        - settings
+        - secrets_set
+        - sites
+      properties:
+        id:
+          type: string
+          description: The pack id, for example `tr`.
+        version:
+          type: string
+        min_sdk:
+          type: string
+          description: The oldest SDK version the pack builds against.
+        countries:
+          type: array
+          items:
+            type: string
+          description: ISO 3166-1 alpha-2 codes the pack is meant for (drives the suggested-packs hint).
+        provides:
+          type: array
+          items:
+            type: string
+          description: What the pack contributes, as `<extension point>:<id>` (open set).
+        enabled:
+          type: boolean
+        enabled_at:
+          type: string
+          format: date-time
+          nullable: true
+        settings_schemas:
+          type: object
+          additionalProperties: true
+        settings:
+          type: object
+          additionalProperties: true
+          description: The organization-scope settings without the secret fields.
+        secrets_set:
+          type: array
+          items:
+            type: string
+          description: Names of the organization-scope secret fields that are set.
+        sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/PackSiteSettings'
+          description: Site-scope settings, one entry per site that has some.
+    PackSiteSettings:
+      type: object
+      description: The site-scope settings of a pack for one site. Secret fields are never returned; `secrets_set` names the ones that are set.
+      required:
+        - site_id
+        - values
+        - secrets_set
+      properties:
+        site_id:
+          type: string
+          format: uuid
+        values:
+          type: object
+          additionalProperties: true
+          description: The non-secret settings of the site.
+        secrets_set:
+          type: array
+          items:
+            type: string
+          description: Names of the secret fields that are set (the UI shows set / not set).
+    PackList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pack'
+    PackEnableRequest:
+      type: object
+      description: Enable a pack for the organization. Without `settings` an enabled-before pack keeps its stored settings.
+      properties:
+        settings:
+          type: object
+          additionalProperties: true
+          description: Organization-scope settings, validated against the pack's schema. Secret fields are written once and never returned.
+    PackSettingsUpdate:
+      type: object
+      description: |
+        Replace the non-secret settings of a scope. Secret fields keep their value unless named here; a `null` secret clears it.
+      required:
+        - scope
+        - values
+      properties:
+        scope:
+          type: string
+          description: '`org` or `site`.'
+        site_id:
+          type: string
+          format: uuid
+          description: Required for the `site` scope.
+        values:
+          type: object
+          additionalProperties: true
+    PackSettings:
+      type: object
+      required:
+        - scope
+        - site_id
+        - values
+        - secrets_set
+      properties:
+        scope:
+          type: string
+          description: '`org` or `site`.'
+        site_id:
+          type: string
+          format: uuid
+          nullable: true
+        values:
+          type: object
+          additionalProperties: true
+        secrets_set:
+          type: array
+          items:
+            type: string
     SiteSettingsUpdate:
       type: object
       description: Partial update of the site settings.
@@ -24890,6 +26231,19 @@ components:
         updated_at:
           type: string
           format: date-time
+        org_name:
+          type: string
+          description: Organization label; filled by `people.listMyUnitClaims`.
+        site_id:
+          type: string
+          format: uuid
+          description: Filled by `people.listMyUnitClaims`.
+        site_name:
+          type: string
+          description: Filled by `people.listMyUnitClaims`.
+        block_name:
+          type: string
+          description: Filled by `people.listMyUnitClaims`.
       example:
         id: 0192a3f0-1000-7000-8000-000000000002
         org_id: 0192a3f0-1000-7000-8000-000000000003
@@ -25495,6 +26849,7 @@ components:
         - access.agent_silent
         - access.agent_clock_skew
         - access.agent_stopped
+        - webhook.endpoint_failing
     FileVariant:
       type: object
       description: A rendition of an image, generated on upload.
@@ -31861,6 +33216,340 @@ components:
         enrolment_expires_at:
           type: string
           format: date-time
+    ApiKey:
+      type: object
+      description: |
+        An organization API key as listed: its public prefix and metadata, never the secret.
+        The bearer token is `obk_<prefix>_<secret>`. The key's effective permissions are the
+        intersection of `scopes` and the grants of the administrator who created it
+        (`created_by`), evaluated on every request, and never exceed them.
+      required:
+        - id
+        - org_id
+        - name
+        - prefix
+        - scopes
+        - site_id
+        - status
+        - created_by
+        - created_at
+        - rotated_at
+        - last_used_at
+        - expires_at
+        - revoked_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: A label chosen by the administrator (1 to 120 characters).
+        prefix:
+          type: string
+          description: The public part of the token (8 lower-case letters and digits); changes on rotation.
+          example: k3x9q7ab
+        scopes:
+          type: array
+          description: Permission names the key may use, from the permission registry.
+          items:
+            type: string
+          example:
+            - tickets.read
+            - payments.read
+        site_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the key's permissions apply to this site only.
+        status:
+          type: string
+          x-open-enum: true
+          description: 'Open enum: `active`, `revoked` (also after being replaced by a rotation: the old token is invalid) or `expired`.'
+          enum:
+            - active
+            - revoked
+            - expired
+        created_by:
+          type: string
+          format: uuid
+          description: The user whose grants bound the key.
+        created_at:
+          type: string
+          format: date-time
+        rotated_at:
+          type: string
+          format: date-time
+          nullable: true
+        last_used_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Updated at most every five minutes.
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        revoked_at:
+          type: string
+          format: date-time
+          nullable: true
+    ApiKeyList:
+      type: object
+      required:
+        - items
+        - next_cursor
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKey'
+        next_cursor:
+          type: string
+          nullable: true
+          description: Pass as `cursor` for the next page; null on the last page.
+    ApiKeyCreate:
+      type: object
+      required:
+        - name
+        - scopes
+      properties:
+        name:
+          type: string
+          description: A label, 1 to 120 characters.
+        scopes:
+          type: array
+          description: |
+            Permission names the key may use. Each must be a permission the caller holds through a
+            role in this organization; `apikeys.*` permissions and permissions that exist only for
+            people (occupancy rights) cannot be given to a key. Field errors name the permission
+            (`unknown_permission`, `not_held`, `not_allowed`, `duplicate`).
+          items:
+            type: string
+          minItems: 1
+          maxItems: 200
+        site_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Restrict the key to one site of the organization.
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'Must be in the future. Omitted or null: the key does not expire.'
+    ApiKeyCreated:
+      type: object
+      required:
+        - key
+        - secret
+      properties:
+        key:
+          $ref: '#/components/schemas/ApiKey'
+        secret:
+          type: string
+          description: The full bearer token `obk_<prefix>_<secret>`. Shown exactly once, never stored; keep it safe.
+    WebhookEndpoint:
+      type: object
+      description: An outbound webhook endpoint. Its signing secret is shown once when it is created and never again.
+      required:
+        - id
+        - org_id
+        - url
+        - events
+        - active
+        - description
+        - failing
+        - failing_since
+        - consecutive_failures
+        - created_by
+        - created_at
+        - updated_at
+        - version
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        url:
+          type: string
+          description: '`https` only; the host must not resolve to a private, loopback or link-local address (unless the operator allows the range).'
+        events:
+          type: array
+          description: Subscribed event types. Known values `payment.recorded`, `payment.confirmed`, `charge.created`, `charges.generated`, `ticket.created`, `ticket.status_changed`, `announcement.published`, `meeting.called`, `decision.applied`, `visitor.approved`, `delivery.received`.
+          items:
+            type: string
+        active:
+          type: boolean
+        description:
+          type: string
+          nullable: true
+        failing:
+          type: boolean
+          description: True while the last delivery that used up its attempts has not been followed by a success.
+        failing_since:
+          type: string
+          format: date-time
+          nullable: true
+        consecutive_failures:
+          type: integer
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          description: Goes in `If-Match` on update.
+    WebhookEndpointList:
+      type: object
+      required:
+        - items
+        - next_cursor
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEndpoint'
+        next_cursor:
+          type: string
+          nullable: true
+          description: Pass as `cursor` for the next page; null on the last page.
+    WebhookEndpointCreate:
+      type: object
+      required:
+        - url
+        - events
+      properties:
+        url:
+          type: string
+          description: '`https://` URL, at most 2000 characters, without credentials or fragment.'
+        events:
+          type: array
+          description: At least one known event type. `ping` is sent by the test operation and cannot be subscribed to.
+          items:
+            type: string
+          minItems: 1
+          maxItems: 50
+        description:
+          type: string
+          nullable: true
+          description: Up to 500 characters.
+        active:
+          type: boolean
+          description: Default true.
+    WebhookEndpointCreated:
+      type: object
+      required:
+        - endpoint
+        - secret
+      properties:
+        endpoint:
+          $ref: '#/components/schemas/WebhookEndpoint'
+        secret:
+          type: string
+          description: The signing secret `whsec_...`. Shown exactly once; verify `OpenBekci-Signature` with it.
+        previous_secret_expires_at:
+          type: string
+          format: date-time
+          description: Only when the secret was rotated. Until then the replaced secret signs as well (a second `v1` entry in `OpenBekci-Signature`).
+    WebhookEndpointUpdate:
+      type: object
+      description: 'Partial update: send only the fields to change. The resource `version` goes in If-Match. Changing the `url` or re-activating the endpoint clears its failing mark.'
+      properties:
+        url:
+          type: string
+        events:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          maxItems: 50
+        description:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+    WebhookDelivery:
+      type: object
+      description: One delivery of an event to an endpoint, as logged.
+      required:
+        - id
+        - endpoint_id
+        - event_id
+        - event_type
+        - status
+        - attempts
+        - response_code
+        - last_error
+        - next_retry_at
+        - created_at
+        - delivered_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Sent as `OpenBekci-Delivery-Id`; the same on every retry.
+        endpoint_id:
+          type: string
+          format: uuid
+        event_id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+        status:
+          type: string
+          x-open-enum: true
+          description: 'Open enum: `pending` (queued or waiting for a retry), `succeeded`, `failed` (attempts used up).'
+          enum:
+            - pending
+            - succeeded
+            - failed
+        attempts:
+          type: integer
+        response_code:
+          type: integer
+          nullable: true
+          description: HTTP status of the last attempt, when the receiver answered.
+        last_error:
+          type: string
+          nullable: true
+          description: 'Short machine-readable reason of the last failure, for example `http_status: 500` or `forbidden_target`.'
+        next_retry_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        delivered_at:
+          type: string
+          format: date-time
+          nullable: true
+    WebhookDeliveryList:
+      type: object
+      required:
+        - items
+        - next_cursor
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookDelivery'
+        next_cursor:
+          type: string
+          nullable: true
+          description: Pass as `cursor` for the next (older) page; null on the last page.
     AllowlistRebuild:
       type: object
       required:
@@ -36093,6 +37782,35 @@ components:
           type: string
           pattern: ^[0-9]{6}$
           description: A code sent to the account's own email address by `auth.requestReauthEmailCode`.
+    JoinSignUpRequest:
+      type: object
+      description: Exactly one of `phone` and `email`.
+      properties:
+        phone:
+          type: string
+          maxLength: 32
+          description: E.164 or national format. A six-digit code is sent by SMS.
+        email:
+          type: string
+          maxLength: 254
+          description: A sign-in link is sent by email.
+        name:
+          type: string
+          maxLength: 200
+          description: What the resident goes by; used for their person when they claim a unit.
+        locale:
+          type: string
+          enum:
+            - tr
+            - en
+          default: tr
+        client:
+          type: string
+          enum:
+            - web
+            - mobile
+          default: web
+          description: '`mobile` makes an emailed link use the `openbekci://<host>/…` form.'
     TicketWorkflowRestore:
       type: object
       description: Puts the built-in open, in progress, done flow back. Custom statuses are removed, so tickets in them need replacements, under the same rules as `TicketWorkflowUpdate`.
@@ -38488,6 +40206,8 @@ x-openbekci-roles:
     - access.view_events
     - announcements.publish
     - announcements.read
+    - apikeys.manage
+    - apikeys.read
     - attendance.manage
     - audit.read
     - bookings.create
@@ -38531,6 +40251,8 @@ x-openbekci-roles:
     - occupancies.read
     - org.manage
     - org.read
+    - packs.manage
+    - packs.read
     - payments.declare
     - payments.record
     - people.erase
@@ -38563,6 +40285,8 @@ x-openbekci-roles:
     - vendors.read
     - visitors.manage
     - visitors.read
+    - webhooks.manage
+    - webhooks.read
   site_manager:
     - access.manage
     - access.open

@@ -1155,4 +1155,643 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get ticketNoCategories =>
       'Bu site için henüz talep kategorisi tanımlanmadı. Yöneticiye başvurun.';
+
+  @override
+  String get bookingsTitle => 'Rezervasyonlar';
+
+  @override
+  String get bookingsFacilities => 'Alanlar';
+
+  @override
+  String get bookingsMine => 'Rezervasyonlarım';
+
+  @override
+  String get facilitiesEmpty =>
+      'Burada rezervasyon yapılabilecek bir alan yok.';
+
+  @override
+  String get bookingsEmpty => 'Hiç rezervasyonunuz yok.';
+
+  @override
+  String get facilityNotFound => 'Bu alan artık kullanılabilir değil.';
+
+  @override
+  String get bookingBook => 'Rezerve et';
+
+  @override
+  String get bookingUnit => 'Daire';
+
+  @override
+  String get bookingPickDay => 'Gün';
+
+  @override
+  String get bookingNoDays => 'Rezervasyon yapılabilecek gün yok.';
+
+  @override
+  String get bookingDuration => 'Süre';
+
+  @override
+  String get bookingPickTime => 'Başlangıç saati';
+
+  @override
+  String get bookingNoSlots => 'Çalışma saatlerine uyan bir saat yok.';
+
+  @override
+  String get bookingSummary => 'Rezervasyonunuz';
+
+  @override
+  String get bookingFee => 'Ücret';
+
+  @override
+  String get bookingNoFee => 'Ücretsiz.';
+
+  @override
+  String get bookingConfirm => 'Rezervasyonu onayla';
+
+  @override
+  String get bookingConfirmedDone => 'Rezervasyon yapıldı ve onaylandı.';
+
+  @override
+  String get bookingNeedsConnection =>
+      'Rezervasyon için internet gerekir. Saat boşsa hemen onaylanır.';
+
+  @override
+  String get bookingConfirmed => 'Onaylandı';
+
+  @override
+  String get bookingCancelled => 'İptal edildi';
+
+  @override
+  String get bookingRefunded => 'Ücret iade edildi';
+
+  @override
+  String get actionCancelBooking => 'Rezervasyonu iptal et';
+
+  @override
+  String get actionKeepBooking => 'Rezervasyonu koru';
+
+  @override
+  String get cancelBookingTitle => 'Rezervasyon iptal edilsin mi?';
+
+  @override
+  String get bookingCancelledDone => 'Rezervasyon iptal edildi.';
+
+  @override
+  String get feeFree => 'Ücretsiz';
+
+  @override
+  String get refundNoFee => 'Ücret yok, iade edilecek bir şey yok.';
+
+  @override
+  String refundGiven(String amount) {
+    return 'Şimdi iptal ederseniz $amount tutarındaki ücret hesabınıza iade edilir.';
+  }
+
+  @override
+  String refundKept(String amount, String until) {
+    return '$amount tutarındaki ücret $until tarihinden önce iptal ederseniz iade edilir; sonrasında iade edilmez.';
+  }
+
+  @override
+  String refundNever(String amount) {
+    return '$amount tutarındaki ücret iptalde iade edilmez.';
+  }
+
+  @override
+  String durationMinutes(int m) {
+    return '$m dk';
+  }
+
+  @override
+  String durationHours(int h) {
+    return '$h sa';
+  }
+
+  @override
+  String durationHoursMinutes(int h, int m) {
+    return '$h sa $m dk';
+  }
+
+  @override
+  String ruleHours(String days, String start, String end) {
+    return 'Açık: $days, $start - $end';
+  }
+
+  @override
+  String ruleMaxDuration(String duration) {
+    return 'Rezervasyon başına en fazla $duration';
+  }
+
+  @override
+  String ruleLeadTime(String duration) {
+    return 'En az $duration önceden rezerve edin';
+  }
+
+  @override
+  String ruleMaxDaysAhead(int n) {
+    return 'En fazla $n gün önceden';
+  }
+
+  @override
+  String ruleQuotaWeek(int n) {
+    return 'Daire başına haftada $n';
+  }
+
+  @override
+  String ruleQuotaMonth(int n) {
+    return 'Daire başına ayda $n';
+  }
+
+  @override
+  String ruleQuotaPerUnit(int n) {
+    return 'Daire başına $n';
+  }
+
+  @override
+  String get bookingProblemClosed => 'Çalışma saatleri dışında.';
+
+  @override
+  String get bookingProblemTooLong => 'İzin verilenden uzun.';
+
+  @override
+  String get bookingProblemTooSoon =>
+      'Çok yakın: daha önceden rezerve edilmeli.';
+
+  @override
+  String get bookingProblemTooFar => 'Çok ileri bir tarih.';
+
+  @override
+  String get bookingProblemTaken => 'Dolu.';
+
+  @override
+  String get bookingProblemQuota => 'Dairenizin bu dönemdeki hakkı doldu.';
+
+  @override
+  String get bookingProblemNotAllowed => 'Bu alanı rezerve etme yetkiniz yok.';
+
+  @override
+  String get visitorsTitle => 'Ziyaretçiler';
+
+  @override
+  String get visitorsExpected => 'Beklenen';
+
+  @override
+  String get visitorsRecurring => 'Sürekli';
+
+  @override
+  String get visitorsHistory => 'Geçmiş';
+
+  @override
+  String get visitorsEmpty =>
+      'Beklenen ziyaretçi yok. Kapı için QR kodu almak üzere bir misafir kaydedin.';
+
+  @override
+  String get visitorsHistoryEmpty => 'Geçmiş ziyaretçi yok.';
+
+  @override
+  String get visitorAdd => 'Ziyaretçi kaydet';
+
+  @override
+  String get visitorAddRecurring => 'Sürekli ziyaretçi ekle';
+
+  @override
+  String get visitorName => 'Ad soyad';
+
+  @override
+  String get visitorPlate => 'Plaka (isteğe bağlı)';
+
+  @override
+  String get visitorWindow => 'Ne zaman gelecek?';
+
+  @override
+  String get visitorFrom => 'Başlangıç';
+
+  @override
+  String get visitorUntil => 'Bitiş';
+
+  @override
+  String get visitorRegister => 'QR kodu oluştur';
+
+  @override
+  String get visitorPass => 'Ziyaretçi kartı';
+
+  @override
+  String get visitorNotFound => 'Bu ziyaretçi kartı bulunamadı.';
+
+  @override
+  String get visitorNoQr => 'Bu kart için QR kodu yok.';
+
+  @override
+  String get visitorQrLabel => 'Kapı için QR kodu';
+
+  @override
+  String get visitorQrHint =>
+      'QR kodunu misafirinize gönderin. Güvenlik kapıda okutur; belirtilen saat aralığında ve öncesinde ile sonrasında 30 dakika geçerlidir.';
+
+  @override
+  String get visitorShare => 'QR kodunu paylaş';
+
+  @override
+  String get shareFailed => 'Paylaşım açılamadı.';
+
+  @override
+  String visitorShareText(String name, String range, String site, String code) {
+    return '$site ziyaretçi kartı - $name: $range. Bu QR kodunu kapıda gösterin. Kod: $code';
+  }
+
+  @override
+  String get visitorCancel => 'Bu kartı iptal et';
+
+  @override
+  String get visitorCancelled => 'İptal edildi';
+
+  @override
+  String get visitorArrived => 'Geldi';
+
+  @override
+  String get visitorWalkIn => 'Kapıdan';
+
+  @override
+  String get passUpcoming => 'Henüz geçerli değil';
+
+  @override
+  String get passValid => 'Şu an geçerli';
+
+  @override
+  String get passEnded => 'Süresi doldu';
+
+  @override
+  String get visitorStatusPreApproved => 'Bekleniyor';
+
+  @override
+  String get visitorStatusRequested => 'Yanıtınız bekleniyor';
+
+  @override
+  String get visitorStatusApproved => 'Onaylandı';
+
+  @override
+  String get visitorStatusDenied => 'Reddedildi';
+
+  @override
+  String get visitorStatusExpired => 'Süresi doldu';
+
+  @override
+  String get recurringEmpty =>
+      'Sürekli ziyaretçi yok. Temizlikçi, bakıcı veya düzenli bir misafir ekleyin.';
+
+  @override
+  String get recurringActive => 'Geçerli';
+
+  @override
+  String get recurringRevoked => 'İptal edildi';
+
+  @override
+  String get recurringExpired => 'Süresi doldu';
+
+  @override
+  String get recurringDays => 'Günler';
+
+  @override
+  String get recurringValidity => 'Geçerlilik';
+
+  @override
+  String get validityNoEnd => 'Bitiş yok';
+
+  @override
+  String get validityMonth1 => '1 ay';
+
+  @override
+  String get validityMonths3 => '3 ay';
+
+  @override
+  String get validityYear1 => '1 yıl';
+
+  @override
+  String get recurringFrom => 'Başlangıç:';
+
+  @override
+  String get recurringTo => 'bitiş:';
+
+  @override
+  String get recurringQrHint =>
+      'Bu QR kodu, siz iptal edene kadar seçilen gün ve saatlerde geçerlidir. İptal kapıda hemen geçerli olur.';
+
+  @override
+  String recurringShareText(
+    String name,
+    String when,
+    String site,
+    String code,
+  ) {
+    return '$site sürekli geçiş kartı - $name: $when. Bu QR kodunu kapıda gösterin. Kod: $code';
+  }
+
+  @override
+  String get recurringRevoke => 'İptal et';
+
+  @override
+  String get recurringRevokeTitle => 'Bu kart iptal edilsin mi?';
+
+  @override
+  String recurringRevokeBody(String name) {
+    return '$name artık bu QR koduyla içeri alınmayacak.';
+  }
+
+  @override
+  String get visitorApprovalTitle => 'Kapıda ziyaretçi';
+
+  @override
+  String visitorWaitingAtGate(String name) {
+    return '$name kapıda bekliyor';
+  }
+
+  @override
+  String visitorRequestUnit(String door) {
+    return '$door numaralı daire için';
+  }
+
+  @override
+  String get visitorAnswer => 'Yanıtla';
+
+  @override
+  String get visitorApprove => 'Onayla';
+
+  @override
+  String get visitorDeny => 'Reddet';
+
+  @override
+  String visitorExpiresIn(String time) {
+    return '$time içinde yanıtlayın';
+  }
+
+  @override
+  String get visitorRequestGone => 'Bu istek artık açık değil.';
+
+  @override
+  String get visitorResultApproved =>
+      'Bu ziyaretçiyi onayladınız. Güvenlik içeri alacak.';
+
+  @override
+  String get visitorResultDenied => 'Bu ziyaretçiyi reddettiniz.';
+
+  @override
+  String get visitorResultExpired => 'Yanıt süresi doldu.';
+
+  @override
+  String get visitorGateContactTitle => 'Güvenlik sizi arayacak';
+
+  @override
+  String visitorGateContactSet(String phone) {
+    return 'Güvenlik, kapı iletişim numaranızı arar: $phone.';
+  }
+
+  @override
+  String get visitorGateContactMissing =>
+      'Kapı iletişim numarası eklemediniz; güvenlik sizi arayamaz. Profilinizden ekleyin.';
+
+  @override
+  String get visitorGateContactAdd => 'Kapı iletişim numarası ekle';
+
+  @override
+  String get parcelsTitle => 'Kargolar';
+
+  @override
+  String get parcelsWaiting => 'Sizi bekleyen';
+
+  @override
+  String get parcelsRecent => 'Yakın zamanda teslim alınan';
+
+  @override
+  String get parcelsEmpty => 'Henüz kargo yok.';
+
+  @override
+  String get parcelsNoneWaiting => 'Bekleyen kargo yok.';
+
+  @override
+  String get parcelNoDescription => 'Kargo';
+
+  @override
+  String parcelUnit(String door) {
+    return 'Daire $door';
+  }
+
+  @override
+  String get parcelReceived => 'Alındı:';
+
+  @override
+  String get parcelCollected => 'Teslim alındı:';
+
+  @override
+  String parcelCollectedBy(String name) {
+    return '$name tarafından';
+  }
+
+  @override
+  String get assemblyTitle => 'Genel kurul';
+
+  @override
+  String get assemblyEmpty => 'Henüz genel kurul yok.';
+
+  @override
+  String get assemblyUpcoming => 'Yaklaşan';
+
+  @override
+  String get assemblyPast => 'Önceki toplantılar';
+
+  @override
+  String get meetingKindGeneral => 'Genel kurul';
+
+  @override
+  String get meetingKindExtraordinary => 'Olağanüstü genel kurul';
+
+  @override
+  String get meetingStatusDraft => 'Taslak';
+
+  @override
+  String get meetingStatusCalled => 'Toplantıya çağrıldı';
+
+  @override
+  String get meetingStatusInSession => 'Toplantı sürüyor';
+
+  @override
+  String get meetingStatusClosed => 'Tamamlandı';
+
+  @override
+  String get meetingStatusCancelled => 'İptal edildi';
+
+  @override
+  String get meetingWhen => 'Ne zaman';
+
+  @override
+  String get meetingSecondCall => 'İkinci toplantı';
+
+  @override
+  String get meetingWhere => 'Nerede';
+
+  @override
+  String get meetingCallLetter => 'Toplantı daveti (PDF)';
+
+  @override
+  String get meetingAgenda => 'Gündem';
+
+  @override
+  String get meetingAgendaEmpty => 'Gündem henüz yayımlanmadı.';
+
+  @override
+  String get agendaVoted => 'Oylanır';
+
+  @override
+  String get pollsTitle => 'Toplantı öncesi anketler';
+
+  @override
+  String get pollsNonBinding =>
+      'Yanıtınız bağlayıcı değildir. Daire başına bir yanıt.';
+
+  @override
+  String get pollsOwnersOnly => 'Anketleri yalnızca malikler yanıtlar.';
+
+  @override
+  String get pollOpen => 'Açık';
+
+  @override
+  String get pollClosed => 'Kapandı';
+
+  @override
+  String get pollNotOpen => 'Henüz açık değil';
+
+  @override
+  String get pollClosesAt => 'Kapanış:';
+
+  @override
+  String get pollYes => 'Evet';
+
+  @override
+  String get pollNo => 'Hayır';
+
+  @override
+  String get pollAbstain => 'Çekimser';
+
+  @override
+  String get pollAnswered => 'Yanıtlandı';
+
+  @override
+  String get checkInTitle => 'Toplantıya giriş';
+
+  @override
+  String get checkInOpen => 'Bu QR kodunu giriş masasında gösterin.';
+
+  @override
+  String get checkInNotYet =>
+      'Giriş toplantı başlayınca açılır. Bu QR kodunu hazır tutun.';
+
+  @override
+  String get checkInDone => 'Giriş yapıldı';
+
+  @override
+  String get checkInQrLabel => 'Giriş QR kodu';
+
+  @override
+  String get minutesTitle => 'Toplantı tutanağı';
+
+  @override
+  String get minutesOpen => 'Tutanağı aç (PDF)';
+
+  @override
+  String get minutesNone => 'Tutanak henüz hazır değil.';
+
+  @override
+  String get decisionsTitle => 'Kararlar';
+
+  @override
+  String get decisionsEmpty => 'Gösterilecek karar yok.';
+
+  @override
+  String get decisionsResidentsOnly =>
+      'Sakinleri ilgilendiren kararları görüyorsunuz.';
+
+  @override
+  String get decisionConcernsResidents => 'Sakinleri ilgilendirir';
+
+  @override
+  String decisionNumber(int year, int no) {
+    return 'Karar $year/$no';
+  }
+
+  @override
+  String get outcomeAccepted => 'Kabul edildi';
+
+  @override
+  String get outcomeRejected => 'Reddedildi';
+
+  @override
+  String get outcomeNoVote => 'Oylama yok';
+
+  @override
+  String get outcomeNoted => 'Bilgiye sunuldu';
+
+  @override
+  String get webOpen => 'Web\'de aç';
+
+  @override
+  String get webOpenBody => 'Web sitesini açar ve oturumunuzu açar.';
+
+  @override
+  String get webOpenFailed => 'Tarayıcı açılamadı.';
+
+  @override
+  String get notifGeneric => 'Yeni bildirim';
+
+  @override
+  String get notifAgentSilent => 'Geçiş ajanı sessiz';
+
+  @override
+  String get notifAgentClockSkew => 'Geçiş ajanı saat farkı';
+
+  @override
+  String get notifAgentStopped => 'Geçiş ajanı durdu';
+
+  @override
+  String get notifWebhookFailing => 'Webhook uç noktası başarısız';
+
+  @override
+  String get notifSignInCode => 'Giriş kodu';
+
+  @override
+  String get notifInvitation => 'Davetiye';
+
+  @override
+  String get notifPeriodicTitle => 'Yeni bildirimler';
+
+  @override
+  String notifPeriodicBody(int count) {
+    return '$count okunmamış bildiriminiz var.';
+  }
+
+  @override
+  String get notificationsMayBeDelayed => 'Bildirimler gecikebilir';
+
+  @override
+  String get notificationsMayBeDelayedBody =>
+      'Anlık bildirimler şu an bu telefona ulaşmıyor; uygulama arada bir yenilikleri kontrol eder.';
+
+  @override
+  String get channelAnnouncements => 'Duyurular';
+
+  @override
+  String get channelMoney => 'Ödemeler ve ekstreler';
+
+  @override
+  String get channelTickets => 'Talepler';
+
+  @override
+  String get channelCommunity => 'Ziyaretçiler, kargolar ve rezervasyonlar';
+
+  @override
+  String get channelAssembly => 'Genel kurul';
+
+  @override
+  String get channelAccount => 'Hesap';
+
+  @override
+  String get channelSystem => 'Sistem';
 }

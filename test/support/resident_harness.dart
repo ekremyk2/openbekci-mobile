@@ -14,20 +14,27 @@ import 'package:openbekci_mobile/features/documents/presentation/documents_scree
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_harness.dart';
+import 'community_fixtures.dart';
 import 'fake_api.dart';
 import 'fixtures.dart';
 
 /// Records what the app hands to the share sheet.
 class FakeShare implements ShareService {
-  final shared = <({String filename, String mime, int size})>[];
+  final shared = <({String filename, String mime, int size, String? text})>[];
 
   @override
   Future<void> shareFile({
     required Uint8List bytes,
     required String filename,
     required String mime,
+    String? text,
   }) async {
-    shared.add((filename: filename, mime: mime, size: bytes.length));
+    shared.add((
+      filename: filename,
+      mime: mime,
+      size: bytes.length,
+      text: text,
+    ));
   }
 }
 
@@ -80,12 +87,14 @@ class ResidentApp {
     FakeShare? share,
     FakePhotoPicker? picker,
     FakeLock? lock,
+    bool pushEnabled = false,
   }) : share = share ?? FakeShare(),
        lock = lock ?? FakeLock() {
     SharedPreferences.setMockInitialValues({});
     app = TestApp(
       signedIn: true,
       locale: locale,
+      pushEnabled: pushEnabled,
       extra: [
         shareServiceProvider.overrideWithValue(this.share),
         if (picker != null) photoPickerProvider.overrideWithValue(picker),
@@ -137,6 +146,79 @@ class ResidentApp {
       ..answer(
         'GET /v1/orgs/$orgId/documents',
         FakeResponse.ok(pageOf(<Object?>[])),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/facilities',
+        FakeResponse.ok(pageOf([facilityJson()])),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/bookings',
+        FakeResponse.ok(pageOf([bookingJson()])),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/facilities/$facilityId/availability',
+        const FakeResponse.ok({
+          'facility_id': facilityId,
+          'from': '2026-11-21T00:00:00Z',
+          'to': '2026-11-22T00:00:00Z',
+          'taken': <Object?>[],
+          'blocked': <Object?>[],
+        }),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/visitor-entries',
+        FakeResponse.ok(pageOf([visitorEntryJson()])),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/recurring-visitors',
+        FakeResponse.ok(pageOf([recurringJson()])),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/visitor-approval-requests',
+        FakeResponse.ok(pageOf([approvalRequestJson()])),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/deliveries',
+        FakeResponse.ok(
+          pageOf([
+            deliveryJson(),
+            deliveryJson(
+              id: '0192a3f0-1000-7000-8000-0000000000fc',
+              status: 'collected',
+              description: 'Envelope',
+            ),
+          ]),
+        ),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/meetings',
+        FakeResponse.ok(pageOf([meetingJson()])),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/meetings/$meetingId/me',
+        FakeResponse.ok(myMeetingJson()),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/meetings/$meetingId/agenda-items',
+        FakeResponse.ok(pageOf([agendaItemJson()])),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/agenda-items/$agendaId/poll',
+        FakeResponse.ok(pollJson()),
+      )
+      ..answer(
+        'GET /v1/orgs/$orgId/decisions',
+        FakeResponse.ok(
+          pageOf([
+            decisionJson(),
+            decisionJson(
+              id: '0192a3f0-1000-7000-8000-0000000000fd',
+              seq: 2,
+              residents: false,
+              text: 'The roof is repaired in spring.',
+            ),
+          ]),
+        ),
       )
       ..answer(
         'GET /v1/instance',
@@ -192,6 +274,19 @@ String currentLocation(WidgetTester tester) {
 }
 
 Future<void> tapKey(WidgetTester tester, String key) async {
+  // A lazy list builds only what is near the screen: scroll to it first.
+  if (find.byKey(Key(key)).evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      find.byKey(Key(key)),
+      300,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView).first,
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+  }
   await tester.ensureVisible(find.byKey(Key(key)));
   await tester.pumpAndSettle();
   await tester.tap(find.byKey(Key(key)));
@@ -215,4 +310,18 @@ Future<void> open(WidgetTester tester, String location) async {
 Object? bodyOf(RequestOptions request) {
   final data = request.data;
   return data is String ? json.decode(data) : data;
+}
+
+/// The location of the top screen, including routes pushed over the tabs
+/// (`currentLocation` reports the matched base route only).
+String topLocation(WidgetTester tester) {
+  final container = ProviderScope.containerOf(
+    tester.element(find.byType(OpenBekciApp)),
+  );
+  return container
+      .read(routerProvider)
+      .routerDelegate
+      .currentConfiguration
+      .last
+      .matchedLocation;
 }

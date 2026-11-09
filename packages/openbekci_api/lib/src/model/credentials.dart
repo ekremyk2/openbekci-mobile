@@ -82,7 +82,7 @@ class Credentials {
 
 
 
-      /// `mobile` makes an emailed link use the `openbekci://` scheme.
+      /// `mobile` makes an emailed link use the `openbekci://<host>/…` form (the instance host first).
   @JsonKey(
     name: r'client',
     required: false,
@@ -139,7 +139,7 @@ class Credentials {
 
 }
 
-/// `mobile` makes an emailed link use the `openbekci://` scheme.
+/// `mobile` makes an emailed link use the `openbekci://<host>/…` form (the instance host first).
 enum CredentialsClientEnum {
 @JsonValue(r'web')
 web(r'web'),

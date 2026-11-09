@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/features/home/application/home_providers.dart';
 import 'package:openbekci_mobile/features/money/domain/money_logic.dart';
-import 'package:openbekci_mobile/features/notifications/application/notifications_providers.dart';
 import 'package:openbekci_mobile/features/profile/application/profile_providers.dart';
+import 'package:openbekci_mobile/features/push/application/push_service.dart';
 import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
 
 /// Branch order of the shell: Home, Money, Tickets, More.
@@ -45,7 +45,7 @@ class AppShell extends ConsumerWidget {
     final visible = visibleBranches(
       showMoney: showMoney || (!moneyDecided && shell.currentIndex == 1),
     );
-    final unread = ref.watch(unreadCountProvider).value?.data ?? 0;
+    final unread = ref.watch(displayUnreadProvider);
     final selected = visible.indexOf(shell.currentIndex);
     if (selected < 0) {
       scheduleMicrotask(() => shell.goBranch(Branches.home));
@@ -100,7 +100,7 @@ class MoreScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final unread = ref.watch(unreadCountProvider).value?.data ?? 0;
+    final unread = ref.watch(displayUnreadProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l.navMore)),
       body: ListView(
@@ -132,22 +132,32 @@ class MoreScreen extends ConsumerWidget {
           ),
           const Divider(),
           ListTile(
+            key: const Key('moreBookings'),
             leading: const Icon(Icons.event_available_outlined),
             title: Text(l.homeBookings),
-            subtitle: Text(l.homeComingSoon),
-            enabled: false,
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/more/bookings'),
           ),
           ListTile(
+            key: const Key('moreVisitors'),
             leading: const Icon(Icons.badge_outlined),
             title: Text(l.homeVisitors),
-            subtitle: Text(l.homeComingSoon),
-            enabled: false,
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/more/visitors'),
           ),
           ListTile(
+            key: const Key('moreParcels'),
+            leading: const Icon(Icons.inventory_2_outlined),
+            title: Text(l.parcelsTitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/more/parcels'),
+          ),
+          ListTile(
+            key: const Key('moreAssembly'),
             leading: const Icon(Icons.groups_outlined),
-            title: Text(l.homeNextAssembly),
-            subtitle: Text(l.homeComingSoon),
-            enabled: false,
+            title: Text(l.assemblyTitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/more/assembly'),
           ),
           const Divider(),
           ListTile(

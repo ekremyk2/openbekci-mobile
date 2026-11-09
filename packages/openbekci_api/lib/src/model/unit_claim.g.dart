@@ -35,6 +35,14 @@ abstract class _$UnitClaimCWProxy {
 
   UnitClaim updatedAt(DateTime updatedAt);
 
+  UnitClaim orgName(String? orgName);
+
+  UnitClaim siteId(String? siteId);
+
+  UnitClaim siteName(String? siteName);
+
+  UnitClaim blockName(String? blockName);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `UnitClaim(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -56,6 +64,10 @@ abstract class _$UnitClaimCWProxy {
     String? note,
     DateTime createdAt,
     DateTime updatedAt,
+    String? orgName,
+    String? siteId,
+    String? siteName,
+    String? blockName,
   });
 }
 
@@ -111,6 +123,18 @@ class _$UnitClaimCWProxyImpl implements _$UnitClaimCWProxy {
   UnitClaim updatedAt(DateTime updatedAt) => this(updatedAt: updatedAt);
 
   @override
+  UnitClaim orgName(String? orgName) => this(orgName: orgName);
+
+  @override
+  UnitClaim siteId(String? siteId) => this(siteId: siteId);
+
+  @override
+  UnitClaim siteName(String? siteName) => this(siteName: siteName);
+
+  @override
+  UnitClaim blockName(String? blockName) => this(blockName: blockName);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `UnitClaim(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -132,6 +156,10 @@ class _$UnitClaimCWProxyImpl implements _$UnitClaimCWProxy {
     Object? note = const $CopyWithPlaceholder(),
     Object? createdAt = const $CopyWithPlaceholder(),
     Object? updatedAt = const $CopyWithPlaceholder(),
+    Object? orgName = const $CopyWithPlaceholder(),
+    Object? siteId = const $CopyWithPlaceholder(),
+    Object? siteName = const $CopyWithPlaceholder(),
+    Object? blockName = const $CopyWithPlaceholder(),
   }) {
     return UnitClaim(
       id: id == const $CopyWithPlaceholder()
@@ -190,6 +218,22 @@ class _$UnitClaimCWProxyImpl implements _$UnitClaimCWProxy {
           ? _value.updatedAt
           // ignore: cast_nullable_to_non_nullable
           : updatedAt as DateTime,
+      orgName: orgName == const $CopyWithPlaceholder()
+          ? _value.orgName
+          // ignore: cast_nullable_to_non_nullable
+          : orgName as String?,
+      siteId: siteId == const $CopyWithPlaceholder()
+          ? _value.siteId
+          // ignore: cast_nullable_to_non_nullable
+          : siteId as String?,
+      siteName: siteName == const $CopyWithPlaceholder()
+          ? _value.siteName
+          // ignore: cast_nullable_to_non_nullable
+          : siteName as String?,
+      blockName: blockName == const $CopyWithPlaceholder()
+          ? _value.blockName
+          // ignore: cast_nullable_to_non_nullable
+          : blockName as String?,
     );
   }
 }
@@ -265,6 +309,10 @@ UnitClaim _$UnitClaimFromJson(Map<String, dynamic> json) => $checkedCreate(
         'updated_at',
         (v) => DateTime.parse(v as String),
       ),
+      orgName: $checkedConvert('org_name', (v) => v as String?),
+      siteId: $checkedConvert('site_id', (v) => v as String?),
+      siteName: $checkedConvert('site_name', (v) => v as String?),
+      blockName: $checkedConvert('block_name', (v) => v as String?),
     );
     return val;
   },
@@ -280,6 +328,10 @@ UnitClaim _$UnitClaimFromJson(Map<String, dynamic> json) => $checkedCreate(
     'decisionNote': 'decision_note',
     'createdAt': 'created_at',
     'updatedAt': 'updated_at',
+    'orgName': 'org_name',
+    'siteId': 'site_id',
+    'siteName': 'site_name',
+    'blockName': 'block_name',
   },
 );
 
@@ -298,6 +350,10 @@ Map<String, dynamic> _$UnitClaimToJson(UnitClaim instance) => <String, dynamic>{
   'note': instance.note,
   'created_at': instance.createdAt.toIso8601String(),
   'updated_at': instance.updatedAt.toIso8601String(),
+  'org_name': ?instance.orgName,
+  'site_id': ?instance.siteId,
+  'site_name': ?instance.siteName,
+  'block_name': ?instance.blockName,
 };
 
 const _$UnitClaimClaimedRoleEnumEnumMap = {

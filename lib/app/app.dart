@@ -9,6 +9,7 @@ import 'package:openbekci_mobile/app/theme/theme.dart';
 import 'package:openbekci_mobile/core/auth/link_handler.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/features/profile/application/profile_providers.dart';
+import 'package:openbekci_mobile/features/push/application/push_service.dart';
 import 'package:openbekci_mobile/features/shell/presentation/app_shell.dart';
 import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
 
@@ -28,6 +29,9 @@ class _OpenBekciAppState extends ConsumerState<OpenBekciApp> {
   void initState() {
     super.initState();
     unawaited(Future<void>(() => restoreLocale(ref)));
+    // Push registration, incoming messages and the periodic-fetch fallback
+    // live as long as the app does.
+    ref.listenManual(pushControllerProvider, (_, _) {});
     _links = ref.read(incomingLinksProvider).listen((link) async {
       // Wait for the account to load so a signed-in user is not bounced.
       await ref.read(accountProvider.future);

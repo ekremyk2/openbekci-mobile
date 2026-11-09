@@ -11,7 +11,7 @@ import 'package:openbekci_mobile/core/widgets/display.dart';
 import 'package:openbekci_mobile/core/widgets/resident_widgets.dart';
 import 'package:openbekci_mobile/core/widgets/states.dart';
 import 'package:openbekci_mobile/features/home/application/home_providers.dart';
-import 'package:openbekci_mobile/features/notifications/application/notifications_providers.dart';
+import 'package:openbekci_mobile/features/push/application/push_service.dart';
 import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
 
 /// Localized label of an occupancy kind; unknown values (an additive server
@@ -36,7 +36,7 @@ class HomeScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final me = ref.watch(meProvider);
     final ctx = ref.watch(orgContextProvider);
-    final unread = ref.watch(unreadCountProvider).value?.data ?? 0;
+    final unread = ref.watch(displayUnreadProvider);
     return Scaffold(
       appBar: AppBar(
         title: ctx == null
@@ -163,21 +163,21 @@ List<Widget> _dashboardRows(
       key: const Key('tileBookings'),
       icon: Icons.event_available_outlined,
       label: l.homeBookings,
-      note: l.homeComingSoon,
+      onTap: () => context.push('/more/bookings'),
     ),
     _CountTile(
       key: const Key('tileVisitors'),
       icon: Icons.badge_outlined,
       label: l.homeVisitors,
       count: dash.pendingVisitorApprovals,
-      note: l.homeComingSoon,
+      onTap: () => context.push('/more/visitors'),
     ),
     _CountTile(
       key: const Key('tileParcels'),
       icon: Icons.inventory_2_outlined,
       label: l.homeParcels,
       count: dash.waitingDeliveries,
-      note: l.homeComingSoon,
+      onTap: () => context.push('/more/parcels'),
     ),
     SectionTitle(l.homeNextAssembly),
     if (nextMeeting == null)
@@ -193,6 +193,7 @@ List<Widget> _dashboardRows(
             timezone: ctx.timezone,
             withTime: true,
           ),
+          onTap: () => context.push('/more/assembly/${nextMeeting.id}'),
         ),
       ),
   ];
@@ -299,7 +300,6 @@ class _CountTile extends StatelessWidget {
     required this.icon,
     required this.label,
     this.count,
-    this.note,
     this.onTap,
     super.key,
   });
@@ -307,7 +307,6 @@ class _CountTile extends StatelessWidget {
   final IconData icon;
   final String label;
   final int? count;
-  final String? note;
   final VoidCallback? onTap;
 
   @override
@@ -316,7 +315,6 @@ class _CountTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(icon),
         title: Text(label),
-        subtitle: note == null ? null : Text(note!),
         trailing: count == null ? null : CountBadge(count!),
         onTap: onTap,
       ),

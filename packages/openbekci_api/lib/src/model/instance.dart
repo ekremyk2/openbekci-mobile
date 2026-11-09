@@ -4,6 +4,7 @@
 
 // ignore_for_file: unused_element
 import 'package:openbekci_api/src/model/push_info.dart';
+import 'package:openbekci_api/src/model/instance_pack.dart';
 import 'package:openbekci_api/src/model/auth_method.dart';
 import 'package:openbekci_api/src/model/min_app_version.dart';
 import 'package:openbekci_api/src/model/branding.dart';
@@ -50,6 +51,8 @@ class Instance {
     required  this.relayEnrollment,
 
     required  this.policies,
+
+    required  this.packDetails,
   });
 
       /// Stable for the life of the instance.
@@ -211,6 +214,19 @@ class Instance {
 
 
 
+      /// The packs compiled into this server (`packs` lists the ones enabled for at least one organization).
+  @JsonKey(
+    
+    name: r'pack_details',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final List<InstancePack> packDetails;
+
+
+
 
 
     @override
@@ -227,7 +243,8 @@ class Instance {
       other.packs == packs &&
       other.branding == branding &&
       other.relayEnrollment == relayEnrollment &&
-      other.policies == policies;
+      other.policies == policies &&
+      other.packDetails == packDetails;
 
     @override
     int get hashCode =>
@@ -243,7 +260,8 @@ class Instance {
         packs.hashCode +
         branding.hashCode +
         relayEnrollment.hashCode +
-        policies.hashCode;
+        policies.hashCode +
+        packDetails.hashCode;
 
   factory Instance.fromJson(Map<String, dynamic> json) => _$InstanceFromJson(json);
 

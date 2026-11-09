@@ -179,6 +179,27 @@ final accountProvider = AsyncNotifierProvider<AccountController, Account?>(
   AccountController.new,
 );
 
+/// Work that must run while the session still works, just before sign-out
+/// (deleting the push registration). Features add themselves by name.
+class SignOutHooks {
+  final Map<String, Future<void> Function()> _hooks = {};
+
+  void add(String name, Future<void> Function() hook) => _hooks[name] = hook;
+
+  /// Runs every hook, best effort: a failing hook never blocks sign-out.
+  Future<void> runAll() async {
+    for (final hook in _hooks.values.toList()) {
+      try {
+        await hook().timeout(const Duration(seconds: 5));
+      } on Object {
+        // Offline or slow: signing out locally is what matters.
+      }
+    }
+  }
+}
+
+final signOutHooksProvider = Provider<SignOutHooks>((ref) => SignOutHooks());
+
 /// Sign-in completion, sign-out and session loss (mobile plan sections 5.2
 /// and 6). Reads the other providers lazily, at call time.
 class SessionActions {
@@ -217,6 +238,7 @@ class SessionActions {
   /// Revokes the session server-side (best effort), then wipes everything:
   /// secure storage, in-memory token and the cache database.
   Future<void> signOut() async {
+    await _ref.read(signOutHooksProvider).runAll();
     final api = _ref.read(apiProvider);
     if (api != null) {
       try {
@@ -311,7 +333,7 @@ final meProvider = StreamProvider<CacheState<Me>>((ref) {
 
 /// Saved drafts are keyed `ticket_draft_v1/<user>/<org>` (see
 /// `ticketDraftPrefPrefix`).
-const accountScopedPrefPrefixes = ['ticket_draft_v1'];
+const accountScopedPrefPrefixes = ['ticket_draft_v1', 'push_device_v1'];
 
 /// Forgets what the signed-out account left in preferences: the selected
 /// organization and the saved drafts. Device settings (language, app lock)

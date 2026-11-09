@@ -586,5 +586,397 @@
   "ticketsTitle": "Tickets",
   "totalDueToday": "Total due today",
   "valueOther": "Other",
-  "ticketNoCategories": "No ticket categories are set up for this site yet. Ask the manager."
+  "ticketNoCategories": "No ticket categories are set up for this site yet. Ask the manager.",
+  "bookingsTitle": "Bookings",
+  "bookingsFacilities": "Facilities",
+  "bookingsMine": "My bookings",
+  "facilitiesEmpty": "No facility can be booked here.",
+  "bookingsEmpty": "You have no bookings.",
+  "facilityNotFound": "This facility is no longer available.",
+  "bookingBook": "Book",
+  "bookingUnit": "Unit",
+  "bookingPickDay": "Day",
+  "bookingNoDays": "No day can be booked.",
+  "bookingDuration": "Duration",
+  "bookingPickTime": "Start time",
+  "bookingNoSlots": "No time fits the opening hours.",
+  "bookingSummary": "Your booking",
+  "bookingFee": "Fee",
+  "bookingNoFee": "Free of charge.",
+  "bookingConfirm": "Confirm booking",
+  "bookingConfirmedDone": "Booked. Your booking is confirmed.",
+  "bookingNeedsConnection": "Booking needs a connection. It is confirmed at once if the slot is free.",
+  "bookingConfirmed": "Confirmed",
+  "bookingCancelled": "Cancelled",
+  "bookingRefunded": "Fee refunded",
+  "actionCancelBooking": "Cancel booking",
+  "actionKeepBooking": "Keep booking",
+  "cancelBookingTitle": "Cancel this booking?",
+  "bookingCancelledDone": "Booking cancelled.",
+  "feeFree": "Free",
+  "refundNoFee": "There is no fee, so nothing to refund.",
+  "refundGiven": "Cancelling now refunds the fee of {amount} to your account.",
+  "@refundGiven": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "refundKept": "The fee of {amount} is refunded if you cancel before {until}; after that it is kept.",
+  "@refundKept": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "until": {
+        "type": "String"
+      }
+    }
+  },
+  "refundNever": "The fee of {amount} is not refunded on cancellation.",
+  "@refundNever": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{m} min",
+  "@durationMinutes": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{h} h",
+  "@durationHours": {
+    "placeholders": {
+      "h": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{h} h {m} min",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "h": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleHours": "Open {days}, {start} to {end}",
+  "@ruleHours": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      },
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMaxDuration": "Up to {duration} per booking",
+  "@ruleMaxDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleLeadTime": "Book at least {duration} ahead",
+  "@ruleLeadTime": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMaxDaysAhead": "Up to {n} days ahead",
+  "@ruleMaxDaysAhead": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleQuotaWeek": "{n} per unit per week",
+  "@ruleQuotaWeek": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleQuotaMonth": "{n} per unit per month",
+  "@ruleQuotaMonth": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleQuotaPerUnit": "{n} per unit",
+  "@ruleQuotaPerUnit": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingProblemClosed": "Outside the opening hours.",
+  "bookingProblemTooLong": "Longer than allowed.",
+  "bookingProblemTooSoon": "Too soon: it needs more notice.",
+  "bookingProblemTooFar": "Too far ahead.",
+  "bookingProblemTaken": "Already taken.",
+  "bookingProblemQuota": "Your unit has used its quota for this period.",
+  "bookingProblemNotAllowed": "Your household role cannot book this facility.",
+  "visitorsTitle": "Visitors",
+  "visitorsExpected": "Expected",
+  "visitorsRecurring": "Recurring",
+  "visitorsHistory": "History",
+  "visitorsEmpty": "No visitors expected. Pre-register a guest to get a QR code for the gate.",
+  "visitorsHistoryEmpty": "No past visitors.",
+  "visitorAdd": "Pre-register a visitor",
+  "visitorAddRecurring": "Add recurring visitor",
+  "visitorName": "Name",
+  "visitorPlate": "Plate (optional)",
+  "visitorWindow": "When do they come?",
+  "visitorFrom": "From",
+  "visitorUntil": "Until",
+  "visitorRegister": "Create QR code",
+  "visitorPass": "Visitor pass",
+  "visitorNotFound": "This visitor pass was not found.",
+  "visitorNoQr": "No QR code is available for this pass.",
+  "visitorQrLabel": "QR code for the gate",
+  "visitorQrHint": "Send the QR code to your guest. The guard scans it at the gate; it is valid for the time window and 30 minutes either side.",
+  "visitorShare": "Share QR code",
+  "shareFailed": "The share sheet could not be opened.",
+  "visitorShareText": "Visitor pass for {name} at {site}: {range}. Show this QR code at the gate. Code: {code}",
+  "@visitorShareText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      },
+      "site": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorCancel": "Cancel this pass",
+  "visitorCancelled": "Cancelled",
+  "visitorArrived": "Arrived",
+  "visitorWalkIn": "Walk-in",
+  "passUpcoming": "Not valid yet",
+  "passValid": "Valid now",
+  "passEnded": "Expired",
+  "visitorStatusPreApproved": "Expected",
+  "visitorStatusRequested": "Waiting for your answer",
+  "visitorStatusApproved": "Approved",
+  "visitorStatusDenied": "Denied",
+  "visitorStatusExpired": "Expired",
+  "recurringEmpty": "No recurring visitors. Add a cleaner, a carer or a regular guest.",
+  "recurringActive": "Active",
+  "recurringRevoked": "Revoked",
+  "recurringExpired": "Expired",
+  "recurringDays": "Days",
+  "recurringValidity": "Valid for",
+  "validityNoEnd": "No end date",
+  "validityMonth1": "1 month",
+  "validityMonths3": "3 months",
+  "validityYear1": "1 year",
+  "recurringFrom": "From",
+  "recurringTo": "to",
+  "recurringQrHint": "This QR code stays valid on the chosen days and hours until you revoke it. Revoking takes effect at the gate at once.",
+  "recurringShareText": "Standing pass for {name} at {site}: {when}. Show this QR code at the gate. Code: {code}",
+  "@recurringShareText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      },
+      "site": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "recurringRevoke": "Revoke",
+  "recurringRevokeTitle": "Revoke this pass?",
+  "recurringRevokeBody": "{name} will no longer be let in with this QR code.",
+  "@recurringRevokeBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorApprovalTitle": "Visitor at the gate",
+  "visitorWaitingAtGate": "{name} is waiting at the gate",
+  "@visitorWaitingAtGate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorRequestUnit": "For unit {door}",
+  "@visitorRequestUnit": {
+    "placeholders": {
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorAnswer": "Answer",
+  "visitorApprove": "Approve",
+  "visitorDeny": "Deny",
+  "visitorExpiresIn": "Answer within {time}",
+  "@visitorExpiresIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorRequestGone": "This request is no longer open.",
+  "visitorResultApproved": "You approved this visitor. The guard lets them in.",
+  "visitorResultDenied": "You denied this visitor.",
+  "visitorResultExpired": "The time to answer ran out.",
+  "visitorGateContactTitle": "The guard will call you",
+  "visitorGateContactSet": "The guard calls your gate contact number, {phone}.",
+  "@visitorGateContactSet": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorGateContactMissing": "You have not set a gate contact number, so the guard cannot call you. Add one in your profile.",
+  "visitorGateContactAdd": "Add gate contact number",
+  "parcelsTitle": "Parcels",
+  "parcelsWaiting": "Waiting for you",
+  "parcelsRecent": "Recently collected",
+  "parcelsEmpty": "No parcels so far.",
+  "parcelsNoneWaiting": "No parcel is waiting.",
+  "parcelNoDescription": "Parcel",
+  "parcelUnit": "Unit {door}",
+  "@parcelUnit": {
+    "placeholders": {
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "parcelReceived": "Received",
+  "parcelCollected": "Collected",
+  "parcelCollectedBy": "by {name}",
+  "@parcelCollectedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "assemblyTitle": "Assembly",
+  "assemblyEmpty": "No assembly yet.",
+  "assemblyUpcoming": "Upcoming",
+  "assemblyPast": "Earlier assemblies",
+  "meetingKindGeneral": "General assembly",
+  "meetingKindExtraordinary": "Extraordinary assembly",
+  "meetingStatusDraft": "Draft",
+  "meetingStatusCalled": "Called",
+  "meetingStatusInSession": "In session",
+  "meetingStatusClosed": "Closed",
+  "meetingStatusCancelled": "Cancelled",
+  "meetingWhen": "When",
+  "meetingSecondCall": "Second call",
+  "meetingWhere": "Where",
+  "meetingCallLetter": "Call letter (PDF)",
+  "meetingAgenda": "Agenda",
+  "meetingAgendaEmpty": "The agenda has not been published.",
+  "agendaVoted": "Vote",
+  "pollsTitle": "Pre-meeting polls",
+  "pollsNonBinding": "Your answer is not binding. One answer per unit.",
+  "pollsOwnersOnly": "Only owners answer polls.",
+  "pollOpen": "Open",
+  "pollClosed": "Closed",
+  "pollNotOpen": "Not open yet",
+  "pollClosesAt": "Closes",
+  "pollYes": "Yes",
+  "pollNo": "No",
+  "pollAbstain": "Abstain",
+  "pollAnswered": "Answered",
+  "checkInTitle": "Attendance check-in",
+  "checkInOpen": "Show this QR code at the attendance desk.",
+  "checkInNotYet": "Check-in opens when the session starts. Keep this QR code ready.",
+  "checkInDone": "Checked in",
+  "checkInQrLabel": "Check-in QR code",
+  "minutesTitle": "Minutes",
+  "minutesOpen": "Open the minutes (PDF)",
+  "minutesNone": "The minutes are not available yet.",
+  "decisionsTitle": "Decisions",
+  "decisionsEmpty": "No decisions to show.",
+  "decisionsResidentsOnly": "You see the decisions that concern residents.",
+  "decisionConcernsResidents": "Concerns residents",
+  "decisionNumber": "Decision {year}/{no}",
+  "@decisionNumber": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      },
+      "no": {
+        "type": "int"
+      }
+    }
+  },
+  "outcomeAccepted": "Accepted",
+  "outcomeRejected": "Rejected",
+  "outcomeNoVote": "No vote",
+  "outcomeNoted": "Noted",
+  "webOpen": "Open in web",
+  "webOpenBody": "Opens the website and signs you in.",
+  "webOpenFailed": "The browser could not be opened.",
+  "notifGeneric": "New notification",
+  "notifAgentSilent": "Gate agent silent",
+  "notifAgentClockSkew": "Gate agent clock skew",
+  "notifAgentStopped": "Gate agent stopped",
+  "notifWebhookFailing": "Webhook endpoint failing",
+  "notifSignInCode": "Sign-in code",
+  "notifInvitation": "Invitation",
+  "notifPeriodicTitle": "New notifications",
+  "notifPeriodicBody": "You have {count} unread notifications.",
+  "@notifPeriodicBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsMayBeDelayed": "Notifications may be delayed",
+  "notificationsMayBeDelayedBody": "Push is not reaching this phone right now, so the app checks for news from time to time.",
+  "channelAnnouncements": "Announcements",
+  "channelMoney": "Payments and statements",
+  "channelTickets": "Tickets",
+  "channelCommunity": "Visitors, parcels and bookings",
+  "channelAssembly": "Assembly",
+  "channelAccount": "Account",
+  "channelSystem": "System"
 }

@@ -4,7 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:openbekci_mobile/core/instance/discovery.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/features/announcements/presentation/announcements_screens.dart';
+import 'package:openbekci_mobile/features/community/presentation/bookings_screens.dart';
+import 'package:openbekci_mobile/features/community/presentation/parcels_screen.dart';
+import 'package:openbekci_mobile/features/community/presentation/visitors_screens.dart';
 import 'package:openbekci_mobile/features/documents/presentation/documents_screens.dart';
+import 'package:openbekci_mobile/features/governance/presentation/governance_screens.dart';
 import 'package:openbekci_mobile/features/home/home_screen.dart';
 import 'package:openbekci_mobile/features/money/presentation/money_screen.dart';
 import 'package:openbekci_mobile/features/money/presentation/pay_screens.dart';
@@ -199,6 +203,85 @@ final routerProvider = Provider<GoRouter>((ref) {
                         parentNavigatorKey: _rootKey,
                         builder: (_, state) => AnnouncementDetailScreen(
                           announcementId: state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'bookings',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, _) => const BookingsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'facility/:id',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, state) => FacilityScreen(
+                          facilityId: state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'visitors',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, _) => const VisitorsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'new',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, _) => const NewVisitorScreen(),
+                      ),
+                      GoRoute(
+                        path: 'entry/:id',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, state) => VisitorEntryScreen(
+                          entryId: state.pathParameters['id']!,
+                        ),
+                      ),
+                      GoRoute(
+                        path: 'recurring/new',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, _) => const NewRecurringVisitorScreen(),
+                      ),
+                      GoRoute(
+                        path: 'recurring/:id',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, state) => RecurringVisitorScreen(
+                          recurringId: state.pathParameters['id']!,
+                        ),
+                      ),
+                      GoRoute(
+                        path: 'requests/:id',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, state) => ApprovalRequestScreen(
+                          requestId: state.pathParameters['id']!,
+                          decision: state.uri.queryParameters['decision'],
+                        ),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'parcels',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, _) => const ParcelsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'assembly',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, _) => const AssemblyScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'decisions',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, state) => DecisionsScreen(
+                          meetingId: state.uri.queryParameters['meeting'],
+                        ),
+                      ),
+                      GoRoute(
+                        path: ':id',
+                        parentNavigatorKey: _rootKey,
+                        builder: (_, state) => MeetingScreen(
+                          meetingId: state.pathParameters['id']!,
                         ),
                       ),
                     ],

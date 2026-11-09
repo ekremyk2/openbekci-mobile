@@ -21,6 +21,7 @@ import 'package:openbekci_api/src/model/reauth_response.dart';
 import 'package:openbekci_api/src/model/refresh_request.dart';
 import 'package:openbekci_api/src/model/session_response.dart';
 import 'package:openbekci_api/src/model/token_response.dart';
+import 'package:openbekci_api/src/model/web_login_link_exchange.dart';
 
 class AuthApi {
 
@@ -186,7 +187,7 @@ _responseData = rawData == null ? null : deserialize<AuthResult, AuthResult>(raw
   }
 
   /// Sign in and start a browser session
-  /// &#x60;method&#x60; is &#x60;password&#x60;, &#x60;sms_otp&#x60; or &#x60;magic_link&#x60;; &#x60;identifier&#x60; is the email address or phone number. For &#x60;password&#x60; and for &#x60;sms_otp&#x60; with a &#x60;code&#x60; this verifies the credentials and sets the session cookie &#x60;obk_session&#x60; (httpOnly, SameSite&#x3D;Lax, Secure except in development). &#x60;sms_otp&#x60; without &#x60;code&#x60; sends a code by SMS and &#x60;magic_link&#x60; emails a link (&#x60;client&#x60; selects the web or &#x60;openbekci://&#x60; link); both answer 202 whether or not the account exists. Wrong credentials of any kind answer 401 &#x60;invalid_grant&#x60;; repeated failures lock the identifier out (429 &#x60;rate_limited&#x60; with &#x60;Retry-After&#x60;). 
+  /// &#x60;method&#x60; is &#x60;password&#x60;, &#x60;sms_otp&#x60; or &#x60;magic_link&#x60;; &#x60;identifier&#x60; is the email address or phone number. For &#x60;password&#x60; and for &#x60;sms_otp&#x60; with a &#x60;code&#x60; this verifies the credentials and sets the session cookie &#x60;obk_session&#x60; (httpOnly, SameSite&#x3D;Lax, Secure except in development). &#x60;sms_otp&#x60; without &#x60;code&#x60; sends a code by SMS and &#x60;magic_link&#x60; emails a link (&#x60;client&#x60; selects the web or &#x60;openbekci://&lt;host&gt;/…&#x60; link); both answer 202 whether or not the account exists. Wrong credentials of any kind answer 401 &#x60;invalid_grant&#x60;; repeated failures lock the identifier out (429 &#x60;rate_limited&#x60; with &#x60;Retry-After&#x60;). 
   ///
   /// Parameters:
   /// * [credentials] 
@@ -412,6 +413,97 @@ _responseData = rawData == null ? null : deserialize<TokenResponse, TokenRespons
     return _response;
   }
 
+  /// Exchange a web-login link token for a browser session
+  /// **Release 0.4.** The web route &#x60;/login/link/{token}&#x60; posts the token here and receives the session cookie. Single use; an unknown, used or expired token, or one whose issuing session was signed out, is 401 &#x60;invalid_grant&#x60;. The response is never replayed from the idempotency store.  Problems: &#x60;invalid_grant&#x60; (401), &#x60;rate_limited&#x60; (429).
+  ///
+  /// Parameters:
+  /// * [webLoginLinkExchange] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [AuthResult] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<AuthResult>> authExchangeWebLoginLink({ 
+    required WebLoginLinkExchange webLoginLinkExchange,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/v1/auth/web-login-link:exchange';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(webLoginLinkExchange);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    AuthResult? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<AuthResult, AuthResult>(rawData, 'AuthResult', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<AuthResult>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// Re-authenticate the current session for sensitive operations
   /// Proves the caller is still the user with the password, a fresh SMS code (&#x60;auth.requestOtp&#x60;) or a fresh email code (&#x60;auth.requestReauthEmailCode&#x60;), and marks the current session as re-authenticated for 10 minutes. A user with only an email address and no password re-authenticates by email code. Sensitive operations answer 403 &#x60;reauth_required&#x60; outside that window. 
   ///
@@ -595,7 +687,7 @@ _responseData = rawData == null ? null : deserialize<TokenResponse, TokenRespons
   }
 
   /// Email a single-use sign-in link
-  /// Emails a link valid for 15 minutes when an account has this address. The answer is the same whether or not it does. The link is &#x60;{BASE_URL}/login/magic?token&#x3D;...&#x60;, or &#x60;openbekci://login/magic?token&#x3D;...&#x60; for &#x60;client&#x3D;mobile&#x60;. 503 &#x60;mail_unavailable&#x60; when the instance has no email configuration. Limited per address and per client address. 
+  /// Emails a link valid for 15 minutes when an account has this address. The answer is the same whether or not it does. The link is &#x60;{BASE_URL}/login/magic?token&#x3D;...&#x60;, or &#x60;openbekci://&lt;host&gt;/login/magic?token&#x3D;...&#x60; (&#x60;&lt;host&gt;&#x60; is the instance&#39;s BASE_URL host) for &#x60;client&#x3D;mobile&#x60;. 503 &#x60;mail_unavailable&#x60; when the instance has no email configuration. Limited per address and per client address. 
   ///
   /// Parameters:
   /// * [magicLinkRequest] 

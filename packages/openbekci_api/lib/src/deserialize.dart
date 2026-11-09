@@ -1,4 +1,6 @@
 import 'package:openbekci_api/src/model/address.dart';
+import 'package:openbekci_api/src/model/agenda_item.dart';
+import 'package:openbekci_api/src/model/agenda_item_list.dart';
 import 'package:openbekci_api/src/model/allocation_basis.dart';
 import 'package:openbekci_api/src/model/announcement.dart';
 import 'package:openbekci_api/src/model/announcement_attachment.dart';
@@ -7,7 +9,12 @@ import 'package:openbekci_api/src/model/announcement_list.dart';
 import 'package:openbekci_api/src/model/auth_method.dart';
 import 'package:openbekci_api/src/model/auth_result.dart';
 import 'package:openbekci_api/src/model/auth_user.dart';
+import 'package:openbekci_api/src/model/availability.dart';
 import 'package:openbekci_api/src/model/bank_details.dart';
+import 'package:openbekci_api/src/model/booking.dart';
+import 'package:openbekci_api/src/model/booking_cancel.dart';
+import 'package:openbekci_api/src/model/booking_create.dart';
+import 'package:openbekci_api/src/model/booking_list.dart';
 import 'package:openbekci_api/src/model/branding.dart';
 import 'package:openbekci_api/src/model/change_password_request.dart';
 import 'package:openbekci_api/src/model/charge.dart';
@@ -17,12 +24,25 @@ import 'package:openbekci_api/src/model/codes.dart';
 import 'package:openbekci_api/src/model/credentials.dart';
 import 'package:openbekci_api/src/model/dashboard_meeting.dart';
 import 'package:openbekci_api/src/model/debtor_ref.dart';
+import 'package:openbekci_api/src/model/decision.dart';
+import 'package:openbekci_api/src/model/decision_effect.dart';
+import 'package:openbekci_api/src/model/decision_list.dart';
+import 'package:openbekci_api/src/model/delivery.dart';
+import 'package:openbekci_api/src/model/delivery_list.dart';
+import 'package:openbekci_api/src/model/device.dart';
+import 'package:openbekci_api/src/model/device_register.dart';
 import 'package:openbekci_api/src/model/directory_consent.dart';
 import 'package:openbekci_api/src/model/discovery_document.dart';
+import 'package:openbekci_api/src/model/dissent.dart';
 import 'package:openbekci_api/src/model/document.dart';
 import 'package:openbekci_api/src/model/document_list.dart';
 import 'package:openbekci_api/src/model/document_visibility.dart';
 import 'package:openbekci_api/src/model/effective_debtor.dart';
+import 'package:openbekci_api/src/model/eligibility_owner.dart';
+import 'package:openbekci_api/src/model/eligibility_snapshot.dart';
+import 'package:openbekci_api/src/model/facility.dart';
+import 'package:openbekci_api/src/model/facility_list.dart';
+import 'package:openbekci_api/src/model/facility_rules.dart';
 import 'package:openbekci_api/src/model/file.dart';
 import 'package:openbekci_api/src/model/file_links.dart';
 import 'package:openbekci_api/src/model/file_variant.dart';
@@ -31,6 +51,7 @@ import 'package:openbekci_api/src/model/folder_crumb.dart';
 import 'package:openbekci_api/src/model/folder_list.dart';
 import 'package:openbekci_api/src/model/generated_from.dart';
 import 'package:openbekci_api/src/model/instance.dart';
+import 'package:openbekci_api/src/model/instance_pack.dart';
 import 'package:openbekci_api/src/model/invitation.dart';
 import 'package:openbekci_api/src/model/invitation_accept.dart';
 import 'package:openbekci_api/src/model/invitation_list.dart';
@@ -47,9 +68,15 @@ import 'package:openbekci_api/src/model/me_occupancy.dart';
 import 'package:openbekci_api/src/model/me_policies.dart';
 import 'package:openbekci_api/src/model/me_site.dart';
 import 'package:openbekci_api/src/model/me_user.dart';
+import 'package:openbekci_api/src/model/meeting.dart';
+import 'package:openbekci_api/src/model/meeting_list.dart';
+import 'package:openbekci_api/src/model/meeting_notice.dart';
 import 'package:openbekci_api/src/model/min_app_version.dart';
+import 'package:openbekci_api/src/model/minutes_result.dart';
 import 'package:openbekci_api/src/model/money.dart';
+import 'package:openbekci_api/src/model/my_meeting.dart';
 import 'package:openbekci_api/src/model/my_person_update.dart';
+import 'package:openbekci_api/src/model/my_poll.dart';
 import 'package:openbekci_api/src/model/my_side.dart';
 import 'package:openbekci_api/src/model/notification.dart';
 import 'package:openbekci_api/src/model/notification_list.dart';
@@ -58,6 +85,7 @@ import 'package:openbekci_api/src/model/notification_mutes_set.dart';
 import 'package:openbekci_api/src/model/notifications_read_all.dart';
 import 'package:openbekci_api/src/model/occupancy.dart';
 import 'package:openbekci_api/src/model/occupancy_list.dart';
+import 'package:openbekci_api/src/model/opening_hours.dart';
 import 'package:openbekci_api/src/model/org_access.dart';
 import 'package:openbekci_api/src/model/otp_request.dart';
 import 'package:openbekci_api/src/model/payment.dart';
@@ -67,6 +95,9 @@ import 'package:openbekci_api/src/model/payment_list.dart';
 import 'package:openbekci_api/src/model/permission_grant.dart';
 import 'package:openbekci_api/src/model/person.dart';
 import 'package:openbekci_api/src/model/person_contact.dart';
+import 'package:openbekci_api/src/model/poll.dart';
+import 'package:openbekci_api/src/model/poll_answer.dart';
+import 'package:openbekci_api/src/model/poll_answer_set.dart';
 import 'package:openbekci_api/src/model/problem.dart';
 import 'package:openbekci_api/src/model/problem_field_error.dart';
 import 'package:openbekci_api/src/model/push_info.dart';
@@ -75,6 +106,9 @@ import 'package:openbekci_api/src/model/reauth_password.dart';
 import 'package:openbekci_api/src/model/reauth_request.dart';
 import 'package:openbekci_api/src/model/reauth_response.dart';
 import 'package:openbekci_api/src/model/reauth_sms_otp.dart';
+import 'package:openbekci_api/src/model/recurring_visitor.dart';
+import 'package:openbekci_api/src/model/recurring_visitor_create.dart';
+import 'package:openbekci_api/src/model/recurring_visitor_list.dart';
 import 'package:openbekci_api/src/model/refresh_request.dart';
 import 'package:openbekci_api/src/model/relay_enrollment.dart';
 import 'package:openbekci_api/src/model/role_grant.dart';
@@ -101,10 +135,21 @@ import 'package:openbekci_api/src/model/ticket_status_change_changed_by.dart';
 import 'package:openbekci_api/src/model/ticket_status_change_list.dart';
 import 'package:openbekci_api/src/model/ticket_vote.dart';
 import 'package:openbekci_api/src/model/ticket_workflow.dart';
+import 'package:openbekci_api/src/model/time_range.dart';
 import 'package:openbekci_api/src/model/token_response.dart';
 import 'package:openbekci_api/src/model/unit_claim.dart';
 import 'package:openbekci_api/src/model/unit_claim_create.dart';
 import 'package:openbekci_api/src/model/unread_count.dart';
+import 'package:openbekci_api/src/model/visitor_approval_request.dart';
+import 'package:openbekci_api/src/model/visitor_approval_request_list.dart';
+import 'package:openbekci_api/src/model/visitor_decision.dart';
+import 'package:openbekci_api/src/model/visitor_entry.dart';
+import 'package:openbekci_api/src/model/visitor_entry_create.dart';
+import 'package:openbekci_api/src/model/visitor_entry_list.dart';
+import 'package:openbekci_api/src/model/vote_count.dart';
+import 'package:openbekci_api/src/model/web_login_link.dart';
+import 'package:openbekci_api/src/model/web_login_link_create.dart';
+import 'package:openbekci_api/src/model/web_login_link_exchange.dart';
 
 final _regList = RegExp(r'^List<(.*)>$');
 final _regSet = RegExp(r'^Set<(.*)>$');
@@ -126,6 +171,10 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return (value is double ? value : double.parse('$value')) as ReturnType;
         case 'Address':
           return Address.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AgendaItem':
+          return AgendaItem.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AgendaItemList':
+          return AgendaItemList.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AllocationBasis':
           return AllocationBasis.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Announcement':
@@ -142,8 +191,18 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return AuthResult.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AuthUser':
           return AuthUser.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Availability':
+          return Availability.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'BankDetails':
           return BankDetails.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Booking':
+          return Booking.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'BookingCancel':
+          return BookingCancel.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'BookingCreate':
+          return BookingCreate.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'BookingList':
+          return BookingList.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Branding':
           return Branding.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ChangePasswordRequest':
@@ -162,10 +221,26 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return DashboardMeeting.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DebtorRef':
           return DebtorRef.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Decision':
+          return Decision.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DecisionEffect':
+          return DecisionEffect.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DecisionList':
+          return DecisionList.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Delivery':
+          return Delivery.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DeliveryList':
+          return DeliveryList.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Device':
+          return Device.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DeviceRegister':
+          return DeviceRegister.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DirectoryConsent':
           return DirectoryConsent.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DiscoveryDocument':
           return DiscoveryDocument.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Dissent':
+          return Dissent.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Document':
           return Document.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DocumentList':
@@ -174,6 +249,16 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return DocumentVisibility.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'EffectiveDebtor':
           return EffectiveDebtor.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'EligibilityOwner':
+          return EligibilityOwner.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'EligibilitySnapshot':
+          return EligibilitySnapshot.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Facility':
+          return Facility.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'FacilityList':
+          return FacilityList.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'FacilityRules':
+          return FacilityRules.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'File':
           return File.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'FileLinks':
@@ -190,6 +275,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return GeneratedFrom.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Instance':
           return Instance.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'InstancePack':
+          return InstancePack.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Invitation':
           return Invitation.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'InvitationAccept':
@@ -222,12 +309,24 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return MeSite.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'MeUser':
           return MeUser.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Meeting':
+          return Meeting.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MeetingList':
+          return MeetingList.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MeetingNotice':
+          return MeetingNotice.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'MinAppVersion':
           return MinAppVersion.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MinutesResult':
+          return MinutesResult.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Money':
           return Money.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MyMeeting':
+          return MyMeeting.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'MyPersonUpdate':
           return MyPersonUpdate.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MyPoll':
+          return MyPoll.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'MySide':
           return MySide.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Notification':
@@ -244,6 +343,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return Occupancy.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'OccupancyList':
           return OccupancyList.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'OpeningHours':
+          return OpeningHours.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'OrgAccess':
           return OrgAccess.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'OtpRequest':
@@ -265,6 +366,12 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return Person.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'PersonContact':
           return PersonContact.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Poll':
+          return Poll.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'PollAnswer':
+          return PollAnswer.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'PollAnswerSet':
+          return PollAnswerSet.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Problem':
           return Problem.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ProblemFieldError':
@@ -281,6 +388,12 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return ReauthResponse.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ReauthSmsOtp':
           return ReauthSmsOtp.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'RecurringVisitor':
+          return RecurringVisitor.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'RecurringVisitorCreate':
+          return RecurringVisitorCreate.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'RecurringVisitorList':
+          return RecurringVisitorList.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'RefreshRequest':
           return RefreshRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'RelayEnrollment':
@@ -336,6 +449,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return TicketVote.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'TicketWorkflow':
           return TicketWorkflow.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'TimeRange':
+          return TimeRange.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'TokenResponse':
           return TokenResponse.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UnitClaim':
@@ -344,6 +459,26 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return UnitClaimCreate.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UnreadCount':
           return UnreadCount.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'VisitorApprovalRequest':
+          return VisitorApprovalRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'VisitorApprovalRequestList':
+          return VisitorApprovalRequestList.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'VisitorDecision':
+          return VisitorDecision.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'VisitorEntry':
+          return VisitorEntry.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'VisitorEntryCreate':
+          return VisitorEntryCreate.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'VisitorEntryList':
+          return VisitorEntryList.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'VoteCount':
+          return VoteCount.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'WebLoginLink':
+          return WebLoginLink.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'WebLoginLinkCreate':
+          return WebLoginLinkCreate.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'WebLoginLinkExchange':
+          return WebLoginLinkExchange.fromJson(value as Map<String, dynamic>) as ReturnType;
         default:
           RegExpMatch? match;
 

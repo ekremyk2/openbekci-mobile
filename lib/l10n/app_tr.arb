@@ -341,5 +341,397 @@
   "ticketsTitle": "Talepler",
   "totalDueToday": "Bugün ödenecek toplam",
   "valueOther": "Diğer",
-  "ticketNoCategories": "Bu site için henüz talep kategorisi tanımlanmadı. Yöneticiye başvurun."
+  "ticketNoCategories": "Bu site için henüz talep kategorisi tanımlanmadı. Yöneticiye başvurun.",
+  "bookingsTitle": "Rezervasyonlar",
+  "bookingsFacilities": "Alanlar",
+  "bookingsMine": "Rezervasyonlarım",
+  "facilitiesEmpty": "Burada rezervasyon yapılabilecek bir alan yok.",
+  "bookingsEmpty": "Hiç rezervasyonunuz yok.",
+  "facilityNotFound": "Bu alan artık kullanılabilir değil.",
+  "bookingBook": "Rezerve et",
+  "bookingUnit": "Daire",
+  "bookingPickDay": "Gün",
+  "bookingNoDays": "Rezervasyon yapılabilecek gün yok.",
+  "bookingDuration": "Süre",
+  "bookingPickTime": "Başlangıç saati",
+  "bookingNoSlots": "Çalışma saatlerine uyan bir saat yok.",
+  "bookingSummary": "Rezervasyonunuz",
+  "bookingFee": "Ücret",
+  "bookingNoFee": "Ücretsiz.",
+  "bookingConfirm": "Rezervasyonu onayla",
+  "bookingConfirmedDone": "Rezervasyon yapıldı ve onaylandı.",
+  "bookingNeedsConnection": "Rezervasyon için internet gerekir. Saat boşsa hemen onaylanır.",
+  "bookingConfirmed": "Onaylandı",
+  "bookingCancelled": "İptal edildi",
+  "bookingRefunded": "Ücret iade edildi",
+  "actionCancelBooking": "Rezervasyonu iptal et",
+  "actionKeepBooking": "Rezervasyonu koru",
+  "cancelBookingTitle": "Rezervasyon iptal edilsin mi?",
+  "bookingCancelledDone": "Rezervasyon iptal edildi.",
+  "feeFree": "Ücretsiz",
+  "refundNoFee": "Ücret yok, iade edilecek bir şey yok.",
+  "refundGiven": "Şimdi iptal ederseniz {amount} tutarındaki ücret hesabınıza iade edilir.",
+  "@refundGiven": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "refundKept": "{amount} tutarındaki ücret {until} tarihinden önce iptal ederseniz iade edilir; sonrasında iade edilmez.",
+  "@refundKept": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "until": {
+        "type": "String"
+      }
+    }
+  },
+  "refundNever": "{amount} tutarındaki ücret iptalde iade edilmez.",
+  "@refundNever": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{m} dk",
+  "@durationMinutes": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{h} sa",
+  "@durationHours": {
+    "placeholders": {
+      "h": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{h} sa {m} dk",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "h": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleHours": "Açık: {days}, {start} - {end}",
+  "@ruleHours": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      },
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMaxDuration": "Rezervasyon başına en fazla {duration}",
+  "@ruleMaxDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleLeadTime": "En az {duration} önceden rezerve edin",
+  "@ruleLeadTime": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMaxDaysAhead": "En fazla {n} gün önceden",
+  "@ruleMaxDaysAhead": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleQuotaWeek": "Daire başına haftada {n}",
+  "@ruleQuotaWeek": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleQuotaMonth": "Daire başına ayda {n}",
+  "@ruleQuotaMonth": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleQuotaPerUnit": "Daire başına {n}",
+  "@ruleQuotaPerUnit": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingProblemClosed": "Çalışma saatleri dışında.",
+  "bookingProblemTooLong": "İzin verilenden uzun.",
+  "bookingProblemTooSoon": "Çok yakın: daha önceden rezerve edilmeli.",
+  "bookingProblemTooFar": "Çok ileri bir tarih.",
+  "bookingProblemTaken": "Dolu.",
+  "bookingProblemQuota": "Dairenizin bu dönemdeki hakkı doldu.",
+  "bookingProblemNotAllowed": "Bu alanı rezerve etme yetkiniz yok.",
+  "visitorsTitle": "Ziyaretçiler",
+  "visitorsExpected": "Beklenen",
+  "visitorsRecurring": "Sürekli",
+  "visitorsHistory": "Geçmiş",
+  "visitorsEmpty": "Beklenen ziyaretçi yok. Kapı için QR kodu almak üzere bir misafir kaydedin.",
+  "visitorsHistoryEmpty": "Geçmiş ziyaretçi yok.",
+  "visitorAdd": "Ziyaretçi kaydet",
+  "visitorAddRecurring": "Sürekli ziyaretçi ekle",
+  "visitorName": "Ad soyad",
+  "visitorPlate": "Plaka (isteğe bağlı)",
+  "visitorWindow": "Ne zaman gelecek?",
+  "visitorFrom": "Başlangıç",
+  "visitorUntil": "Bitiş",
+  "visitorRegister": "QR kodu oluştur",
+  "visitorPass": "Ziyaretçi kartı",
+  "visitorNotFound": "Bu ziyaretçi kartı bulunamadı.",
+  "visitorNoQr": "Bu kart için QR kodu yok.",
+  "visitorQrLabel": "Kapı için QR kodu",
+  "visitorQrHint": "QR kodunu misafirinize gönderin. Güvenlik kapıda okutur; belirtilen saat aralığında ve öncesinde ile sonrasında 30 dakika geçerlidir.",
+  "visitorShare": "QR kodunu paylaş",
+  "shareFailed": "Paylaşım açılamadı.",
+  "visitorShareText": "{site} ziyaretçi kartı - {name}: {range}. Bu QR kodunu kapıda gösterin. Kod: {code}",
+  "@visitorShareText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      },
+      "site": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorCancel": "Bu kartı iptal et",
+  "visitorCancelled": "İptal edildi",
+  "visitorArrived": "Geldi",
+  "visitorWalkIn": "Kapıdan",
+  "passUpcoming": "Henüz geçerli değil",
+  "passValid": "Şu an geçerli",
+  "passEnded": "Süresi doldu",
+  "visitorStatusPreApproved": "Bekleniyor",
+  "visitorStatusRequested": "Yanıtınız bekleniyor",
+  "visitorStatusApproved": "Onaylandı",
+  "visitorStatusDenied": "Reddedildi",
+  "visitorStatusExpired": "Süresi doldu",
+  "recurringEmpty": "Sürekli ziyaretçi yok. Temizlikçi, bakıcı veya düzenli bir misafir ekleyin.",
+  "recurringActive": "Geçerli",
+  "recurringRevoked": "İptal edildi",
+  "recurringExpired": "Süresi doldu",
+  "recurringDays": "Günler",
+  "recurringValidity": "Geçerlilik",
+  "validityNoEnd": "Bitiş yok",
+  "validityMonth1": "1 ay",
+  "validityMonths3": "3 ay",
+  "validityYear1": "1 yıl",
+  "recurringFrom": "Başlangıç:",
+  "recurringTo": "bitiş:",
+  "recurringQrHint": "Bu QR kodu, siz iptal edene kadar seçilen gün ve saatlerde geçerlidir. İptal kapıda hemen geçerli olur.",
+  "recurringShareText": "{site} sürekli geçiş kartı - {name}: {when}. Bu QR kodunu kapıda gösterin. Kod: {code}",
+  "@recurringShareText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      },
+      "site": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "recurringRevoke": "İptal et",
+  "recurringRevokeTitle": "Bu kart iptal edilsin mi?",
+  "recurringRevokeBody": "{name} artık bu QR koduyla içeri alınmayacak.",
+  "@recurringRevokeBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorApprovalTitle": "Kapıda ziyaretçi",
+  "visitorWaitingAtGate": "{name} kapıda bekliyor",
+  "@visitorWaitingAtGate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorRequestUnit": "{door} numaralı daire için",
+  "@visitorRequestUnit": {
+    "placeholders": {
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorAnswer": "Yanıtla",
+  "visitorApprove": "Onayla",
+  "visitorDeny": "Reddet",
+  "visitorExpiresIn": "{time} içinde yanıtlayın",
+  "@visitorExpiresIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorRequestGone": "Bu istek artık açık değil.",
+  "visitorResultApproved": "Bu ziyaretçiyi onayladınız. Güvenlik içeri alacak.",
+  "visitorResultDenied": "Bu ziyaretçiyi reddettiniz.",
+  "visitorResultExpired": "Yanıt süresi doldu.",
+  "visitorGateContactTitle": "Güvenlik sizi arayacak",
+  "visitorGateContactSet": "Güvenlik, kapı iletişim numaranızı arar: {phone}.",
+  "@visitorGateContactSet": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "visitorGateContactMissing": "Kapı iletişim numarası eklemediniz; güvenlik sizi arayamaz. Profilinizden ekleyin.",
+  "visitorGateContactAdd": "Kapı iletişim numarası ekle",
+  "parcelsTitle": "Kargolar",
+  "parcelsWaiting": "Sizi bekleyen",
+  "parcelsRecent": "Yakın zamanda teslim alınan",
+  "parcelsEmpty": "Henüz kargo yok.",
+  "parcelsNoneWaiting": "Bekleyen kargo yok.",
+  "parcelNoDescription": "Kargo",
+  "parcelUnit": "Daire {door}",
+  "@parcelUnit": {
+    "placeholders": {
+      "door": {
+        "type": "String"
+      }
+    }
+  },
+  "parcelReceived": "Alındı:",
+  "parcelCollected": "Teslim alındı:",
+  "parcelCollectedBy": "{name} tarafından",
+  "@parcelCollectedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "assemblyTitle": "Genel kurul",
+  "assemblyEmpty": "Henüz genel kurul yok.",
+  "assemblyUpcoming": "Yaklaşan",
+  "assemblyPast": "Önceki toplantılar",
+  "meetingKindGeneral": "Genel kurul",
+  "meetingKindExtraordinary": "Olağanüstü genel kurul",
+  "meetingStatusDraft": "Taslak",
+  "meetingStatusCalled": "Toplantıya çağrıldı",
+  "meetingStatusInSession": "Toplantı sürüyor",
+  "meetingStatusClosed": "Tamamlandı",
+  "meetingStatusCancelled": "İptal edildi",
+  "meetingWhen": "Ne zaman",
+  "meetingSecondCall": "İkinci toplantı",
+  "meetingWhere": "Nerede",
+  "meetingCallLetter": "Toplantı daveti (PDF)",
+  "meetingAgenda": "Gündem",
+  "meetingAgendaEmpty": "Gündem henüz yayımlanmadı.",
+  "agendaVoted": "Oylanır",
+  "pollsTitle": "Toplantı öncesi anketler",
+  "pollsNonBinding": "Yanıtınız bağlayıcı değildir. Daire başına bir yanıt.",
+  "pollsOwnersOnly": "Anketleri yalnızca malikler yanıtlar.",
+  "pollOpen": "Açık",
+  "pollClosed": "Kapandı",
+  "pollNotOpen": "Henüz açık değil",
+  "pollClosesAt": "Kapanış:",
+  "pollYes": "Evet",
+  "pollNo": "Hayır",
+  "pollAbstain": "Çekimser",
+  "pollAnswered": "Yanıtlandı",
+  "checkInTitle": "Toplantıya giriş",
+  "checkInOpen": "Bu QR kodunu giriş masasında gösterin.",
+  "checkInNotYet": "Giriş toplantı başlayınca açılır. Bu QR kodunu hazır tutun.",
+  "checkInDone": "Giriş yapıldı",
+  "checkInQrLabel": "Giriş QR kodu",
+  "minutesTitle": "Toplantı tutanağı",
+  "minutesOpen": "Tutanağı aç (PDF)",
+  "minutesNone": "Tutanak henüz hazır değil.",
+  "decisionsTitle": "Kararlar",
+  "decisionsEmpty": "Gösterilecek karar yok.",
+  "decisionsResidentsOnly": "Sakinleri ilgilendiren kararları görüyorsunuz.",
+  "decisionConcernsResidents": "Sakinleri ilgilendirir",
+  "decisionNumber": "Karar {year}/{no}",
+  "@decisionNumber": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      },
+      "no": {
+        "type": "int"
+      }
+    }
+  },
+  "outcomeAccepted": "Kabul edildi",
+  "outcomeRejected": "Reddedildi",
+  "outcomeNoVote": "Oylama yok",
+  "outcomeNoted": "Bilgiye sunuldu",
+  "webOpen": "Web'de aç",
+  "webOpenBody": "Web sitesini açar ve oturumunuzu açar.",
+  "webOpenFailed": "Tarayıcı açılamadı.",
+  "notifGeneric": "Yeni bildirim",
+  "notifAgentSilent": "Geçiş ajanı sessiz",
+  "notifAgentClockSkew": "Geçiş ajanı saat farkı",
+  "notifAgentStopped": "Geçiş ajanı durdu",
+  "notifWebhookFailing": "Webhook uç noktası başarısız",
+  "notifSignInCode": "Giriş kodu",
+  "notifInvitation": "Davetiye",
+  "notifPeriodicTitle": "Yeni bildirimler",
+  "notifPeriodicBody": "{count} okunmamış bildiriminiz var.",
+  "@notifPeriodicBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsMayBeDelayed": "Bildirimler gecikebilir",
+  "notificationsMayBeDelayedBody": "Anlık bildirimler şu an bu telefona ulaşmıyor; uygulama arada bir yenilikleri kontrol eder.",
+  "channelAnnouncements": "Duyurular",
+  "channelMoney": "Ödemeler ve ekstreler",
+  "channelTickets": "Talepler",
+  "channelCommunity": "Ziyaretçiler, kargolar ve rezervasyonlar",
+  "channelAssembly": "Genel kurul",
+  "channelAccount": "Hesap",
+  "channelSystem": "Sistem"
 }

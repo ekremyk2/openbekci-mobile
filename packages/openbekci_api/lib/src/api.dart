@@ -9,7 +9,9 @@ import 'package:openbekci_api/src/auth/bearer_auth.dart';
 import 'package:openbekci_api/src/auth/oauth.dart';
 import 'package:openbekci_api/src/api/auth_api.dart';
 import 'package:openbekci_api/src/api/codes_api.dart';
+import 'package:openbekci_api/src/api/community_api.dart';
 import 'package:openbekci_api/src/api/dashboards_api.dart';
+import 'package:openbekci_api/src/api/governance_api.dart';
 import 'package:openbekci_api/src/api/instance_api.dart';
 import 'package:openbekci_api/src/api/me_api.dart';
 import 'package:openbekci_api/src/api/money_api.dart';
@@ -120,10 +122,22 @@ class OpenbekciApi {
     return CodesApi(dio);
   }
 
+  /// Get CommunityApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  CommunityApi getCommunityApi() {
+    return CommunityApi(dio);
+  }
+
   /// Get DashboardsApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   DashboardsApi getDashboardsApi() {
     return DashboardsApi(dio);
+  }
+
+  /// Get GovernanceApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  GovernanceApi getGovernanceApi() {
+    return GovernanceApi(dio);
   }
 
   /// Get InstanceApi instance, base route and serializer can be overridden by a given but be careful,

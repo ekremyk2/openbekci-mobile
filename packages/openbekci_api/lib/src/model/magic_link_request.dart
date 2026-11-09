@@ -37,7 +37,7 @@ class MagicLinkRequest {
 
 
 
-      /// `mobile` makes the link use the `openbekci://` scheme instead of the web URL.
+      /// `mobile` makes the link use the `openbekci://<host>/…` form (the instance host first) instead of the web URL.
   @JsonKey(
     name: r'client',
     required: false,
@@ -73,7 +73,7 @@ class MagicLinkRequest {
 
 }
 
-/// `mobile` makes the link use the `openbekci://` scheme instead of the web URL.
+/// `mobile` makes the link use the `openbekci://<host>/…` form (the instance host first) instead of the web URL.
 enum MagicLinkRequestClientEnum {
 @JsonValue(r'web')
 web(r'web'),

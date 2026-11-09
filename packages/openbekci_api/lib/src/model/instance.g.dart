@@ -33,6 +33,8 @@ abstract class _$InstanceCWProxy {
 
   Instance policies(Map<String, Object> policies);
 
+  Instance packDetails(List<InstancePack> packDetails);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Instance(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -53,6 +55,7 @@ abstract class _$InstanceCWProxy {
     Branding branding,
     RelayEnrollment relayEnrollment,
     Map<String, Object> policies,
+    List<InstancePack> packDetails,
   });
 }
 
@@ -108,6 +111,10 @@ class _$InstanceCWProxyImpl implements _$InstanceCWProxy {
   Instance policies(Map<String, Object> policies) => this(policies: policies);
 
   @override
+  Instance packDetails(List<InstancePack> packDetails) =>
+      this(packDetails: packDetails);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Instance(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -128,6 +135,7 @@ class _$InstanceCWProxyImpl implements _$InstanceCWProxy {
     Object? branding = const $CopyWithPlaceholder(),
     Object? relayEnrollment = const $CopyWithPlaceholder(),
     Object? policies = const $CopyWithPlaceholder(),
+    Object? packDetails = const $CopyWithPlaceholder(),
   }) {
     return Instance(
       instanceId: instanceId == const $CopyWithPlaceholder()
@@ -182,6 +190,10 @@ class _$InstanceCWProxyImpl implements _$InstanceCWProxy {
           ? _value.policies
           // ignore: cast_nullable_to_non_nullable
           : policies as Map<String, Object>,
+      packDetails: packDetails == const $CopyWithPlaceholder()
+          ? _value.packDetails
+          // ignore: cast_nullable_to_non_nullable
+          : packDetails as List<InstancePack>,
     );
   }
 }
@@ -216,6 +228,7 @@ Instance _$InstanceFromJson(Map<String, dynamic> json) => $checkedCreate(
         'branding',
         'relay_enrollment',
         'policies',
+        'pack_details',
       ],
     );
     final val = Instance(
@@ -259,6 +272,12 @@ Instance _$InstanceFromJson(Map<String, dynamic> json) => $checkedCreate(
         (v) =>
             (v as Map<String, dynamic>).map((k, e) => MapEntry(k, e as Object)),
       ),
+      packDetails: $checkedConvert(
+        'pack_details',
+        (v) => (v as List<dynamic>)
+            .map((e) => InstancePack.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      ),
     );
     return val;
   },
@@ -272,6 +291,7 @@ Instance _$InstanceFromJson(Map<String, dynamic> json) => $checkedCreate(
     'minAppVersion': 'min_app_version',
     'authMethods': 'auth_methods',
     'relayEnrollment': 'relay_enrollment',
+    'packDetails': 'pack_details',
   },
 );
 
@@ -289,4 +309,5 @@ Map<String, dynamic> _$InstanceToJson(Instance instance) => <String, dynamic>{
   'branding': instance.branding.toJson(),
   'relay_enrollment': instance.relayEnrollment.toJson(),
   'policies': instance.policies,
+  'pack_details': instance.packDetails.map((e) => e.toJson()).toList(),
 };

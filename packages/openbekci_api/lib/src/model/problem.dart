@@ -235,6 +235,10 @@ scanUnavailable(r'scan_unavailable'),
 agentOffline(r'agent_offline'),
 @JsonValue(r'agent_session_expired')
 agentSessionExpired(r'agent_session_expired'),
+@JsonValue(r'api_key_revoked')
+apiKeyRevoked(r'api_key_revoked'),
+@JsonValue(r'api_key_expired')
+apiKeyExpired(r'api_key_expired'),
 @JsonValue(r'unknown_default_open_api')
 unknownDefaultOpenApi(r'unknown_default_open_api');
 
