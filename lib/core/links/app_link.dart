@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:openbekci_mobile/core/links/safe_id.dart';
 
 /// A link the app understands (backend plan section 6, mobile plan section 6).
 ///
@@ -110,8 +111,8 @@ sealed class AppLink {
         }
       case 'pay':
         // openbekci://pay/return?org_id=...&checkout_id=... (card checkout)
-        final org = uri.queryParameters['org_id'];
-        final id = uri.queryParameters['checkout_id'];
+        final org = safeId(uri.queryParameters['org_id']);
+        final id = safeId(uri.queryParameters['checkout_id']);
         if (s.length >= 2 && s[1] == 'return' && org != null && id != null) {
           return PayReturnLink(orgId: org, checkoutId: id, origin: origin);
         }
