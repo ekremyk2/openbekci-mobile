@@ -39,6 +39,19 @@ jobs:
           key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock', 'packages/openbekci_api/pubspec.yaml') }}
           restore-keys: pub-${{ runner.os }}-
 
+      # Native-asset hooks (pdfium_dart, sqlite3) download prebuilt libraries
+      # into .dart_tool. Cache them so a flaky github.com does not break the
+      # build; the cache is only saved after a green job, so a truncated file
+      # is never stored.
+      - name: Cache native-asset hook outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner
+            .dart_tool/native_assets
+          key: native-assets-${{ runner.os }}-${{ hashFiles('pubspec.lock', 'packages/openbekci_api/pubspec.yaml') }}
+          restore-keys: native-assets-${{ runner.os }}-
+
       - name: flutter pub get
         run: flutter pub get
 
@@ -65,7 +78,21 @@ jobs:
         run: git diff --exit-code -- test/golden
 
       - name: Build dev debug APK
-        run: flutter build apk --debug --flavor dev -t lib/main_dev.dart
+        run: |
+          for attempt in 1 2 3; do
+            if flutter build apk --debug --flavor dev -t lib/main_dev.dart; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              delay=$((attempt * 30))
+              echo "::warning::APK build attempt $attempt failed; clearing downloaded native assets and retrying in ${delay}s"
+              # A truncated download must not be reused (sqlite3 hash mismatch).
+              rm -rf .dart_tool/hooks_runner .dart_tool/native_assets
+              sleep "$delay"
+            fi
+          done
+          echo "::error::APK build failed after 3 attempts"
+          exit 1
 
       - uses: actions/upload-artifact@v4
         with:
