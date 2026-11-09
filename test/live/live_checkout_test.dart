@@ -356,7 +356,7 @@ void main() {
             flavor: Flavor.dev,
             appName: 'OpenBekci',
             relayId: 'official',
-            seedColor: Color(0xFF1A73E8),
+            seedColor: Color(0xFFB75131),
           ),
         ),
         appInfoProvider.overrideWithValue(

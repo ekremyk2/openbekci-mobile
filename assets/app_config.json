@@ -4,7 +4,7 @@
   "relay_id": "official",
   "support_url": "https://github.com/ekremyk2/openbekci-mobile",
   "brand": {
-    "seed_color": "#1A73E8",
-    "logo_asset": null
+    "seed_color": "#B75131",
+    "logo_asset": "assets/brand/mark.png"
   }
 }

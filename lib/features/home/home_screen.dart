@@ -39,6 +39,10 @@ class HomeScreen extends ConsumerWidget {
     final unread = ref.watch(displayUnreadProvider);
     return Scaffold(
       appBar: AppBar(
+        leading: const Padding(
+          padding: EdgeInsetsDirectional.all(14),
+          child: BrandLogo(height: 28),
+        ),
         title: ctx == null
             ? Text(l.homeTitle)
             : OrgSwitcher(orgContext: ctx, key: const Key('orgSwitcher')),

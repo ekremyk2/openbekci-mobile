@@ -8,6 +8,7 @@ import 'package:openbekci_mobile/core/auth/auth_repository.dart';
 import 'package:openbekci_mobile/core/auth/link_handler.dart';
 import 'package:openbekci_mobile/core/instance/discovery.dart';
 import 'package:openbekci_mobile/core/providers.dart';
+import 'package:openbekci_mobile/core/widgets/display.dart';
 import 'package:openbekci_mobile/core/widgets/form_support.dart';
 import 'package:openbekci_mobile/features/onboarding/application/onboarding_providers.dart';
 import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
@@ -40,6 +41,11 @@ class SignInScreen extends ConsumerWidget {
       title: l.signInTitle,
       leading: BackButton(onPressed: () => context.go('/server')),
       children: [
+        const Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: BrandLogo(height: 32, wordmark: true),
+        ),
+        const SizedBox(height: 24),
         if (server != null)
           Text(
             l.signInServerLine(server.instanceName),

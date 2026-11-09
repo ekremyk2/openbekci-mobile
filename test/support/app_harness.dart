@@ -28,7 +28,7 @@ AppConfig testConfig({Flavor flavor = Flavor.prod}) => AppConfig(
   flavor: flavor,
   appName: 'OpenBekci',
   relayId: 'official',
-  seedColor: const Color(0xFF1A73E8),
+  seedColor: const Color(0xFFB75131),
 );
 
 Discovery testDiscovery({
