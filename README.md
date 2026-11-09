@@ -176,8 +176,8 @@ flutter test               # unit, widget, contract, goldens; live tests skip th
   `OPENBEKCI_PUSH_ALLOW_PRIVATE=true` and an organization administrator account (same variables as above).
 - **Contract matrix** (`test/contract/compat_matrix_test.dart`): samples built from the two previous spec pins kept in
   `spec/compat/` (N-1 and N-2, with their locks) are decoded by the current generated client, alone and with an unknown
-  field on every object and an unknown value for every enum. Known gaps (fields the current spec requires that an older
-  server lacks) are listed in the test. When bumping the pin: copy the current `spec/openapi.yaml` and lock into
+  field on every object and an unknown value for every enum. Fields the current spec requires but older servers lack are made optional in
+  `tool/prune_spec.dart` (`MeUser.version`, `OrgAccess.occupant_permissions`, `MyPoll.answers`). When bumping the pin: copy the current `spec/openapi.yaml` and lock into
   `spec/compat/` under the old commit's short sha and drop the oldest pair.
 - **Accessibility** (`test/features/a11y_test.dart`): `meetsGuideline` for 48 dp targets, labelled targets and text contrast on
   home, money and card checkout, light and dark.

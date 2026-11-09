@@ -35,7 +35,7 @@ class OrgAccess {
 
     required  this.permissions,
 
-    required  this.occupantPermissions,
+     this.occupantPermissions,
 
     required  this.sites,
 
@@ -119,12 +119,12 @@ class OrgAccess {
   @JsonKey(
     
     name: r'occupant_permissions',
-    required: true,
+    required: false,
     includeIfNull: false,
   )
 
 
-  final List<PermissionGrant> occupantPermissions;
+  final List<PermissionGrant>? occupantPermissions;
 
 
 

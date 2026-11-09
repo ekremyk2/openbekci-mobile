@@ -27,7 +27,7 @@ class MyPoll {
 
     required  this.answeredUnits,
 
-    required  this.answers,
+     this.answers,
   });
 
   @JsonKey(
@@ -70,12 +70,12 @@ class MyPoll {
   @JsonKey(
     
     name: r'answers',
-    required: true,
+    required: false,
     includeIfNull: false,
   )
 
 
-  final List<MyPollAnswer> answers;
+  final List<MyPollAnswer>? answers;
 
 
 

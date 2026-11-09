@@ -32,7 +32,7 @@ class MeUser {
 
     required  this.isPlatformAdmin,
 
-    required  this.version,
+     this.version,
   });
 
   @JsonKey(
@@ -112,12 +112,12 @@ class MeUser {
   @JsonKey(
     
     name: r'version',
-    required: true,
+    required: false,
     includeIfNull: false,
   )
 
 
-  final int version;
+  final int? version;
 
 
 

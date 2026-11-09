@@ -135,6 +135,9 @@ void main(List<String> args) {
 /// * `DebtorRef` is a discriminated `oneOf`; openapi-generator flattens it
 ///   into one class with every member required, which fails to decode a real
 ///   statement. It becomes one object with only `mode` required.
+/// * `MeUser.version`, `OrgAccess.occupant_permissions` and `MyPoll.answers` are
+///   required by the current spec but absent on N-1 and N-2 servers: they
+///   become optional so an older server's answer still decodes.
 void _applyContractFixups(Map<String, Object?> spec) {
   void params(Object? node) {
     if (node is Map) {
@@ -171,6 +174,15 @@ void _applyContractFixups(Map<String, Object?> spec) {
       final p = props?[key];
       if (p is Map) p.remove('format');
     }
+  }
+  const addedLater = {
+    'MeUser': 'version',
+    'OrgAccess': 'occupant_permissions',
+    'MyPoll': 'answers',
+  };
+  for (final e in addedLater.entries) {
+    final req = (schemas[e.key] as Map?)?['required'];
+    if (req is List) req.remove(e.value);
   }
   if (schemas.containsKey('DebtorRef')) {
     schemas['DebtorRef'] = {

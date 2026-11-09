@@ -71,16 +71,6 @@ final _decoders = <String, Object? Function(Map<String, dynamic>)>{
   'WebLoginLink': api.WebLoginLink.fromJson,
 };
 
-/// shortcut: fields the current spec requires but an older one lacks make the
-/// decoder throw on that older server (the version gate is the guard); listed
-/// so a new break fails the test, remove entries when the gate drops that
-/// server version.
-const _knownOlderServerGaps = <String>{
-  'MeUser.version',
-  'OrgAccess.occupant_permissions',
-  'MyPoll.answers',
-};
-
 Object? _plain(Object? v) => v is YamlMap
     ? {for (final e in v.entries) e.key.toString(): _plain(e.value)}
     : v is YamlList
@@ -213,7 +203,8 @@ void main() {
               ]);
             }
           }
-          expect(gaps.difference(_knownOlderServerGaps), isEmpty);
+          // Older servers must decode: no field the current spec requires may be missing.
+          expect(gaps, isEmpty);
           expect(decoded, greaterThan(30));
         },
       );

@@ -13,7 +13,7 @@ abstract class _$MyPollCWProxy {
 
   MyPoll answeredUnits(List<String> answeredUnits);
 
-  MyPoll answers(List<MyPollAnswer> answers);
+  MyPoll answers(List<MyPollAnswer>? answers);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `MyPoll(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -25,7 +25,7 @@ abstract class _$MyPollCWProxy {
     String agendaItemId,
     String title,
     List<String> answeredUnits,
-    List<MyPollAnswer> answers,
+    List<MyPollAnswer>? answers,
   });
 }
 
@@ -46,7 +46,7 @@ class _$MyPollCWProxyImpl implements _$MyPollCWProxy {
       this(answeredUnits: answeredUnits);
 
   @override
-  MyPoll answers(List<MyPollAnswer> answers) => this(answers: answers);
+  MyPoll answers(List<MyPollAnswer>? answers) => this(answers: answers);
 
   @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `MyPoll(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -77,7 +77,7 @@ class _$MyPollCWProxyImpl implements _$MyPollCWProxy {
       answers: answers == const $CopyWithPlaceholder()
           ? _value.answers
           // ignore: cast_nullable_to_non_nullable
-          : answers as List<MyPollAnswer>,
+          : answers as List<MyPollAnswer>?,
     );
   }
 }
@@ -98,12 +98,7 @@ MyPoll _$MyPollFromJson(Map<String, dynamic> json) => $checkedCreate(
   ($checkedConvert) {
     $checkKeys(
       json,
-      requiredKeys: const [
-        'agenda_item_id',
-        'title',
-        'answered_units',
-        'answers',
-      ],
+      requiredKeys: const ['agenda_item_id', 'title', 'answered_units'],
     );
     final val = MyPoll(
       agendaItemId: $checkedConvert('agenda_item_id', (v) => v as String),
@@ -114,8 +109,8 @@ MyPoll _$MyPollFromJson(Map<String, dynamic> json) => $checkedCreate(
       ),
       answers: $checkedConvert(
         'answers',
-        (v) => (v as List<dynamic>)
-            .map((e) => MyPollAnswer.fromJson(e as Map<String, dynamic>))
+        (v) => (v as List<dynamic>?)
+            ?.map((e) => MyPollAnswer.fromJson(e as Map<String, dynamic>))
             .toList(),
       ),
     );
@@ -131,5 +126,5 @@ Map<String, dynamic> _$MyPollToJson(MyPoll instance) => <String, dynamic>{
   'agenda_item_id': instance.agendaItemId,
   'title': instance.title,
   'answered_units': instance.answeredUnits,
-  'answers': instance.answers.map((e) => e.toJson()).toList(),
+  'answers': ?instance.answers?.map((e) => e.toJson()).toList(),
 };

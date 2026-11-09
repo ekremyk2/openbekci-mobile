@@ -19,7 +19,7 @@ abstract class _$OrgAccessCWProxy {
 
   OrgAccess permissions(List<PermissionGrant> permissions);
 
-  OrgAccess occupantPermissions(List<PermissionGrant> occupantPermissions);
+  OrgAccess occupantPermissions(List<PermissionGrant>? occupantPermissions);
 
   OrgAccess sites(List<MeSite> sites);
 
@@ -38,7 +38,7 @@ abstract class _$OrgAccessCWProxy {
     String name,
     List<RoleGrant> roles,
     List<PermissionGrant> permissions,
-    List<PermissionGrant> occupantPermissions,
+    List<PermissionGrant>? occupantPermissions,
     List<MeSite> sites,
     String? personId,
   });
@@ -71,7 +71,7 @@ class _$OrgAccessCWProxyImpl implements _$OrgAccessCWProxy {
       this(permissions: permissions);
 
   @override
-  OrgAccess occupantPermissions(List<PermissionGrant> occupantPermissions) =>
+  OrgAccess occupantPermissions(List<PermissionGrant>? occupantPermissions) =>
       this(occupantPermissions: occupantPermissions);
 
   @override
@@ -126,7 +126,7 @@ class _$OrgAccessCWProxyImpl implements _$OrgAccessCWProxy {
       occupantPermissions: occupantPermissions == const $CopyWithPlaceholder()
           ? _value.occupantPermissions
           // ignore: cast_nullable_to_non_nullable
-          : occupantPermissions as List<PermissionGrant>,
+          : occupantPermissions as List<PermissionGrant>?,
       sites: sites == const $CopyWithPlaceholder()
           ? _value.sites
           // ignore: cast_nullable_to_non_nullable
@@ -162,7 +162,6 @@ OrgAccess _$OrgAccessFromJson(Map<String, dynamic> json) => $checkedCreate(
         'name',
         'roles',
         'permissions',
-        'occupant_permissions',
         'sites',
         'person_id',
       ],
@@ -186,8 +185,8 @@ OrgAccess _$OrgAccessFromJson(Map<String, dynamic> json) => $checkedCreate(
       ),
       occupantPermissions: $checkedConvert(
         'occupant_permissions',
-        (v) => (v as List<dynamic>)
-            .map((e) => PermissionGrant.fromJson(e as Map<String, dynamic>))
+        (v) => (v as List<dynamic>?)
+            ?.map((e) => PermissionGrant.fromJson(e as Map<String, dynamic>))
             .toList(),
       ),
       sites: $checkedConvert(
@@ -214,8 +213,8 @@ Map<String, dynamic> _$OrgAccessToJson(OrgAccess instance) => <String, dynamic>{
   'name': instance.name,
   'roles': instance.roles.map((e) => e.toJson()).toList(),
   'permissions': instance.permissions.map((e) => e.toJson()).toList(),
-  'occupant_permissions': instance.occupantPermissions
-      .map((e) => e.toJson())
+  'occupant_permissions': ?instance.occupantPermissions
+      ?.map((e) => e.toJson())
       .toList(),
   'sites': instance.sites.map((e) => e.toJson()).toList(),
   'person_id': instance.personId,
