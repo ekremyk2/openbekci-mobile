@@ -55,6 +55,12 @@ jobs:
       - name: flutter pub get
         run: flutter pub get
 
+      # `flutter test` and `flutter build` both run the native-asset hooks
+      # (downloads from github.com): fetch them once, with retries, before the
+      # checks. A small test file is enough to trigger the hook build.
+      - name: Fetch native assets (with retry)
+        run: bash tool/ci/retry_native_assets.sh flutter test test/core/format_test.dart
+
       - name: Format
         run: dart format --output=none --set-exit-if-changed lib test tool integration_test
 
@@ -78,21 +84,7 @@ jobs:
         run: git diff --exit-code -- test/golden
 
       - name: Build dev debug APK
-        run: |
-          for attempt in 1 2 3; do
-            if flutter build apk --debug --flavor dev -t lib/main_dev.dart; then
-              exit 0
-            fi
-            if [ "$attempt" -lt 3 ]; then
-              delay=$((attempt * 30))
-              echo "::warning::APK build attempt $attempt failed; clearing downloaded native assets and retrying in ${delay}s"
-              # A truncated download must not be reused (sqlite3 hash mismatch).
-              rm -rf .dart_tool/hooks_runner .dart_tool/native_assets
-              sleep "$delay"
-            fi
-          done
-          echo "::error::APK build failed after 3 attempts"
-          exit 1
+        run: bash tool/ci/retry_native_assets.sh flutter build apk --debug --flavor dev -t lib/main_dev.dart
 
       - uses: actions/upload-artifact@v4
         with:
