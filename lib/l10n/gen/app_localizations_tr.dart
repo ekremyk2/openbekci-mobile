@@ -438,9 +438,6 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get homePhaseNote => 'Diğer ekranlar sonraki sürümlerde gelecek.';
-
-  @override
   String get profileTitle => 'Profil';
 
   @override
@@ -485,4 +482,677 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get navProfile => 'Profil';
+
+  @override
+  String get aboutLicenses => 'Açık kaynak lisansları';
+
+  @override
+  String get aboutTitle => 'Hakkında';
+
+  @override
+  String aboutVersion(String version, String build) {
+    return 'Sürüm $version ($build)';
+  }
+
+  @override
+  String get accruedLateFeeToday => 'Bugüne kadar işleyen gecikme zammı';
+
+  @override
+  String actionCopyValue(String label) {
+    return '$label değerini kopyala';
+  }
+
+  @override
+  String get actionSave => 'Kaydet';
+
+  @override
+  String get announcementAttachments => 'Ekler';
+
+  @override
+  String get announcementPinned => 'Sabitlenmiş';
+
+  @override
+  String get announcementTitle => 'Duyuru';
+
+  @override
+  String get announcementUnread => 'Okunmadı';
+
+  @override
+  String get announcementsEmpty => 'Henüz duyuru yok.';
+
+  @override
+  String get announcementsTitle => 'Duyurular';
+
+  @override
+  String get appLockBody =>
+      'Uygulamayı açarken parmak izi, yüz veya cihaz PIN\'i istenir.';
+
+  @override
+  String get appLockEnable => 'Uygulamayı kilitle';
+
+  @override
+  String get appLockTitle => 'Uygulama kilidi';
+
+  @override
+  String get attachmentPhoto => 'Fotoğraf';
+
+  @override
+  String get balanceToday => 'Bugünkü bakiye';
+
+  @override
+  String get bankDetailsMissing =>
+      'Yönetici bu site için henüz banka bilgisi yayınlamadı.';
+
+  @override
+  String get bankDetailsTitle => 'Banka bilgileri';
+
+  @override
+  String get bankHolder => 'Hesap sahibi';
+
+  @override
+  String get bankIban => 'IBAN';
+
+  @override
+  String get bankName => 'Banka';
+
+  @override
+  String get bankReference => 'Kullanılacak açıklama';
+
+  @override
+  String get closingBalance => 'Dönem sonu bakiye';
+
+  @override
+  String get consentAccepted => 'Kabul edildi';
+
+  @override
+  String get consentDeclined => 'Reddedildi';
+
+  @override
+  String consentDirectory(String site) {
+    return '$site rehberinde listelenme';
+  }
+
+  @override
+  String get consentsBody =>
+      'Verdiğiniz veya reddettiğiniz izinler. İstediğiniz zaman değiştirebilirsiniz.';
+
+  @override
+  String get consentsOtherNote =>
+      'Bu sunucu henüz başka izin metni yayınlamıyor.';
+
+  @override
+  String get consentsTitle => 'İzinler';
+
+  @override
+  String get copiedToClipboard => 'Kopyalandı';
+
+  @override
+  String get creditLabel => 'Alacak';
+
+  @override
+  String declareAmount(String currency) {
+    return 'Tutar ($currency)';
+  }
+
+  @override
+  String get declareBody =>
+      'Havaleyi yaptınız mı? Yöneticiye bildirin, eşleştirsin. Onaylayana kadar ekstrenizde değişiklik olmaz.';
+
+  @override
+  String get declareDate => 'Havale tarihi';
+
+  @override
+  String get declareNeedsConnection =>
+      'İnternet bağlantısı gerekir. Gönderim başarısız olursa tekrar deneyin: iki kez bildirilmez.';
+
+  @override
+  String get declareNote => 'Not (isteğe bağlı)';
+
+  @override
+  String get declareReference => 'Açıklama (isteğe bağlı)';
+
+  @override
+  String get declareSent => 'Bildirildi, onay bekleniyor';
+
+  @override
+  String get declareSentBody => 'Para ulaştığında yönetici onaylayacak.';
+
+  @override
+  String get declareSubmit => 'Havale ile ödedim';
+
+  @override
+  String get declareTitle => 'Havale ile ödedim';
+
+  @override
+  String get declaredSection => 'Bildirildi, onay bekliyor';
+
+  @override
+  String get directoryBody =>
+      'Komşular adınızı site rehberinde yalnızca siz izin verirseniz görür.';
+
+  @override
+  String get directoryListMe => 'Beni rehberde göster';
+
+  @override
+  String get directoryShowPhone => 'Telefon numaramı göster';
+
+  @override
+  String get directoryTitle => 'Rehber';
+
+  @override
+  String get documentGenerated => 'Otomatik oluşturuldu';
+
+  @override
+  String get documentOpening => 'Açılıyor…';
+
+  @override
+  String get documentShare => 'Paylaş';
+
+  @override
+  String get documentsEmpty => 'Burada belge yok.';
+
+  @override
+  String get documentsTitle => 'Belgeler';
+
+  @override
+  String get folderSite => 'Site klasörü';
+
+  @override
+  String get folderUnit => 'Bağımsız bölüm klasörünüz';
+
+  @override
+  String get formerPeriodNote =>
+      'Yalnızca kendi oturduğunuz dönemi görürsünüz.';
+
+  @override
+  String get gatePhoneHelp =>
+      'Uygulamada bir ziyaretçi isteğine yanıt vermezseniz kapı görevlisi bu numarayı arar.';
+
+  @override
+  String get gatePhoneLabel => 'Kapı iletişim telefonu';
+
+  @override
+  String get homeAssemblyUntitled => 'Genel kurul';
+
+  @override
+  String get homeBookings => 'Rezervasyonlar';
+
+  @override
+  String get homeComingSoon => 'Yakında';
+
+  @override
+  String get homeNextAssembly => 'Sonraki genel kurul';
+
+  @override
+  String get homeNoAssembly => 'Planlanmış genel kurul yok.';
+
+  @override
+  String get homeNoMoneyAccess =>
+      'Bakiyeler size gösterilmiyor. Erişim için daire sahibine başvurun.';
+
+  @override
+  String get homeOpenTickets => 'Açık talepler';
+
+  @override
+  String get homeParcels => 'Bekleyen kargolar';
+
+  @override
+  String get homeSectionCommunity => 'Topluluk';
+
+  @override
+  String get homeSectionNews => 'Haberler ve talepler';
+
+  @override
+  String get homeUnreadAnnouncements => 'Okunmamış duyurular';
+
+  @override
+  String get homeVisitors => 'Ziyaretçiler';
+
+  @override
+  String get householdNoMoney => 'Hane üyesi, mali bilgi yok';
+
+  @override
+  String get householdSeesMoney => 'Hane üyesi, mali bilgileri görür';
+
+  @override
+  String get includesLateFee => 'gecikme zammı dahil';
+
+  @override
+  String get languageDevice => 'Cihazla aynı';
+
+  @override
+  String get languageTitle => 'Dil';
+
+  @override
+  String get lockFailed => 'Kimliğiniz doğrulanamadı.';
+
+  @override
+  String get lockReason => 'OpenBekci kilidini aç';
+
+  @override
+  String get lockUnavailable =>
+      'Bu cihazda ekran kilidi veya biyometri kurulu değil.';
+
+  @override
+  String get lockUnlock => 'Kilidi aç';
+
+  @override
+  String get lockedTitle => 'OpenBekci kilitli';
+
+  @override
+  String get methodBankTransfer => 'Havale';
+
+  @override
+  String get methodCard => 'Kart';
+
+  @override
+  String get methodCash => 'Nakit';
+
+  @override
+  String get moneyTitle => 'Aidat';
+
+  @override
+  String get navMoney => 'Aidat';
+
+  @override
+  String get navMore => 'Daha fazla';
+
+  @override
+  String get navNotifications => 'Bildirimler';
+
+  @override
+  String get navTickets => 'Talepler';
+
+  @override
+  String get nextDue => 'Sonraki vade:';
+
+  @override
+  String get nextDueNone => 'Vadesi gelen yok';
+
+  @override
+  String get notBookedYet => 'Henüz deftere işlenmedi';
+
+  @override
+  String get notifAnnouncementPublished => 'Yeni duyuru';
+
+  @override
+  String get notifBookingCancelled => 'Rezervasyon iptal edildi';
+
+  @override
+  String get notifBookingConfirmed => 'Rezervasyon onaylandı';
+
+  @override
+  String get notifChargeDueSoon => 'Aidat vadesi yaklaşıyor';
+
+  @override
+  String get notifChargeOverdue => 'Aidat vadesi geçti';
+
+  @override
+  String get notifClaimDecided => 'Bağımsız bölüm talebi sonuçlandı';
+
+  @override
+  String get notifClaimRequested => 'Bağımsız bölüm talebi';
+
+  @override
+  String get notifDeliveryReceived => 'Kargo teslim alındı';
+
+  @override
+  String get notifDeliveryWaiting => 'Kargo bekliyor';
+
+  @override
+  String get notifDunningReminder => 'Ödeme hatırlatması';
+
+  @override
+  String get notifMeetingAssemblyDue => 'Genel kurul zamanı';
+
+  @override
+  String get notifMeetingCalled => 'Toplantıya çağrı';
+
+  @override
+  String get notifMeetingDecisions => 'Toplantı kararları';
+
+  @override
+  String get notifPaymentConfirmed => 'Ödeme onaylandı';
+
+  @override
+  String get notifPaymentDeclared => 'Ödeme bildirildi';
+
+  @override
+  String get notifPaymentReceipt => 'Ödeme makbuzu';
+
+  @override
+  String get notifPaymentRejected => 'Ödeme onaylanmadı';
+
+  @override
+  String get notifStatementSent => 'Ekstre gönderildi';
+
+  @override
+  String get notifTermExpiring => 'Görev süresi doluyor';
+
+  @override
+  String get notifTicketCommented => 'Talebe yeni yorum';
+
+  @override
+  String get notifTicketUpdated => 'Talep güncellendi';
+
+  @override
+  String get notifVisitorApproval => 'Ziyaretçi onay bekliyor';
+
+  @override
+  String get notifVisitorArrived => 'Ziyaretçi geldi';
+
+  @override
+  String get notifVisitorQrRotated => 'Ziyaretçi kodu yenilendi';
+
+  @override
+  String get notificationsCannotMute => 'Her zaman açık';
+
+  @override
+  String get notificationsEmpty => 'Bildirim yok.';
+
+  @override
+  String get notificationsMarkAll => 'Tümünü okundu işaretle';
+
+  @override
+  String get notificationsMutesBody =>
+      'Hangi bildirimleri alacağınızı seçin. Giriş kodları ve davetler kapatılamaz.';
+
+  @override
+  String get notificationsSettings => 'Bildirim ayarları';
+
+  @override
+  String get notificationsTitle => 'Bildirimler';
+
+  @override
+  String get openingBalance => 'Dönem başı bakiye';
+
+  @override
+  String get payByCard => 'Kartla öde';
+
+  @override
+  String get payByTransfer => 'Havale ile öde';
+
+  @override
+  String get payTitle => 'Havale ile ödeme';
+
+  @override
+  String get paymentConfirmed => 'Onaylandı';
+
+  @override
+  String get paymentDeclaredWaiting => 'Bildirildi, onay bekleniyor';
+
+  @override
+  String get paymentHistoryTitle => 'Ödemeler';
+
+  @override
+  String get paymentRefunded => 'İade edildi';
+
+  @override
+  String get paymentVoided => 'İptal edildi';
+
+  @override
+  String get paymentsEmpty => 'Henüz ödeme yok.';
+
+  @override
+  String get periodAll => 'Tümü';
+
+  @override
+  String get periodLast3Months => 'Son 3 ay';
+
+  @override
+  String get periodLastYear => 'Geçen yıl';
+
+  @override
+  String get periodThisYear => 'Bu yıl';
+
+  @override
+  String get profileContactsNote =>
+      'Telefon ve e-posta giriş bilgilerinizdir; değiştirmek için yöneticiye başvurun.';
+
+  @override
+  String get profileEditMe => 'Bilgilerim';
+
+  @override
+  String get profileEditMeBody => 'Ad, kapı iletişim telefonu ve dil';
+
+  @override
+  String receiptNo(String no) {
+    return 'Makbuz $no';
+  }
+
+  @override
+  String get runningBalance => 'Bakiye';
+
+  @override
+  String get saved => 'Kaydedildi';
+
+  @override
+  String get sessionMobile => 'Mobil uygulama';
+
+  @override
+  String get sessionRevoke => 'Oturumu kapat';
+
+  @override
+  String get sessionRevokeConfirm => 'Bu cihazın oturumu kapatılsın mı?';
+
+  @override
+  String get sessionThisDevice => 'Bu cihaz';
+
+  @override
+  String get sessionWeb => 'Web tarayıcı';
+
+  @override
+  String get sessionsTitle => 'Oturum açık cihazlar';
+
+  @override
+  String get shareReceipt => 'Makbuzu paylaş';
+
+  @override
+  String sideCardTitle(String door) {
+    return 'Daire $door';
+  }
+
+  @override
+  String sideChip(String unit, String side) {
+    return '$unit · $side';
+  }
+
+  @override
+  String get sideOwner => 'Malik tarafı';
+
+  @override
+  String get sideTenant => 'Kiracı tarafı';
+
+  @override
+  String get statementLines => 'Ekstre';
+
+  @override
+  String get statementNoLines => 'Bu dönemde hareket yok.';
+
+  @override
+  String get statementPdf => 'PDF';
+
+  @override
+  String get stmtKindAdjustment => 'Düzeltme';
+
+  @override
+  String get stmtKindCharge => 'Borçlandırma';
+
+  @override
+  String get stmtKindCredit => 'Alacak';
+
+  @override
+  String get stmtKindLateFee => 'Gecikme zammı';
+
+  @override
+  String get stmtKindOpening => 'Devir';
+
+  @override
+  String get stmtKindPayment => 'Ödeme';
+
+  @override
+  String get stmtKindRefund => 'İade';
+
+  @override
+  String get stmtKindReversal => 'Ters kayıt';
+
+  @override
+  String get switchOrganization => 'Kuruluş değiştir';
+
+  @override
+  String get ticketCategory => 'Kategori';
+
+  @override
+  String get ticketCommentHint => 'Yorum yazın';
+
+  @override
+  String get ticketCommentSend => 'Yorumu gönder';
+
+  @override
+  String ticketComments(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count yorum',
+      one: '1 yorum',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ticketCommon => 'Ortak';
+
+  @override
+  String get ticketCommonHint => 'Sitedeki herkes görür ve +1 verebilir.';
+
+  @override
+  String get ticketDescription => 'Sorunu anlatın';
+
+  @override
+  String get ticketDraftKept =>
+      'Gönderim başarısız olursa metniniz ve fotoğraflarınız saklanır; tekrar denemek ikinci bir talep oluşturmaz.';
+
+  @override
+  String get ticketMerged => 'Bu talep başka bir talebe birleştirildi.';
+
+  @override
+  String get ticketNew => 'Yeni talep';
+
+  @override
+  String get ticketNoThread => 'Henüz güncelleme yok.';
+
+  @override
+  String get ticketNoUnit => 'Bağımsız bölüm yok';
+
+  @override
+  String get ticketPhotoCamera => 'Kamera';
+
+  @override
+  String ticketPhotoCount(int count, int max) {
+    return '$count / $max fotoğraf';
+  }
+
+  @override
+  String get ticketPhotoGallery => 'Galeri';
+
+  @override
+  String get ticketPhotoRemove => 'Fotoğrafı kaldır';
+
+  @override
+  String get ticketPhotos => 'Fotoğraflar';
+
+  @override
+  String ticketPlusOne(int count) {
+    return '+1 ($count)';
+  }
+
+  @override
+  String get ticketPrivate => 'Özel';
+
+  @override
+  String get ticketPrivateHint => 'Yalnızca siz ve yönetim görür.';
+
+  @override
+  String ticketStatusChanged(String from, String to) {
+    return 'Durum: $from - $to';
+  }
+
+  @override
+  String ticketStatusSet(String to) {
+    return 'Durum: $to';
+  }
+
+  @override
+  String get ticketSubmit => 'Talebi gönder';
+
+  @override
+  String get ticketThread => 'Gelişmeler';
+
+  @override
+  String get ticketTitle => 'Talep';
+
+  @override
+  String get ticketTitleLabel => 'Başlık';
+
+  @override
+  String ticketUnit(String door) {
+    return 'Daire $door';
+  }
+
+  @override
+  String get ticketUnitOptional => 'Bağımsız bölüm (isteğe bağlı)';
+
+  @override
+  String get ticketVisibility => 'Kimler görebilir';
+
+  @override
+  String ticketVoted(int count) {
+    return '+1 verdiniz ($count)';
+  }
+
+  @override
+  String ticketVotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count +1',
+      one: '1 +1',
+      zero: 'Henüz +1 yok',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ticketsAll => 'Tümü';
+
+  @override
+  String get ticketsClosed => 'Kapalı';
+
+  @override
+  String get ticketsCommon => 'Ortak';
+
+  @override
+  String get ticketsEmpty => 'Burada talep yok.';
+
+  @override
+  String get ticketsEmptyTitle => 'Henüz talep yok';
+
+  @override
+  String get ticketsMine => 'Benimkiler';
+
+  @override
+  String get ticketsOpen => 'Açık';
+
+  @override
+  String get ticketsTitle => 'Talepler';
+
+  @override
+  String get totalDueToday => 'Bugün ödenecek toplam';
+
+  @override
+  String get valueOther => 'Diğer';
+
+  @override
+  String get ticketNoCategories =>
+      'Bu site için henüz talep kategorisi tanımlanmadı. Yöneticiye başvurun.';
 }

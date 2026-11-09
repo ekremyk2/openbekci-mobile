@@ -6,9 +6,13 @@ a self-hosted server, chosen at first launch through the discovery document. Lic
 Plans: `docs/plans/03-mobile.md` in the core repository (`ekremyk2/OpenBekci`). This repository consumes a **pinned
 OpenAPI spec**; it never builds against the core working tree.
 
-Status: **phase A (foundation)**. Server entry and site QR scan, sign-in by SMS code, password, email link and
-invitation, unit claim ("waiting for approval"), single account, token refresh, read cache and a minimal profile. The
-resident screens (statement, tickets, ...) are phase B.
+Status: **phase B (resident core)**. On top of phase A (server entry, site QR scan, sign-in by SMS code, password, email
+link and invitation, unit claim, token refresh, read cache): home per organization, the statement per debtor side with
+the late fee accrued to today and a PDF, pay by bank transfer with the "I've paid by transfer" declaration, tickets
+(per-site workflow statuses, private or common, "+1", photos), announcements with read receipts, documents (including
+the unit's private folder and generated files), the notification center with mutes, and the profile (my details, gate
+contact phone, directory opt-in, sessions, app lock, consents, about). Bookings, visitors, parcels and governance
+(phase C) and card checkout (phase D) are not built yet; the home shows read-only placeholders for them.
 
 ## Requirements
 
@@ -62,10 +66,13 @@ field works everywhere.
 ```
 lib/main_dev.dart, main_prod.dart   entry points
 lib/app/        MaterialApp.router, go_router and its guards, theme, AppConfig
-lib/core/       api (Dio, interceptors, AppError), account, auth (token manager, sign-in, links), instance
+lib/core/       api (Dio, interceptors, AppError), account, auth (token manager, sign-in, links), org (current
+                organization and site), files, services (share, photo picker, app lock), instance
                 (discovery, version gate), db (drift read cache), cache (stale-while-revalidate), permissions,
                 l10n (money, site-timezone dates, codes.dart), widgets
-lib/features/   onboarding (server, scan, sign-in methods, invitation, join and claim), home, profile
+lib/features/   onboarding (server, scan, sign-in methods, invitation, join and claim), home, money (statement, pay),
+                tickets, announcements, documents, notifications, profile, shell (bottom navigation, app lock gate)
+                each with data/ (repository), application/ (providers) and presentation/ where it has them
 lib/l10n/       ARB files (en, tr) and the generated AppLocalizations
 packages/openbekci_api/   generated API client (committed)
 spec/           pinned openapi.yaml and api_version.lock
@@ -133,6 +140,12 @@ flutter test               # unit, widget, contract, goldens; live tests skip th
   It seeds a site, blocks and units through the admin API on every run, then signs in by invitation (pasted link),
   SMS code (read from the server log), password and email link, claims a unit through the site QR path and checks the
   token refresh against the real server.
+- **Resident core, live** (`test/live/live_resident_test.dart`, same variables): seeds a site from a units CSV with bank
+  details, a cash box, an owner, a tenant and a household member (accounts through invitations read from the server
+  log), overdue dues, a recorded cash payment and a published announcement; then drives the app as the owner (home and
+  statement per side with the accrued late fee, a declared transfer, a ticket with a photo, "+1", a comment, the
+  announcement read receipt, all checked through the admin API), as the tenant (tenant side only) and as the household
+  member (no money). Start the server from the core repository as for the phase A suite.
 - **Integration** (`integration_test/app_test.dart`): an on-device smoke test; needs an emulator or phone.
 
 ## CI
@@ -151,3 +164,22 @@ flutter test               # unit, widget, contract, goldens; live tests skip th
   accepts pasted web links; it also understands an optional `server=` query parameter.
 - `server_version` is `dev` on development builds; the app does not gate those.
 - The unknown case of an open enum does not keep the raw string (ADR 0001).
+
+## Known gaps against the backend contract (phase B)
+
+- **No `PATCH /v1/me`**: name and locale of the user cannot be updated through the served contract. The profile edits
+  the name and the gate contact phone through `PATCH /v1/orgs/{org}/me/person` and keeps the language as a device
+  setting (sent as `Accept-Language`), not stored on the server.
+- **No consents endpoints** (texts, accept, decline): the only consent served is the per-site directory opt-in
+  (`PUT /v1/orgs/{org}/me/directory-consent`), which the Consents screen lists. Other consent documents need endpoints.
+- **No checkout operation and no capability flag**: card payment is phase D. The "Pay by card" button is hidden unless
+  `packs` of `GET /v1/instance` contains `payments.checkout` (a placeholder name to confirm with the backend).
+- **Pending declared payments are not statement lines** (nothing is posted until a manager confirms): the app lists
+  them from `GET /payments` as "declared, awaiting confirmation" above the lines.
+- **`DebtorRef` (oneOf with a discriminator) is flattened by the generator**: `tool/prune_spec.dart` rewrites it into
+  one object with only `mode` required; `format: date` of sent values stays a string (see ADR 0001 additions).
+- Statement and file downloads (`format=pdf`, `/files/{id}`) are multi-content operations: the app reads their bytes
+  through Dio directly instead of the generated method.
+- `tickets`: residents get the ticket list of the **site**; "my unit's" private tickets are whatever the server returns
+  (own private plus all common).
+- `GET /v1/orgs/{org}/folders` without `parent_id` is assumed to list every folder (the tree is built client side).

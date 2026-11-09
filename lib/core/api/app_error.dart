@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -93,7 +95,7 @@ class AppError implements Exception {
       switch (error.type) {
         case DioExceptionType.badResponse:
           return AppError.fromProblem(
-            response?.data,
+            _problemBody(response?.data),
             response?.statusCode,
             headers: response?.headers,
           );
@@ -146,6 +148,18 @@ class AppError implements Exception {
 
   @override
   String toString() => 'AppError($code, status: $status, detail: $detail)';
+}
+
+/// Error bodies of binary downloads arrive as bytes; read them as JSON.
+Object? _problemBody(Object? data) {
+  if (data is List<int>) {
+    try {
+      return json.decode(utf8.decode(data));
+    } on FormatException {
+      return null;
+    }
+  }
+  return data;
 }
 
 String _codeForStatus(int? status) {

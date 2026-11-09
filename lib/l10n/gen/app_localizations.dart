@@ -830,12 +830,6 @@ abstract class AppLocalizations {
   /// **'Request for {door}: waiting for approval'**
   String homePendingClaim(String door);
 
-  /// No description provided for @homePhaseNote.
-  ///
-  /// In en, this message translates to:
-  /// **'More screens arrive in the next releases.'**
-  String get homePhaseNote;
-
   /// No description provided for @profileTitle.
   ///
   /// In en, this message translates to:
@@ -925,6 +919,1236 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile'**
   String get navProfile;
+
+  /// No description provided for @aboutLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licenses'**
+  String get aboutLicenses;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} ({build})'**
+  String aboutVersion(String version, String build);
+
+  /// No description provided for @accruedLateFeeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Late fee accrued to today'**
+  String get accruedLateFeeToday;
+
+  /// No description provided for @actionCopyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy {label}'**
+  String actionCopyValue(String label);
+
+  /// No description provided for @actionSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get actionSave;
+
+  /// No description provided for @announcementAttachments.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments'**
+  String get announcementAttachments;
+
+  /// No description provided for @announcementPinned.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get announcementPinned;
+
+  /// No description provided for @announcementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcement'**
+  String get announcementTitle;
+
+  /// No description provided for @announcementUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get announcementUnread;
+
+  /// No description provided for @announcementsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No announcements yet.'**
+  String get announcementsEmpty;
+
+  /// No description provided for @announcementsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcements'**
+  String get announcementsTitle;
+
+  /// No description provided for @appLockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for your fingerprint, face or device PIN when you open the app.'**
+  String get appLockBody;
+
+  /// No description provided for @appLockEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock the app'**
+  String get appLockEnable;
+
+  /// No description provided for @appLockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App lock'**
+  String get appLockTitle;
+
+  /// No description provided for @attachmentPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get attachmentPhoto;
+
+  /// No description provided for @balanceToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance today'**
+  String get balanceToday;
+
+  /// No description provided for @bankDetailsMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The manager has not published bank details for this site yet.'**
+  String get bankDetailsMissing;
+
+  /// No description provided for @bankDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank details'**
+  String get bankDetailsTitle;
+
+  /// No description provided for @bankHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Account holder'**
+  String get bankHolder;
+
+  /// No description provided for @bankIban.
+  ///
+  /// In en, this message translates to:
+  /// **'IBAN'**
+  String get bankIban;
+
+  /// No description provided for @bankName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank'**
+  String get bankName;
+
+  /// No description provided for @bankReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference to use'**
+  String get bankReference;
+
+  /// No description provided for @closingBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing balance'**
+  String get closingBalance;
+
+  /// No description provided for @consentAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get consentAccepted;
+
+  /// No description provided for @consentDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get consentDeclined;
+
+  /// No description provided for @consentDirectory.
+  ///
+  /// In en, this message translates to:
+  /// **'Listed in the directory of {site}'**
+  String consentDirectory(String site);
+
+  /// No description provided for @consentsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Consents you have given or declined. You can change them at any time.'**
+  String get consentsBody;
+
+  /// No description provided for @consentsOtherNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This server does not publish other consent texts yet.'**
+  String get consentsOtherNote;
+
+  /// No description provided for @consentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Consents'**
+  String get consentsTitle;
+
+  /// No description provided for @copiedToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copiedToClipboard;
+
+  /// No description provided for @creditLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit'**
+  String get creditLabel;
+
+  /// No description provided for @declareAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount ({currency})'**
+  String declareAmount(String currency);
+
+  /// No description provided for @declareBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Made the transfer? Tell the manager so they can match it. Nothing changes on your statement until they confirm.'**
+  String get declareBody;
+
+  /// No description provided for @declareDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of the transfer'**
+  String get declareDate;
+
+  /// No description provided for @declareNeedsConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a connection. If sending fails, try again: it will not be declared twice.'**
+  String get declareNeedsConnection;
+
+  /// No description provided for @declareNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get declareNote;
+
+  /// No description provided for @declareReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference (optional)'**
+  String get declareReference;
+
+  /// No description provided for @declareSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Declared, awaiting confirmation'**
+  String get declareSent;
+
+  /// No description provided for @declareSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The manager will confirm it once the money arrives.'**
+  String get declareSentBody;
+
+  /// No description provided for @declareSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve paid by transfer'**
+  String get declareSubmit;
+
+  /// No description provided for @declareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve paid by transfer'**
+  String get declareTitle;
+
+  /// No description provided for @declaredSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Declared, awaiting confirmation'**
+  String get declaredSection;
+
+  /// No description provided for @directoryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Neighbours see your name in the site directory only if you opt in.'**
+  String get directoryBody;
+
+  /// No description provided for @directoryListMe.
+  ///
+  /// In en, this message translates to:
+  /// **'List me in the directory'**
+  String get directoryListMe;
+
+  /// No description provided for @directoryShowPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Show my phone number'**
+  String get directoryShowPhone;
+
+  /// No description provided for @directoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Directory'**
+  String get directoryTitle;
+
+  /// No description provided for @documentGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated'**
+  String get documentGenerated;
+
+  /// No description provided for @documentOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening…'**
+  String get documentOpening;
+
+  /// No description provided for @documentShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get documentShare;
+
+  /// No description provided for @documentsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No documents here.'**
+  String get documentsEmpty;
+
+  /// No description provided for @documentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get documentsTitle;
+
+  /// No description provided for @folderSite.
+  ///
+  /// In en, this message translates to:
+  /// **'Site folder'**
+  String get folderSite;
+
+  /// No description provided for @folderUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Your unit\'s folder'**
+  String get folderUnit;
+
+  /// No description provided for @formerPeriodNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You see your own period of residence only.'**
+  String get formerPeriodNote;
+
+  /// No description provided for @gatePhoneHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The gate guard calls this number if you do not answer a visitor request in the app.'**
+  String get gatePhoneHelp;
+
+  /// No description provided for @gatePhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gate contact phone'**
+  String get gatePhoneLabel;
+
+  /// No description provided for @homeAssemblyUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'General assembly'**
+  String get homeAssemblyUntitled;
+
+  /// No description provided for @homeBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings'**
+  String get homeBookings;
+
+  /// No description provided for @homeComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get homeComingSoon;
+
+  /// No description provided for @homeNextAssembly.
+  ///
+  /// In en, this message translates to:
+  /// **'Next assembly'**
+  String get homeNextAssembly;
+
+  /// No description provided for @homeNoAssembly.
+  ///
+  /// In en, this message translates to:
+  /// **'No assembly is scheduled.'**
+  String get homeNoAssembly;
+
+  /// No description provided for @homeNoMoneyAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Balances are not shown to you. Ask the unit owner for access.'**
+  String get homeNoMoneyAccess;
+
+  /// No description provided for @homeOpenTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tickets'**
+  String get homeOpenTickets;
+
+  /// No description provided for @homeParcels.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcels waiting'**
+  String get homeParcels;
+
+  /// No description provided for @homeSectionCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Community'**
+  String get homeSectionCommunity;
+
+  /// No description provided for @homeSectionNews.
+  ///
+  /// In en, this message translates to:
+  /// **'News and requests'**
+  String get homeSectionNews;
+
+  /// No description provided for @homeUnreadAnnouncements.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread announcements'**
+  String get homeUnreadAnnouncements;
+
+  /// No description provided for @homeVisitors.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitors'**
+  String get homeVisitors;
+
+  /// No description provided for @householdNoMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Household, no money access'**
+  String get householdNoMoney;
+
+  /// No description provided for @householdSeesMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Household, sees money'**
+  String get householdSeesMoney;
+
+  /// No description provided for @includesLateFee.
+  ///
+  /// In en, this message translates to:
+  /// **'includes late fee'**
+  String get includesLateFee;
+
+  /// No description provided for @languageDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Same as the device'**
+  String get languageDevice;
+
+  /// No description provided for @languageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageTitle;
+
+  /// No description provided for @lockFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not confirm it is you.'**
+  String get lockFailed;
+
+  /// No description provided for @lockReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock OpenBekci'**
+  String get lockReason;
+
+  /// No description provided for @lockUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has no screen lock or biometrics set up.'**
+  String get lockUnavailable;
+
+  /// No description provided for @lockUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get lockUnlock;
+
+  /// No description provided for @lockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenBekci is locked'**
+  String get lockedTitle;
+
+  /// No description provided for @methodBankTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transfer'**
+  String get methodBankTransfer;
+
+  /// No description provided for @methodCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get methodCard;
+
+  /// No description provided for @methodCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get methodCash;
+
+  /// No description provided for @moneyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get moneyTitle;
+
+  /// No description provided for @navMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get navMoney;
+
+  /// No description provided for @navMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get navMore;
+
+  /// No description provided for @navNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get navNotifications;
+
+  /// No description provided for @navTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'Tickets'**
+  String get navTickets;
+
+  /// No description provided for @nextDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Next due:'**
+  String get nextDue;
+
+  /// No description provided for @nextDueNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing due'**
+  String get nextDueNone;
+
+  /// No description provided for @notBookedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not booked yet'**
+  String get notBookedYet;
+
+  /// No description provided for @notifAnnouncementPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'New announcement'**
+  String get notifAnnouncementPublished;
+
+  /// No description provided for @notifBookingCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking cancelled'**
+  String get notifBookingCancelled;
+
+  /// No description provided for @notifBookingConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking confirmed'**
+  String get notifBookingConfirmed;
+
+  /// No description provided for @notifChargeDueSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Charge due soon'**
+  String get notifChargeDueSoon;
+
+  /// No description provided for @notifChargeOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Charge overdue'**
+  String get notifChargeOverdue;
+
+  /// No description provided for @notifClaimDecided.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit claim decided'**
+  String get notifClaimDecided;
+
+  /// No description provided for @notifClaimRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit claim requested'**
+  String get notifClaimRequested;
+
+  /// No description provided for @notifDeliveryReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel received'**
+  String get notifDeliveryReceived;
+
+  /// No description provided for @notifDeliveryWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel waiting'**
+  String get notifDeliveryWaiting;
+
+  /// No description provided for @notifDunningReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment reminder'**
+  String get notifDunningReminder;
+
+  /// No description provided for @notifMeetingAssemblyDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Assembly due'**
+  String get notifMeetingAssemblyDue;
+
+  /// No description provided for @notifMeetingCalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Meeting called'**
+  String get notifMeetingCalled;
+
+  /// No description provided for @notifMeetingDecisions.
+  ///
+  /// In en, this message translates to:
+  /// **'Meeting decisions'**
+  String get notifMeetingDecisions;
+
+  /// No description provided for @notifPaymentConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment confirmed'**
+  String get notifPaymentConfirmed;
+
+  /// No description provided for @notifPaymentDeclared.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment declared'**
+  String get notifPaymentDeclared;
+
+  /// No description provided for @notifPaymentReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment receipt'**
+  String get notifPaymentReceipt;
+
+  /// No description provided for @notifPaymentRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment not confirmed'**
+  String get notifPaymentRejected;
+
+  /// No description provided for @notifStatementSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Statement sent'**
+  String get notifStatementSent;
+
+  /// No description provided for @notifTermExpiring.
+  ///
+  /// In en, this message translates to:
+  /// **'Term expiring'**
+  String get notifTermExpiring;
+
+  /// No description provided for @notifTicketCommented.
+  ///
+  /// In en, this message translates to:
+  /// **'New comment on a ticket'**
+  String get notifTicketCommented;
+
+  /// No description provided for @notifTicketUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket updated'**
+  String get notifTicketUpdated;
+
+  /// No description provided for @notifVisitorApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitor waiting for approval'**
+  String get notifVisitorApproval;
+
+  /// No description provided for @notifVisitorArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitor arrived'**
+  String get notifVisitorArrived;
+
+  /// No description provided for @notifVisitorQrRotated.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitor code renewed'**
+  String get notifVisitorQrRotated;
+
+  /// No description provided for @notificationsCannotMute.
+  ///
+  /// In en, this message translates to:
+  /// **'Always on'**
+  String get notificationsCannotMute;
+
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications.'**
+  String get notificationsEmpty;
+
+  /// No description provided for @notificationsMarkAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get notificationsMarkAll;
+
+  /// No description provided for @notificationsMutesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which notifications you get. Sign-in codes and invitations cannot be turned off.'**
+  String get notificationsMutesBody;
+
+  /// No description provided for @notificationsSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification settings'**
+  String get notificationsSettings;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// No description provided for @openingBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening balance'**
+  String get openingBalance;
+
+  /// No description provided for @payByCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay by card'**
+  String get payByCard;
+
+  /// No description provided for @payByTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay by transfer'**
+  String get payByTransfer;
+
+  /// No description provided for @payTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay by bank transfer'**
+  String get payTitle;
+
+  /// No description provided for @paymentConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get paymentConfirmed;
+
+  /// No description provided for @paymentDeclaredWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Declared, awaiting confirmation'**
+  String get paymentDeclaredWaiting;
+
+  /// No description provided for @paymentHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get paymentHistoryTitle;
+
+  /// No description provided for @paymentRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Refunded'**
+  String get paymentRefunded;
+
+  /// No description provided for @paymentVoided.
+  ///
+  /// In en, this message translates to:
+  /// **'Voided'**
+  String get paymentVoided;
+
+  /// No description provided for @paymentsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No payments yet.'**
+  String get paymentsEmpty;
+
+  /// No description provided for @periodAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get periodAll;
+
+  /// No description provided for @periodLast3Months.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 3 months'**
+  String get periodLast3Months;
+
+  /// No description provided for @periodLastYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Last year'**
+  String get periodLastYear;
+
+  /// No description provided for @periodThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get periodThisYear;
+
+  /// No description provided for @profileContactsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone and email are your sign-in details; ask the manager to change them.'**
+  String get profileContactsNote;
+
+  /// No description provided for @profileEditMe.
+  ///
+  /// In en, this message translates to:
+  /// **'My details'**
+  String get profileEditMe;
+
+  /// No description provided for @profileEditMeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, gate contact phone and language'**
+  String get profileEditMeBody;
+
+  /// No description provided for @receiptNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt {no}'**
+  String receiptNo(String no);
+
+  /// No description provided for @runningBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get runningBalance;
+
+  /// No description provided for @saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get saved;
+
+  /// No description provided for @sessionMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile app'**
+  String get sessionMobile;
+
+  /// No description provided for @sessionRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get sessionRevoke;
+
+  /// No description provided for @sessionRevokeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign this device out of your account?'**
+  String get sessionRevokeConfirm;
+
+  /// No description provided for @sessionThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get sessionThisDevice;
+
+  /// No description provided for @sessionWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Web browser'**
+  String get sessionWeb;
+
+  /// No description provided for @sessionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed-in devices'**
+  String get sessionsTitle;
+
+  /// No description provided for @shareReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Share receipt'**
+  String get shareReceipt;
+
+  /// No description provided for @sideCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit {door}'**
+  String sideCardTitle(String door);
+
+  /// No description provided for @sideChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{unit} · {side}'**
+  String sideChip(String unit, String side);
+
+  /// No description provided for @sideOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner side'**
+  String get sideOwner;
+
+  /// No description provided for @sideTenant.
+  ///
+  /// In en, this message translates to:
+  /// **'Tenant side'**
+  String get sideTenant;
+
+  /// No description provided for @statementLines.
+  ///
+  /// In en, this message translates to:
+  /// **'Statement'**
+  String get statementLines;
+
+  /// No description provided for @statementNoLines.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries in this period.'**
+  String get statementNoLines;
+
+  /// No description provided for @statementPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get statementPdf;
+
+  /// No description provided for @stmtKindAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjustment'**
+  String get stmtKindAdjustment;
+
+  /// No description provided for @stmtKindCharge.
+  ///
+  /// In en, this message translates to:
+  /// **'Charge'**
+  String get stmtKindCharge;
+
+  /// No description provided for @stmtKindCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit'**
+  String get stmtKindCredit;
+
+  /// No description provided for @stmtKindLateFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Late fee'**
+  String get stmtKindLateFee;
+
+  /// No description provided for @stmtKindOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening balance'**
+  String get stmtKindOpening;
+
+  /// No description provided for @stmtKindPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get stmtKindPayment;
+
+  /// No description provided for @stmtKindRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund'**
+  String get stmtKindRefund;
+
+  /// No description provided for @stmtKindReversal.
+  ///
+  /// In en, this message translates to:
+  /// **'Reversal'**
+  String get stmtKindReversal;
+
+  /// No description provided for @switchOrganization.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch organization'**
+  String get switchOrganization;
+
+  /// No description provided for @ticketCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get ticketCategory;
+
+  /// No description provided for @ticketCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a comment'**
+  String get ticketCommentHint;
+
+  /// No description provided for @ticketCommentSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send comment'**
+  String get ticketCommentSend;
+
+  /// No description provided for @ticketComments.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 comment} other{{count} comments}}'**
+  String ticketComments(int count);
+
+  /// No description provided for @ticketCommon.
+  ///
+  /// In en, this message translates to:
+  /// **'Common'**
+  String get ticketCommon;
+
+  /// No description provided for @ticketCommonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone in the site sees it and can add a +1.'**
+  String get ticketCommonHint;
+
+  /// No description provided for @ticketDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the problem'**
+  String get ticketDescription;
+
+  /// No description provided for @ticketDraftKept.
+  ///
+  /// In en, this message translates to:
+  /// **'If sending fails, your text and photos are kept and the retry will not create a duplicate.'**
+  String get ticketDraftKept;
+
+  /// No description provided for @ticketMerged.
+  ///
+  /// In en, this message translates to:
+  /// **'This ticket was merged into another one.'**
+  String get ticketMerged;
+
+  /// No description provided for @ticketNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New ticket'**
+  String get ticketNew;
+
+  /// No description provided for @ticketNoThread.
+  ///
+  /// In en, this message translates to:
+  /// **'No updates yet.'**
+  String get ticketNoThread;
+
+  /// No description provided for @ticketNoUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'No unit'**
+  String get ticketNoUnit;
+
+  /// No description provided for @ticketPhotoCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get ticketPhotoCamera;
+
+  /// No description provided for @ticketPhotoCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {max} photos'**
+  String ticketPhotoCount(int count, int max);
+
+  /// No description provided for @ticketPhotoGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get ticketPhotoGallery;
+
+  /// No description provided for @ticketPhotoRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get ticketPhotoRemove;
+
+  /// No description provided for @ticketPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get ticketPhotos;
+
+  /// No description provided for @ticketPlusOne.
+  ///
+  /// In en, this message translates to:
+  /// **'+1 ({count})'**
+  String ticketPlusOne(int count);
+
+  /// No description provided for @ticketPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get ticketPrivate;
+
+  /// No description provided for @ticketPrivateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you and the management see it.'**
+  String get ticketPrivateHint;
+
+  /// No description provided for @ticketStatusChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {from} to {to}'**
+  String ticketStatusChanged(String from, String to);
+
+  /// No description provided for @ticketStatusSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {to}'**
+  String ticketStatusSet(String to);
+
+  /// No description provided for @ticketSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send ticket'**
+  String get ticketSubmit;
+
+  /// No description provided for @ticketThread.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates'**
+  String get ticketThread;
+
+  /// No description provided for @ticketTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket'**
+  String get ticketTitle;
+
+  /// No description provided for @ticketTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get ticketTitleLabel;
+
+  /// No description provided for @ticketUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit {door}'**
+  String ticketUnit(String door);
+
+  /// No description provided for @ticketUnitOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit (optional)'**
+  String get ticketUnitOptional;
+
+  /// No description provided for @ticketVisibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can see it'**
+  String get ticketVisibility;
+
+  /// No description provided for @ticketVoted.
+  ///
+  /// In en, this message translates to:
+  /// **'+1 given ({count})'**
+  String ticketVoted(int count);
+
+  /// No description provided for @ticketVotes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No +1 yet} =1{1 +1} other{{count} +1}}'**
+  String ticketVotes(int count);
+
+  /// No description provided for @ticketsAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get ticketsAll;
+
+  /// No description provided for @ticketsClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get ticketsClosed;
+
+  /// No description provided for @ticketsCommon.
+  ///
+  /// In en, this message translates to:
+  /// **'Common'**
+  String get ticketsCommon;
+
+  /// No description provided for @ticketsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No tickets here.'**
+  String get ticketsEmpty;
+
+  /// No description provided for @ticketsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No tickets yet'**
+  String get ticketsEmptyTitle;
+
+  /// No description provided for @ticketsMine.
+  ///
+  /// In en, this message translates to:
+  /// **'Mine'**
+  String get ticketsMine;
+
+  /// No description provided for @ticketsOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get ticketsOpen;
+
+  /// No description provided for @ticketsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tickets'**
+  String get ticketsTitle;
+
+  /// No description provided for @totalDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Total due today'**
+  String get totalDueToday;
+
+  /// No description provided for @valueOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get valueOther;
+
+  /// No description provided for @ticketNoCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'No ticket categories are set up for this site yet. Ask the manager.'**
+  String get ticketNoCategories;
 }
 
 class _AppLocalizationsDelegate

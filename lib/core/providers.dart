@@ -15,6 +15,9 @@ import 'package:openbekci_mobile/core/db/database.dart';
 import 'package:openbekci_mobile/core/instance/discovery.dart';
 import 'package:openbekci_mobile/core/instance/server_connector.dart';
 import 'package:openbekci_mobile/core/links/app_link.dart';
+import 'package:openbekci_mobile/core/org/org_context.dart'
+    show selectedOrgPref, selectedOrgProvider;
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Build-time configuration; overridden in `main` after the asset is loaded.
 final appConfigProvider = Provider<AppConfig>(
@@ -237,7 +240,9 @@ class SessionActions {
       // leaves the signed-in state.
       try {
         await _ref.read(databaseProvider).clearAll();
+        unawaited(wipeAccountPrefs());
       } finally {
+        _ref.invalidate(selectedOrgProvider);
         _ref.read(pendingLinkProvider.notifier).set(null);
         _ref.read(accountProvider.notifier).clear();
       }
@@ -303,3 +308,24 @@ final meProvider = StreamProvider<CacheState<Me>>((ref) {
     decode: (json) => Me.fromJson(json! as Map<String, dynamic>),
   );
 });
+
+/// Saved drafts are keyed `ticket_draft_v1/<user>/<org>` (see
+/// `ticketDraftPrefPrefix`).
+const accountScopedPrefPrefixes = ['ticket_draft_v1'];
+
+/// Forgets what the signed-out account left in preferences: the selected
+/// organization and the saved drafts. Device settings (language, app lock)
+/// stay.
+Future<void> wipeAccountPrefs() async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(selectedOrgPref);
+    for (final key in prefs.getKeys().toList()) {
+      if (accountScopedPrefPrefixes.any(key.startsWith)) {
+        await prefs.remove(key);
+      }
+    }
+  } on Object {
+    // Preferences are a convenience; the secrets are wiped elsewhere.
+  }
+}

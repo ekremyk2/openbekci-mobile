@@ -116,10 +116,73 @@ void main(List<String> args) {
     'paths': keptPaths,
     'components': outComponents,
   };
+  _applyContractFixups(out);
   File(args[2])
       .writeAsStringSync(const JsonEncoder.withIndent(' ').convert(out));
   stdout.writeln(
     'Pruned: ${keptPaths.length} paths, '
     '${(outComponents['schemas'] as Map?)?.length ?? 0} schemas.',
   );
+}
+
+/// Fixes where the generator's output cannot talk to the served contract.
+///
+/// * `format: date` on a query parameter or on `PaymentDeclare.paid_on` (values
+///   the app sends) becomes a plain string: the generated Dart would send a
+///   full ISO timestamp, the server wants `YYYY-MM-DD`. Response dates stay
+///   `DateTime` (they parse).
+/// * `DebtorRef` is a discriminated `oneOf`; openapi-generator flattens it
+///   into one class with every member required, which fails to decode a real
+///   statement. It becomes one object with only `mode` required.
+void _applyContractFixups(Map<String, Object?> spec) {
+  void params(Object? node) {
+    if (node is Map) {
+      final schema = node['schema'];
+      if (node.containsKey('in') &&
+          schema is Map &&
+          schema['format'] == 'date') {
+        schema.remove('format');
+      }
+      node.values.forEach(params);
+    } else if (node is List) {
+      node.forEach(params);
+    }
+  }
+
+  params(spec['paths']);
+  final components = spec['components'] as Map<String, Object?>?;
+  params(components?['parameters']);
+  final schemas = components?['schemas'] as Map<String, Object?>?;
+  if (schemas == null) return;
+  final declare = schemas['PaymentDeclare'];
+  if (declare is Map) {
+    final paidOn = (declare['properties'] as Map?)?['paid_on'];
+    if (paidOn is Map) paidOn.remove('format');
+  }
+  if (schemas.containsKey('DebtorRef')) {
+    schemas['DebtorRef'] = {
+      'type': 'object',
+      'description':
+          'Whose debt: a unit side (mode unit_side: unit_id and debtor_kind) '
+          'or a person (mode person: person_id).',
+      'required': ['mode'],
+      'properties': {
+        'mode': {
+          'type': 'string',
+          'enum': ['unit_side', 'person'],
+          'x-open-enum': true,
+        },
+        'unit_id': {'type': 'string', 'format': 'uuid'},
+        'debtor_kind': {
+          'type': 'string',
+          'enum': ['owner', 'tenant'],
+          'x-open-enum': true,
+        },
+        'person_id': {'type': 'string', 'format': 'uuid'},
+      },
+    };
+    schemas
+      ..remove('DebtorRefUnitSide')
+      ..remove('DebtorRefPerson');
+  }
 }

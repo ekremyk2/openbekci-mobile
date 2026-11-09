@@ -8,9 +8,14 @@ import 'package:openbekci_api/src/auth/basic_auth.dart';
 import 'package:openbekci_api/src/auth/bearer_auth.dart';
 import 'package:openbekci_api/src/auth/oauth.dart';
 import 'package:openbekci_api/src/api/auth_api.dart';
+import 'package:openbekci_api/src/api/codes_api.dart';
+import 'package:openbekci_api/src/api/dashboards_api.dart';
 import 'package:openbekci_api/src/api/instance_api.dart';
 import 'package:openbekci_api/src/api/me_api.dart';
+import 'package:openbekci_api/src/api/money_api.dart';
+import 'package:openbekci_api/src/api/operations_api.dart';
 import 'package:openbekci_api/src/api/people_api.dart';
+import 'package:openbekci_api/src/api/tenancy_api.dart';
 
 class OpenbekciApi {
   static const String basePath = r'http://localhost';
@@ -109,6 +114,18 @@ class OpenbekciApi {
     return AuthApi(dio);
   }
 
+  /// Get CodesApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  CodesApi getCodesApi() {
+    return CodesApi(dio);
+  }
+
+  /// Get DashboardsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  DashboardsApi getDashboardsApi() {
+    return DashboardsApi(dio);
+  }
+
   /// Get InstanceApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   InstanceApi getInstanceApi() {
@@ -121,9 +138,27 @@ class OpenbekciApi {
     return MeApi(dio);
   }
 
+  /// Get MoneyApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  MoneyApi getMoneyApi() {
+    return MoneyApi(dio);
+  }
+
+  /// Get OperationsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  OperationsApi getOperationsApi() {
+    return OperationsApi(dio);
+  }
+
   /// Get PeopleApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   PeopleApi getPeopleApi() {
     return PeopleApi(dio);
+  }
+
+  /// Get TenancyApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  TenancyApi getTenancyApi() {
+    return TenancyApi(dio);
   }
 }

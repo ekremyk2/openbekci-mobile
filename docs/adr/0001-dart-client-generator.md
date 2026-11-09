@@ -76,3 +76,18 @@ are no longer needed.
 - Generated Java-tooling (JDK 11+) is needed only to regenerate, never to build or test the app.
 - Generated enum members have unwieldy names (`Permission.accessPeriodManage`); the app compares by `.value`
   (`PermissionSet.canNamed`) where readability matters.
+
+## Phase B additions: contract fix-ups in `prune_spec`
+
+Generating the resident core (41 more operations) exposed two generator limits that `tool/prune_spec.dart` now corrects
+before the generator runs (the pinned spec itself stays untouched):
+
+- **Discriminated `oneOf`.** `DebtorRef` (`unit_side` or `person`) came out as a single class with every member of both
+  variants `required`, which cannot decode a real statement. It is rewritten as one object with only `mode` required
+  and the variant fields optional; `DebtorRefUnitSide` and `DebtorRefPerson` are dropped.
+- **`format: date` on values the app sends.** The generated Dart models a date as `DateTime` and serializes a full ISO
+  timestamp, but the server wants `YYYY-MM-DD`. Query parameters and `PaymentDeclare.paid_on` become plain strings;
+  dates the app only reads stay `DateTime`.
+
+Binary bodies (statement PDF, file content) are multi-content operations and are read as bytes through Dio directly.
+`test/contract/resident_contract_test.dart` covers both fix-ups and the unknown cases of the new enums.

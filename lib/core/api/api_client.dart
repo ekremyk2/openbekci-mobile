@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:openbekci_api/openbekci_api.dart';
@@ -15,7 +17,12 @@ class ApiClient {
     : auth = AuthApi(dio),
       instance = InstanceApi(dio),
       me = MeApi(dio),
-      people = PeopleApi(dio);
+      people = PeopleApi(dio),
+      dashboards = DashboardsApi(dio),
+      money = MoneyApi(dio),
+      operations = OperationsApi(dio),
+      tenancy = TenancyApi(dio),
+      codes = CodesApi(dio);
 
   /// Builds a client. Pass [tokens] for authenticated use; without it only
   /// anonymous endpoints work (discovery, sign-in).
@@ -57,6 +64,35 @@ class ApiClient {
   final InstanceApi instance;
   final MeApi me;
   final PeopleApi people;
+  final DashboardsApi dashboards;
+  final MoneyApi money;
+  final OperationsApi operations;
+  final TenancyApi tenancy;
+  final CodesApi codes;
+
+  /// GETs a binary body (statement PDF, a file's content) as bytes. The
+  /// generated operations of the same endpoints decode JSON, so downloads go
+  /// through Dio directly; errors still become [AppError].
+  Future<Uint8List> getBytes(
+    String path, {
+    Map<String, Object?>? query,
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      final response = await dio.get<List<int>>(
+        path,
+        queryParameters: query,
+        cancelToken: cancelToken,
+        options: Options(
+          responseType: ResponseType.bytes,
+          headers: {'Accept': '*/*'},
+        ),
+      );
+      return Uint8List.fromList(response.data ?? const []);
+    } on Object catch (e) {
+      throw AppError.from(e);
+    }
+  }
 }
 
 /// Runs a generated call and returns its body; any failure becomes an

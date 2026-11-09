@@ -308,6 +308,7 @@ Future<void> typeInto(WidgetTester tester, String key, String text) async {
 
 Future<void> tapKey(WidgetTester tester, String key) async {
   await tester.ensureVisible(find.byKey(Key(key)));
+  await tester.pump();
   await tester.tap(find.byKey(Key(key)));
   await tester.pump();
 }
