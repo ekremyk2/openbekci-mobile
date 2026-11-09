@@ -3397,6 +3397,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No card payments yet.'**
   String get myCheckoutsEmpty;
+
+  /// No description provided for @joinSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up with your phone number'**
+  String get joinSignUp;
 }
 
 class _AppLocalizationsDelegate

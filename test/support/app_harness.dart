@@ -176,6 +176,15 @@ class FakeJoinRepository implements JoinRepository {
     }),
   ];
   AppError? claimError;
+  final signUps = <String>[];
+  final stored = <UnitClaim>[];
+
+  @override
+  Future<void> signUp(String code, {required String phone}) async =>
+      signUps.add('$code:$phone');
+
+  @override
+  Future<List<UnitClaim>> myClaims() async => List.of(stored);
   final claims =
       <({String unitId, UnitClaimCreateClaimedRoleEnum role, String? note})>[];
 
@@ -206,7 +215,7 @@ class FakeJoinRepository implements JoinRepository {
     if (claimError != null) throw claimError!;
     claims.add((unitId: unitId, role: role, note: note));
     final unit = unitList.firstWhere((u) => u.id == unitId);
-    return UnitClaim.fromJson({
+    final made = UnitClaim.fromJson({
       'id': '0192a3f0-1000-7000-8000-0000000000d1',
       'org_id': '0192a3f0-1000-7000-8000-000000000001',
       'user_id': '0192a3f0-1000-7000-8000-0000000000aa',
@@ -222,6 +231,8 @@ class FakeJoinRepository implements JoinRepository {
       'created_at': '2026-11-08T10:00:00Z',
       'updated_at': '2026-11-08T10:00:00Z',
     });
+    stored.add(made);
+    return made;
   }
 }
 

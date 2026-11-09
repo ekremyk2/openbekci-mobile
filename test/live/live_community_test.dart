@@ -27,6 +27,7 @@ import 'package:openbekci_mobile/core/links/app_link.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/features/community/application/community_providers.dart';
 import 'package:openbekci_mobile/features/governance/application/governance_providers.dart';
+import 'package:openbekci_mobile/features/home/application/home_providers.dart';
 import 'package:openbekci_mobile/features/push/application/push_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -514,7 +515,7 @@ Future<LiveApp> _launch(
 
 /// Tears the app down and lets its last timers run out.
 Future<void> _finish(WidgetTester tester) async {
-  await tester.pumpWidget(const SizedBox());
+  await _settle(tester);
   await tester.pump(const Duration(minutes: 2));
 }
 
@@ -800,4 +801,24 @@ void main() {
       await _finish(tester);
     },
   );
+}
+
+/// Lets the claims request the home screen starts (GET /v1/me/unit-claims)
+/// finish before the widget tree goes, so no timer outlives the test.
+Future<void> _settle(WidgetTester tester) async {
+  if (find.byType(OpenBekciApp).evaluate().isNotEmpty) {
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(OpenBekciApp)),
+    );
+    // Requests started inside the test zone finish through pumps.
+    for (var i = 0; i < 50; i++) {
+      if (!container.read(pendingClaimsProvider).isLoading) break;
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)),
+      );
+      await tester.pump(const Duration(milliseconds: 20));
+    }
+  }
+  await tester.pump(const Duration(milliseconds: 100));
+  await tester.pumpWidget(const SizedBox());
 }

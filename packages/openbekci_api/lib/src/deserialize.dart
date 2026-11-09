@@ -62,6 +62,7 @@ import 'package:openbekci_api/src/model/invitation_list.dart';
 import 'package:openbekci_api/src/model/invitation_preview.dart';
 import 'package:openbekci_api/src/model/join_block.dart';
 import 'package:openbekci_api/src/model/join_info.dart';
+import 'package:openbekci_api/src/model/join_sign_up_request.dart';
 import 'package:openbekci_api/src/model/join_unit.dart';
 import 'package:openbekci_api/src/model/join_unit_list.dart';
 import 'package:openbekci_api/src/model/magic_link_consume_request.dart';
@@ -149,6 +150,7 @@ import 'package:openbekci_api/src/model/time_range.dart';
 import 'package:openbekci_api/src/model/token_response.dart';
 import 'package:openbekci_api/src/model/unit_claim.dart';
 import 'package:openbekci_api/src/model/unit_claim_create.dart';
+import 'package:openbekci_api/src/model/unit_claim_list.dart';
 import 'package:openbekci_api/src/model/unread_count.dart';
 import 'package:openbekci_api/src/model/visitor_approval_request.dart';
 import 'package:openbekci_api/src/model/visitor_approval_request_list.dart';
@@ -307,6 +309,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return JoinBlock.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'JoinInfo':
           return JoinInfo.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'JoinSignUpRequest':
+          return JoinSignUpRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'JoinUnit':
           return JoinUnit.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'JoinUnitList':
@@ -487,6 +491,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return UnitClaim.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UnitClaimCreate':
           return UnitClaimCreate.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'UnitClaimList':
+          return UnitClaimList.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UnreadCount':
           return UnreadCount.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'VisitorApprovalRequest':

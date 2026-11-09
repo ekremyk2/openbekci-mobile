@@ -14,6 +14,7 @@ import 'package:openbekci_api/src/model/directory_consent.dart';
 import 'package:openbekci_api/src/model/invitation_accept.dart';
 import 'package:openbekci_api/src/model/invitation_preview.dart';
 import 'package:openbekci_api/src/model/join_info.dart';
+import 'package:openbekci_api/src/model/join_sign_up_request.dart';
 import 'package:openbekci_api/src/model/join_unit_list.dart';
 import 'package:openbekci_api/src/model/my_person_update.dart';
 import 'package:openbekci_api/src/model/occupancy_list.dart';
@@ -21,6 +22,7 @@ import 'package:openbekci_api/src/model/person.dart';
 import 'package:openbekci_api/src/model/problem.dart';
 import 'package:openbekci_api/src/model/unit_claim.dart';
 import 'package:openbekci_api/src/model/unit_claim_create.dart';
+import 'package:openbekci_api/src/model/unit_claim_list.dart';
 
 class PeopleApi {
 
@@ -364,6 +366,74 @@ _responseData = rawData == null ? null : deserialize<Person, Person>(rawData, 'P
     );
   }
 
+  /// Sign up through a site&#39;s join code
+  /// **Release 0.1.** Public. A resident who scanned the site&#39;s QR code creates an account here (setup-people S4, path 2): give a phone number or an email address (and optionally a name). The server sends a six-digit SMS code (phone) or a sign-in link (email, &#x60;client&#x3D;mobile&#x60; makes it an &#x60;openbekci://&lt;host&gt;/…&#x60; link). Completing it through &#x60;auth.createToken&#x60; (&#x60;sms_otp&#x60; with the code, or &#x60;magic_link&#x60;) or &#x60;auth.createSession&#x60; opens a session with no organization yet; the unit claim (&#x60;people.createUnitClaim&#x60;) then uses the same join code, and the manager approves.  The answer is 202 whether the contact is new or already has an account: an existing account simply gets the ordinary sign-in code or link, and no second account is created. A new contact gets a pending account that becomes active only when the code or link is used. An unknown, expired, disabled, rotated or used-up join code answers the same 404 as &#x60;people.getJoinInfo&#x60;. Limited per join code, per contact and per client address.  Problems: &#x60;not_found&#x60; (404), &#x60;validation_failed&#x60; (422), &#x60;rate_limited&#x60; (429), &#x60;sms_unavailable&#x60; or &#x60;mail_unavailable&#x60; (503).
+  ///
+  /// Parameters:
+  /// * [code] - Id of the code.
+  /// * [joinSignUpRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future]
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<void>> peopleJoinSignUp({ 
+    required String code,
+    required JoinSignUpRequest joinSignUpRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/v1/join/{code}:sign-up'.replaceAll('{' r'code' '}', code.toString());
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(joinSignUpRequest);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    return _response;
+  }
+
   /// List unit labels for the claim picker
   /// **Release 0.1.** Public and data-minimized: door numbers only, never names.  Problems: &#x60;rate_limited&#x60; (429), &#x60;not_found&#x60; (404).
   ///
@@ -526,6 +596,89 @@ _responseData = rawData == null ? null : deserialize<OccupancyList, OccupancyLis
     }
 
     return Response<OccupancyList>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// List my unit claims across organizations
+  /// **Release 0.1.** Lets a freshly signed-up resident see \&quot;waiting for approval\&quot;: every claim of the caller, in any organization, newest last, with the organization, site, block and unit labels. Served by the platform pool; only the caller&#39;s own claims are returned.  Problems: &#x60;unauthenticated&#x60; (401), &#x60;validation_failed&#x60; (422).
+  ///
+  /// Parameters:
+  /// * [status] - Filter by `status`.
+  /// * [limit] - Page size.
+  /// * [cursor] - Opaque cursor from a previous page `next_cursor`.
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [UnitClaimList] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<UnitClaimList>> peopleListMyUnitClaims({ 
+    String? status,
+    int? limit = 50,
+    String? cursor,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/v1/me/unit-claims';
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _queryParameters = <String, dynamic>{
+      if (status != null) r'status': status,
+      if (limit != null) r'limit': limit,
+      if (cursor != null) r'cursor': cursor,
+    };
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      queryParameters: _queryParameters,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    UnitClaimList? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<UnitClaimList, UnitClaimList>(rawData, 'UnitClaimList', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<UnitClaimList>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

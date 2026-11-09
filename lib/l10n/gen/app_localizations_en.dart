@@ -1851,4 +1851,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get myCheckoutsEmpty => 'No card payments yet.';
+
+  @override
+  String get joinSignUp => 'Sign up with your phone number';
 }

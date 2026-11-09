@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:openbekci_api/openbekci_api.dart';
 import 'package:openbekci_mobile/core/api/api_client.dart';
-import 'package:openbekci_mobile/core/cache/cache_policy.dart';
+import 'package:openbekci_mobile/core/cache/cached.dart';
 
 /// The site QR path (backend plan section 6): describe the site behind a join
 /// code, list units for the picker, and claim one after signing in.
@@ -15,6 +13,14 @@ abstract class JoinRepository {
     String? query,
     String? cursor,
   });
+
+  /// Public: creates an account through the site's join code (or, for a known
+  /// number, signs in); the server sends an SMS code that sign-in completes.
+  Future<void> signUp(String code, {required String phone});
+
+  /// The pending claims of the signed-in user, in every organization
+  /// (GET /v1/me/unit-claims).
+  Future<List<UnitClaim>> myClaims();
 
   /// Needs a signed-in session. The claim waits for the manager's approval;
   /// nothing is granted before.
@@ -54,6 +60,32 @@ class ApiJoinRepository implements JoinRepository {
   );
 
   @override
+  Future<void> signUp(String code, {required String phone}) => unwrapVoid(
+    () => anonymous.people.peopleJoinSignUp(
+      code: code,
+      joinSignUpRequest: JoinSignUpRequest(
+        phone: phone,
+        client: JoinSignUpRequestClientEnum.mobile,
+      ),
+    ),
+  );
+
+  @override
+  Future<List<UnitClaim>> myClaims() {
+    final api = authenticated;
+    if (api == null) return Future.value(const []);
+    return fetchAllPages<UnitClaim>((cursor) async {
+      final page = await unwrap(
+        () => api.people.peopleListMyUnitClaims(
+          status: 'pending',
+          cursor: cursor,
+        ),
+      );
+      return (items: page.items, next: page.nextCursor);
+    });
+  }
+
+  @override
   Future<UnitClaim> claim(
     String code, {
     required String unitId,
@@ -75,49 +107,4 @@ class ApiJoinRepository implements JoinRepository {
       ),
     );
   }
-}
-
-/// The user's own unit claims, kept in the read cache because the API has no
-/// "my claims" endpoint (see the phase A report): a claim is shown as
-/// "waiting for approval" until the unit shows up in `/v1/me` occupancies or
-/// the user dismisses it.
-class LocalClaims {
-  new(this._cache);
-
-  final CachePolicy _cache;
-  static const _key = 'my_unit_claims';
-
-  Future<List<UnitClaim>> read() async {
-    final entry = await _cache.read(_key);
-    final raw = entry?.json;
-    if (raw is! List) return const [];
-    try {
-      return [
-        for (final e in raw) UnitClaim.fromJson(e as Map<String, dynamic>),
-      ];
-    } on Object {
-      return const [];
-    }
-  }
-
-  Future<void> add(UnitClaim claim) async {
-    final list = [
-      claim,
-      for (final c in await read())
-        if (c.id != claim.id) c,
-    ];
-    await _write(list);
-  }
-
-  Future<void> remove(String claimId) async {
-    await _write([
-      for (final c in await read())
-        if (c.id != claimId) c,
-    ]);
-  }
-
-  Future<void> _write(List<UnitClaim> claims) => _cache.write(
-    _key,
-    json.decode(json.encode([for (final c in claims) c.toJson()])),
-  );
 }

@@ -53,8 +53,9 @@ class ErrorState extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    // Scrolls: a long message or a small screen must not overflow.
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsetsDirectional.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,

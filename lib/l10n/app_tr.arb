@@ -750,5 +750,6 @@
   "checkoutReopen": "Ödeme sayfasını aç",
   "checkoutRefresh": "Tekrar kontrol et",
   "myCheckoutsTitle": "Kart ödemeleri",
-  "myCheckoutsEmpty": "Henüz kart ödemesi yok."
+  "myCheckoutsEmpty": "Henüz kart ödemesi yok.",
+  "joinSignUp": "Telefon numaranızla kaydolun"
 }

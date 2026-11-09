@@ -26,6 +26,7 @@ import 'package:openbekci_mobile/core/auth/link_handler.dart';
 import 'package:openbekci_mobile/core/db/database.dart';
 import 'package:openbekci_mobile/core/links/app_link.dart';
 import 'package:openbekci_mobile/core/providers.dart';
+import 'package:openbekci_mobile/features/home/application/home_providers.dart';
 
 final _server = Platform.environment['OPENBEKCI_LIVE_SERVER'];
 final _logPath = Platform.environment['OPENBEKCI_LIVE_LOG'];
@@ -194,28 +195,6 @@ Future<String> _invite(Seed seed, String phone, String door) async {
   return match.group(0)!;
 }
 
-/// A resident account created through the API (invitation accepted), so a
-/// test does not reuse one user's rate limits.
-Future<({String phone, String password})> _createResident(Seed seed) async {
-  final phone = '+90533${Random().nextInt(9000000) + 1000000}';
-  const password = 'correct horse battery 3';
-  final link = await _invite(seed, phone, '16');
-  final token = link.substring(
-    link.lastIndexOf('/invite/') + '/invite/'.length,
-  );
-  await _ok(
-    _rawDio().post<dynamic>(
-      '/v1/invitations/${Uri.encodeComponent(token)}:accept',
-      data: {
-        'password': password,
-        'display_name': 'Claim Resident',
-        'client': 'mobile',
-      },
-    ),
-  );
-  return (phone: phone, password: password);
-}
-
 /// Waits for [pattern] to appear in the server log after byte offset [after].
 Future<RegExpMatch> _waitForLog(RegExp pattern, {required int after}) async {
   final end = DateTime.now().add(const Duration(seconds: 25));
@@ -380,7 +359,7 @@ void main() {
       final me = app.container(tester).read(meProvider).value!.data!;
       expect(me.user.email, _adminEmail);
       expect(me.organizations, isNotEmpty);
-      await tester.pumpWidget(const SizedBox());
+      await _settle(tester);
     },
     skip: _skip != null,
   );
@@ -420,7 +399,7 @@ void main() {
       await pumpUntil(tester, find.byKey(const Key('codeField')));
       final code = (await tester.runAsync(
         () => _waitForLog(
-          RegExp(r'(?:sign-in code|giriş kodunuz): (\d{6})'),
+          RegExp(r'(?:sign-in code|kodunuz): (\d{6})'),
           after: mark,
         ),
       ))!.group(1)!;
@@ -445,7 +424,7 @@ void main() {
       await typeInto(tester, 'passwordField', 'correct horse battery 2');
       await tapKey(tester, 'passwordSubmit');
       await pumpUntil(tester, find.byKey(const Key('homeWelcome')));
-      await tester.pumpWidget(const SizedBox());
+      await _settle(tester);
     },
     skip: _skip != null,
   );
@@ -463,7 +442,10 @@ void main() {
       await pumpUntil(tester, find.byKey(const Key('magicSentBody')));
       final match = (await tester.runAsync(
         () => _waitForLog(
-          RegExp(r'openbekci://login/magic\?token=([A-Za-z0-9_\-]+)'),
+          // openbekci://<host>/login/magic?token=...[&scheme=http]
+          RegExp(
+            r'openbekci://[^\s"\\/]+/login/magic\?token=[A-Za-z0-9_\-]+(?:&scheme=http)?',
+          ),
           after: mark,
         ),
       ))!;
@@ -480,7 +462,7 @@ void main() {
         tester,
         find.text('The code, password or link is wrong or has expired.'),
       );
-      await tester.pumpWidget(const SizedBox());
+      await _settle(tester);
     },
     skip: _skip != null,
   );
@@ -489,20 +471,36 @@ void main() {
     tester,
   ) async {
     final seed = _seed;
-    final resident = (await tester.runAsync(() => _createResident(seed)))!;
     final app = await _launch(tester);
     // Scan: https-style QR payload {BASE_URL}/join/{code}.
     app.links.add(AppLink.parse('$_server/join/${seed.joinCode}')!);
-    await pumpUntil(tester, find.byKey(const Key('joinSignIn')));
+    // A link for a server the app is not connected to asks first; Connect
+    // resumes it.
+    await pumpUntil(
+      tester,
+      find.text('Enter the server address to join your site.'),
+    );
+    await typeInto(tester, 'serverField', _server!);
+    await tapKey(tester, 'serverConnect');
+    await pumpUntil(tester, find.byKey(const Key('joinSignUp')));
     expect(find.textContaining('Live Site'), findsWidgets);
 
-    await tapKey(tester, 'joinSignIn');
+    // Sign up through the join code: a new phone number, then its SMS code.
+    final phone = '+90535${Random().nextInt(9000000) + 1000000}';
+    await tapKey(tester, 'joinSignUp');
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('method_password')));
-    await tester.pumpAndSettle();
-    await typeInto(tester, 'identifierField', resident.phone);
-    await typeInto(tester, 'passwordField', resident.password);
-    await tapKey(tester, 'passwordSubmit');
+    final mark = File(_logPath!).lengthSync();
+    await typeInto(tester, 'phoneField', phone);
+    await tapKey(tester, 'smsSend');
+    await pumpUntil(tester, find.byKey(const Key('codeField')));
+    final code = (await tester.runAsync(
+      () => _waitForLog(
+        RegExp(r'(?:sign-in code|kodunuz): (\d{6})'),
+        after: mark,
+      ),
+    ))!.group(1)!;
+    await typeInto(tester, 'codeField', code);
+    await tapKey(tester, 'smsVerify');
     // Back at the unit picker for the same code.
     await pumpUntil(tester, find.byKey(const Key('joinSubmit')));
     expect(_location(tester, app), '/join/${seed.joinCode}');
@@ -539,7 +537,7 @@ void main() {
     // Home keeps showing it until the manager approves.
     await tapKey(tester, 'claimHome');
     await pumpUntil(tester, find.text('Request for 14: waiting for approval'));
-    await tester.pumpWidget(const SizedBox());
+    await _settle(tester);
   }, skip: _skip != null);
 
   testWidgets(
@@ -572,8 +570,28 @@ void main() {
       expect(tokens.refreshCount, 1, reason: 'six 401s, one refresh');
       expect(app.store.refreshToken, isNot(before), reason: 'rotated');
       expect(tokens.currentAccessToken, isNot(stale));
-      await tester.pumpWidget(const SizedBox());
+      await _settle(tester);
     },
     skip: _skip != null,
   );
+}
+
+/// Lets the claims request the home screen starts (GET /v1/me/unit-claims)
+/// finish before the widget tree goes, so no timer outlives the test.
+Future<void> _settle(WidgetTester tester) async {
+  if (find.byType(OpenBekciApp).evaluate().isNotEmpty) {
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(OpenBekciApp)),
+    );
+    // Requests started inside the test zone finish through pumps.
+    for (var i = 0; i < 50; i++) {
+      if (!container.read(pendingClaimsProvider).isLoading) break;
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)),
+      );
+      await tester.pump(const Duration(milliseconds: 20));
+    }
+  }
+  await tester.pump(const Duration(milliseconds: 100));
+  await tester.pumpWidget(const SizedBox());
 }

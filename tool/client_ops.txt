@@ -86,3 +86,5 @@ money.createCheckout
 money.getCheckout
 money.listMyCheckouts
 tenancy.getSiteSettings
+people.joinSignUp
+people.listMyUnitClaims

@@ -1851,4 +1851,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get myCheckoutsEmpty => 'Henüz kart ödemesi yok.';
+
+  @override
+  String get joinSignUp => 'Telefon numaranızla kaydolun';
 }

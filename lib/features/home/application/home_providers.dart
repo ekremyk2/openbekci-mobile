@@ -35,10 +35,14 @@ final statementTargetsProvider = Provider<List<StatementTarget>>((ref) {
   );
 });
 
-/// Unit claims this device made that are still waiting for approval.
+/// The user's unit claims that are still waiting for approval (GET
+/// /v1/me/unit-claims); empty when the call fails.
 final pendingClaimsProvider = FutureProvider<List<UnitClaim>>((ref) async {
-  final claims = ref.watch(localClaimsProvider);
   // Re-read when a new claim was just made.
   ref.watch(lastClaimProvider);
-  return claims == null ? const [] : await claims.read();
+  try {
+    return await ref.watch(joinRepositoryProvider).myClaims();
+  } on Object {
+    return const [];
+  }
 });

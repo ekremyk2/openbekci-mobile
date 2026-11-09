@@ -200,13 +200,9 @@ Store steps and privacy-form answers: `docs/release.md`.
 
 ## Known gaps against the backend contract (phase A)
 
-- There is **no self sign-up** endpoint: `auth.requestOtp` only answers for existing accounts, so "site QR, sign up with
-  SMS code, claim" needs the account to exist first (invitation or a manager). The app claims after sign-in.
-- **`GET /v1/me/unit-claims`** (list my claims) is in the draft contract but not served, so the app remembers its own
-  claims locally until the unit shows up in `/v1/me`.
-- `openbekci://` links carry **no server address** (backend `LinkURL`); invitations created by a manager are sent as
-  web links `{BASE_URL}/invite/{token}`. The app resolves hostless links against the server it is connecting to, and
-  accepts pasted web links; it also understands an optional `server=` query parameter.
+- Resolved in phase D: the site QR path signs up through `POST /v1/join/{code}:sign-up` (phone, SMS code, then the claim) and
+  waiting claims come from `GET /v1/me/unit-claims`, not from local state. Server-made mobile links are
+  `openbekci://<host>/<path>` (`scheme=http` for plain http); the older hostless forms and `server=` still parse.
 - `server_version` is `dev` on development builds; the app does not gate those.
 - The unknown case of an open enum does not keep the raw string (ADR 0001).
 

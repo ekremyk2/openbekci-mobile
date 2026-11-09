@@ -539,6 +539,22 @@ void main() {
       },
     );
 
+    testWidgets(
+      'signed out: sign up through the join code, then the SMS code',
+      (tester) async {
+        final app = TestApp();
+        await pumpApp(tester, app);
+        app.links.add(const JoinLink(code: 'CODE1', origin: testOrigin));
+        await tester.pumpAndSettle();
+        await tapKey(tester, 'joinSignUp');
+        expect(currentLocation(tester), '/sign-in/sms?join=CODE1');
+        await typeInto(tester, 'phoneField', '+905321234567');
+        await tapKey(tester, 'smsSend');
+        expect(app.join.signUps, ['CODE1:+905321234567']);
+        expect(find.byKey(const Key('codeField')), findsOneWidget);
+      },
+    );
+
     testWidgets('signed in: pick a unit and a role, claim, wait for approval', (
       tester,
     ) async {

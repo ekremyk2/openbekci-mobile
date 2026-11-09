@@ -997,5 +997,6 @@
   "checkoutReopen": "Open payment page",
   "checkoutRefresh": "Check again",
   "myCheckoutsTitle": "Card payments",
-  "myCheckoutsEmpty": "No card payments yet."
+  "myCheckoutsEmpty": "No card payments yet.",
+  "joinSignUp": "Sign up with your phone number"
 }

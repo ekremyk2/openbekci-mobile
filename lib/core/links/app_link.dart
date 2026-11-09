@@ -65,8 +65,22 @@ sealed class AppLink {
       if (uri.host.isNotEmpty) uri.host,
       ...uri.pathSegments.where((s) => s.isNotEmpty),
     ];
+    // openbekci://<host>[:port]/<path>: the server puts the instance host
+    // first (plain http only with scheme=http). The local forms (invite, join,
+    // login, connect, pay) start with their own word instead.
+    if (segments.length >= 2 && !_localForms.contains(segments.first)) {
+      final plain = uri.queryParameters['scheme'] == 'http';
+      final origin = Uri(
+        scheme: plain ? 'http' : 'https',
+        host: uri.host.toLowerCase(),
+        port: uri.hasPort ? uri.port : null,
+      ).toString();
+      return _fromSegments(segments.sublist(1), uri, origin);
+    }
     return _fromSegments(segments, uri, _serverParam(uri));
   }
+
+  static const _localForms = {'invite', 'join', 'login', 'connect', 'pay'};
 
   static AppLink? _fromWeb(Uri uri) {
     final origin = _originOf(uri);

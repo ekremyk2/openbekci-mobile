@@ -107,7 +107,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.signIn,
         builder: (_, _) => const SignInScreen(),
         routes: [
-          GoRoute(path: 'sms', builder: (_, _) => const SmsSignInScreen()),
+          GoRoute(
+            path: 'sms',
+            builder: (_, state) =>
+                SmsSignInScreen(joinCode: state.uri.queryParameters['join']),
+          ),
           GoRoute(
             path: 'password',
             builder: (_, _) => const PasswordSignInScreen(),
