@@ -14,6 +14,14 @@ import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
 String webNextPath(String orgId, String tail) =>
     '/orgs/$orgId${tail.isEmpty || tail.startsWith('/') ? tail : '/$tail'}';
 
+final _webNextPattern = RegExp(
+  r'^/orgs/[A-Za-z0-9_-]{1,64}(/[A-Za-z0-9_-]{1,64})*$',
+);
+
+/// True for a `next` the app may send: `/orgs/{org}/...` made only of plain
+/// id-like segments (no query, fragment, dots, `//` or other origins).
+bool isSafeWebNext(String next) => _webNextPattern.hasMatch(next);
+
 /// The URL to open for a one-time web-login [link]:
 /// `{BASE_URL}/login/link/{token}?next=...`. The server composes `url` from
 /// its configured base URL; when that is missing or relative the app builds
@@ -28,7 +36,9 @@ Uri webLoginUri({
       given.hasScheme &&
       (given.scheme == 'https' || given.scheme == 'http') &&
       given.pathSegments.contains(link.token)) {
-    return given;
+    // Host and path come from the server (its configured base URL), but
+    // `next` is always ours: an in-app `/orgs/{org}/...` path.
+    return given.replace(queryParameters: {'next': next});
   }
   return Uri.parse(serverOrigin).replace(
     pathSegments: ['login', 'link', link.token],
@@ -51,6 +61,7 @@ Future<void> openInWeb(
   final origin = ref.read(accountProvider).value?.serverOrigin;
   if (scope == null || api == null || origin == null) return;
   final next = webNextPath(scope.orgId, tail);
+  if (!isSafeWebNext(next)) return;
   try {
     final link = await unwrap(
       () => api.me.meCreateWebLoginLink(

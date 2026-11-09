@@ -633,6 +633,31 @@ void main() {
       expect(webNextPath(orgId, ''), '/orgs/$orgId');
     });
 
+    test('only plain /orgs/{org}/... paths are sent as next', () {
+      expect(isSafeWebNext('/orgs/$orgId/meetings/m_1'), isTrue);
+      for (final bad in [
+        '/login',
+        '//evil.example/orgs/1',
+        '/orgs/1/../admin',
+        '/orgs/1/x?next=https://evil.example',
+        '/orgs/1/x#f',
+        'https://evil.example/orgs/1',
+        '/orgs/',
+        '/orgs/1/a b',
+      ]) {
+        expect(isSafeWebNext(bad), isFalse, reason: bad);
+      }
+    });
+
+    test('a next inside the server URL is replaced by ours', () {
+      final u = webLoginUri(
+        serverOrigin: 'https://gul.example.org',
+        link: link('https://app.example.org/login/link/tok123?next=%2Fevil'),
+        next: '/orgs/1/bookings',
+      );
+      expect(u.queryParameters, {'next': '/orgs/1/bookings'});
+    });
+
     test(
       'the server URL is used when it is absolute and carries the token',
       () {
