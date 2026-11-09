@@ -318,7 +318,7 @@ class _MeetingState extends ConsumerState<MeetingScreen> {
                   onAnswer: _answer,
                 ),
             ],
-            if (qr != null) ...[
+            if (owner && qr != null) ...[
               SectionTitle(l.checkInTitle),
               Card(
                 key: const Key('checkInCard'),

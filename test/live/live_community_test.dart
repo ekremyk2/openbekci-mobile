@@ -22,6 +22,7 @@ import 'package:openbekci_mobile/app/router.dart';
 import 'package:openbekci_mobile/core/account/account.dart';
 import 'package:openbekci_mobile/core/auth/link_handler.dart';
 import 'package:openbekci_mobile/core/db/database.dart';
+import 'package:openbekci_mobile/core/l10n/format.dart';
 import 'package:openbekci_mobile/core/links/app_link.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/features/community/application/community_providers.dart';
@@ -582,6 +583,16 @@ void main() {
     await tester.pump();
     await tester.tap(slots.at(20));
     await tester.pump();
+    // What the sheet promises before the tap must be what the server charges.
+    final preview = [
+      for (final t in tester.widgetList<Text>(
+        find.descendant(
+          of: find.byKey(const Key('feePreview')),
+          matching: find.byType(Text),
+        ),
+      ))
+        t.data ?? t.textSpan?.toPlainText() ?? '',
+    ].join(' ');
     await tapKey(tester, 'confirmBooking');
     await tester.pump(const Duration(milliseconds: 300));
     late Map<String, dynamic> booking;
@@ -603,6 +614,17 @@ void main() {
     booking = items.single;
     expect(booking['status'], 'confirmed');
     expect((booking['fee'] as Map)['amount'], 15000);
+    expect(
+      preview,
+      contains(
+        formatMoney(
+          (booking['fee'] as Map)['amount'] as int,
+          (booking['fee'] as Map)['currency'] as String,
+          locale: 'en',
+        ),
+      ),
+      reason: 'the previewed fee equals the fee the server charged',
+    );
     expect(booking['charge_id'], isNotNull, reason: 'the fee posts a charge');
 
     // My bookings: cancel, the refund rule is shown first.

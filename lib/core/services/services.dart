@@ -205,6 +205,7 @@ class PlatformQrImageService implements QrImageService {
     final painter = QrPainter(
       data: data,
       version: QrVersions.auto,
+      errorCorrectionLevel: QrErrorCorrectLevel.M,
       eyeStyle: const QrEyeStyle(color: Color(0xFF000000)),
       dataModuleStyle: const QrDataModuleStyle(color: Color(0xFF000000)),
       gapless: true,
