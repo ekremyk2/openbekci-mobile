@@ -123,6 +123,10 @@ class AppLockState {
 class AppLockController extends Notifier<AppLockState> {
   DateTime? _pausedAt;
 
+  /// The clock, replaceable in tests.
+  @visibleForTesting
+  DateTime Function() clock = DateTime.now;
+
   /// Re-lock after this long in the background.
   static const grace = Duration(seconds: 30);
 
@@ -176,12 +180,16 @@ class AppLockController extends Notifier<AppLockState> {
   void lifecycle(AppLifecycleState s) {
     if (!state.enabled) return;
     if (s == AppLifecycleState.paused) {
-      _pausedAt = DateTime.now();
+      _pausedAt = clock();
     } else if (s == AppLifecycleState.resumed) {
       final at = _pausedAt;
       _pausedAt = null;
-      if (at != null && DateTime.now().difference(at) >= grace) {
-        state = state.copyWith(locked: true);
+      // A clock set back (a negative time away) counts as away too.
+      if (at != null) {
+        final away = clock().difference(at);
+        if (away.isNegative || away >= grace) {
+          state = state.copyWith(locked: true);
+        }
       }
     }
   }

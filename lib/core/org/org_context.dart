@@ -69,7 +69,7 @@ OrgContext? buildOrgContext(Me me, String? orgId) {
   );
 }
 
-const _orgKey = 'selected_org_id';
+const selectedOrgPref = 'selected_org_id';
 
 /// The organization chosen in the switcher; survives restarts.
 class SelectedOrgController extends Notifier<String?> {
@@ -82,7 +82,7 @@ class SelectedOrgController extends Notifier<String?> {
   Future<void> _load() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final saved = prefs.getString(_orgKey);
+      final saved = prefs.getString(selectedOrgPref);
       if (saved != null && state == null) state = saved;
     } on Object {
       // Preferences are a convenience; the first organization is the default.
@@ -93,7 +93,7 @@ class SelectedOrgController extends Notifier<String?> {
     state = orgId;
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_orgKey, orgId);
+      await prefs.setString(selectedOrgPref, orgId);
     } on Object {
       // Not persisted: fine.
     }

@@ -184,29 +184,53 @@ class TicketDraft {
     photos: photos ?? this.photos,
   );
 
+  TicketDraft withKey(String newKey) => TicketDraft(
+    key: newKey,
+    categoryId: categoryId,
+    title: title,
+    description: description,
+    visibility: visibility,
+    unitId: unitId,
+    photos: photos,
+  );
+
   bool get isEmpty =>
       title.isEmpty && description.isEmpty && photos.isEmpty && unitId == null;
 }
 
-const _draftPref = 'ticket_draft_v1';
+/// Prefix of the saved drafts; one slot per user and organization, so a draft
+/// (text, category, unit) never reaches another account or organization.
+const ticketDraftPrefPrefix = 'ticket_draft_v1';
 
 String _newKey() => HeadersInterceptor.newId(Random.secure());
 
 class TicketDraftController extends Notifier<TicketDraft> {
+  String? _slot;
+
+  /// Rebuilt (empty, photos dropped) whenever the user or the organization
+  /// changes, and on sign-out.
   @override
   TicketDraft build() {
-    unawaited(_restore());
+    final user = ref.watch(accountProvider.select((a) => a.value?.userId));
+    final org = ref.watch(scopeProvider.select((s) => s?.orgId));
+    _slot = user == null || org == null
+        ? null
+        : '$ticketDraftPrefPrefix/$user/$org';
+    unawaited(_restore(_slot));
     return TicketDraft(key: _newKey());
   }
 
-  Future<void> _restore() async {
+  Future<void> _restore(String? slot) async {
+    if (slot == null) return;
     try {
       final prefs = await SharedPreferences.getInstance();
-      final raw = prefs.getString(_draftPref);
-      if (raw == null || !state.isEmpty) return;
+      final raw = prefs.getString(slot);
+      if (raw == null || !state.isEmpty || slot != _slot) return;
       final m = json.decode(raw) as Map<String, dynamic>;
       state = TicketDraft(
-        key: (m['key'] as String?) ?? state.key,
+        // Photos are not restored, so the request differs from one sent before
+        // the restart: it must not reuse that attempt's key.
+        key: state.key,
         categoryId: m['category_id'] as String?,
         title: (m['title'] as String?) ?? '',
         description: (m['description'] as String?) ?? '',
@@ -223,14 +247,16 @@ class TicketDraftController extends Notifier<TicketDraft> {
   }
 
   Future<void> _persist() async {
+    final slot = _slot;
+    if (slot == null) return;
     try {
       final prefs = await SharedPreferences.getInstance();
       if (state.isEmpty && state.categoryId == null) {
-        await prefs.remove(_draftPref);
+        await prefs.remove(slot);
         return;
       }
       await prefs.setString(
-        _draftPref,
+        slot,
         json.encode({
           'key': state.key,
           'category_id': state.categoryId,
@@ -245,8 +271,21 @@ class TicketDraftController extends Notifier<TicketDraft> {
     }
   }
 
+  /// A changed request is a new request: it needs a new `Idempotency-Key`
+  /// (the server would answer the earlier, different one for the old key).
+  TicketDraft _rekeyed(TicketDraft before, TicketDraft after) {
+    final same =
+        before.categoryId == after.categoryId &&
+        before.title == after.title &&
+        before.description == after.description &&
+        before.visibility == after.visibility &&
+        before.unitId == after.unitId &&
+        before.photos.length == after.photos.length;
+    return same ? after : after.withKey(_newKey());
+  }
+
   void update(TicketDraft Function(TicketDraft d) change) {
-    state = change(state);
+    state = _rekeyed(state, change(state));
     unawaited(_persist());
   }
 
@@ -254,18 +293,22 @@ class TicketDraftController extends Notifier<TicketDraft> {
   void addPhotos(List<({String name, Uint8List bytes})> added) {
     final room = maxTicketPhotos - state.photos.length;
     final take = added.take(max(room, 0));
-    state = state.copyWith(
-      photos: [
-        ...state.photos,
-        for (final p in take)
-          DraftPhoto(name: p.name, bytes: p.bytes, uploadKey: _newKey()),
-      ],
+    final before = state;
+    state = _rekeyed(
+      before,
+      state.copyWith(
+        photos: [
+          ...state.photos,
+          for (final p in take)
+            DraftPhoto(name: p.name, bytes: p.bytes, uploadKey: _newKey()),
+        ],
+      ),
     );
   }
 
   void removePhoto(int index) {
     final list = [...state.photos]..removeAt(index);
-    state = state.copyWith(photos: list);
+    state = _rekeyed(state, state.copyWith(photos: list));
   }
 
   void markUploaded(int index, String fileId) {

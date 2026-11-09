@@ -91,12 +91,14 @@ const photoMaxEdge = 1600;
 
 /// Compresses [bytes] for upload (mobile plan section 7.1): decode, scale the
 /// longest edge down to [photoMaxEdge], re-encode as JPEG. Re-encoding drops
-/// EXIF (including the location); the server strips it again. Returns the
-/// input unchanged when it is not a decodable image.
-Uint8List compressPhotoSync(Uint8List bytes, {int maxEdge = photoMaxEdge}) {
+/// EXIF (including the location); the server strips it again. The EXIF
+/// orientation is applied first, or the stripped photo would come out rotated.
+/// Returns `null` when it is not a decodable image: the original bytes are
+/// never uploaded (they may still carry the location).
+Uint8List? compressPhotoSync(Uint8List bytes, {int maxEdge = photoMaxEdge}) {
   final decoded = img.decodeImage(bytes);
-  if (decoded == null) return bytes;
-  var image = decoded;
+  if (decoded == null) return null;
+  var image = img.bakeOrientation(decoded);
   final longest = image.width > image.height ? image.width : image.height;
   if (longest > maxEdge) {
     image = image.width >= image.height
@@ -107,7 +109,7 @@ Uint8List compressPhotoSync(Uint8List bytes, {int maxEdge = photoMaxEdge}) {
 }
 
 /// [compressPhotoSync] off the UI thread.
-Future<Uint8List> compressPhoto(Uint8List bytes) =>
+Future<Uint8List?> compressPhoto(Uint8List bytes) =>
     compute(compressPhotoSync, bytes);
 
 /// Result of an app-lock prompt.
@@ -139,8 +141,15 @@ class PlatformLockAuthenticator implements LockAuthenticator {
         localizedReason: reason,
       );
       return ok ? LockResult.success : LockResult.failed;
+    } on LocalAuthException catch (e) {
+      // Only "the device has no screen lock any more" opens the app; a
+      // lock-out after failed attempts, a timeout or a cancelled prompt must
+      // keep it locked.
+      return e.code == LocalAuthExceptionCode.noCredentialsSet
+          ? LockResult.unavailable
+          : LockResult.failed;
     } on Object {
-      return LockResult.unavailable;
+      return LockResult.failed;
     }
   }
 }

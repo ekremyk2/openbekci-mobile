@@ -176,6 +176,7 @@ class _TicketDetailState extends ConsumerState<TicketDetailScreen>
     with SubmitState {
   final _comment = TextEditingController();
   String _commentKey = HeadersInterceptor.newId(Random.secure());
+  String? _commentKeyFor;
   bool _voting = false;
 
   @override
@@ -189,6 +190,11 @@ class _TicketDetailState extends ConsumerState<TicketDetailScreen>
     if (text.isEmpty) return;
     final repo = ref.read(ticketsRepositoryProvider);
     if (repo == null) return;
+    // A retry of the same text keeps its key; an edited text is a new comment.
+    if (_commentKeyFor != null && _commentKeyFor != text) {
+      _commentKey = HeadersInterceptor.newId(Random.secure());
+    }
+    _commentKeyFor = text;
     await submit(() async {
       await repo.comment(
         orgId: ctx.orgId,
@@ -504,13 +510,21 @@ class _NewTicketState extends ConsumerState<NewTicketScreen> with SubmitState {
           ? [?await picker.takePhoto()]
           : await picker.pickFromGallery(limit: room);
       final compressed = <({String name, Uint8List bytes})>[];
+      var skipped = 0;
       for (final p in picked.take(room)) {
-        compressed.add((
-          name: _jpegName(p.name),
-          bytes: await compressPhoto(p.bytes),
-        ));
+        final bytes = await compressPhoto(p.bytes);
+        if (bytes == null) {
+          skipped++; // not an image we can re-encode: never sent as it is
+          continue;
+        }
+        compressed.add((name: _jpegName(p.name), bytes: bytes));
       }
       ref.read(ticketDraftProvider.notifier).addPhotos(compressed);
+      if (skipped > 0 && mounted) {
+        final l = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l.errorGeneric)));
+      }
     } finally {
       if (mounted) setState(() => _pickingPhotos = false);
     }
