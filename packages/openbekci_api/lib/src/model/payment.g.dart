@@ -21,7 +21,7 @@ abstract class _$PaymentCWProxy {
 
   Payment debtorKind(PaymentDebtorKindEnum? debtorKind);
 
-  Payment method(PaymentMethodEnum method);
+  Payment method(String method);
 
   Payment gross(Money gross);
 
@@ -59,6 +59,8 @@ abstract class _$PaymentCWProxy {
 
   Payment updatedAt(DateTime updatedAt);
 
+  Payment version(int? version);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Payment(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -73,7 +75,7 @@ abstract class _$PaymentCWProxy {
     String? payerDisplayName,
     String? unitId,
     PaymentDebtorKindEnum? debtorKind,
-    PaymentMethodEnum method,
+    String method,
     Money gross,
     Money fee,
     Money net,
@@ -92,6 +94,7 @@ abstract class _$PaymentCWProxy {
     String? bankTransactionId,
     DateTime createdAt,
     DateTime updatedAt,
+    int? version,
   });
 }
 
@@ -126,7 +129,7 @@ class _$PaymentCWProxyImpl implements _$PaymentCWProxy {
       this(debtorKind: debtorKind);
 
   @override
-  Payment method(PaymentMethodEnum method) => this(method: method);
+  Payment method(String method) => this(method: method);
 
   @override
   Payment gross(Money gross) => this(gross: gross);
@@ -188,6 +191,9 @@ class _$PaymentCWProxyImpl implements _$PaymentCWProxy {
   Payment updatedAt(DateTime updatedAt) => this(updatedAt: updatedAt);
 
   @override
+  Payment version(int? version) => this(version: version);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Payment(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -221,6 +227,7 @@ class _$PaymentCWProxyImpl implements _$PaymentCWProxy {
     Object? bankTransactionId = const $CopyWithPlaceholder(),
     Object? createdAt = const $CopyWithPlaceholder(),
     Object? updatedAt = const $CopyWithPlaceholder(),
+    Object? version = const $CopyWithPlaceholder(),
   }) {
     return Payment(
       id: id == const $CopyWithPlaceholder()
@@ -254,7 +261,7 @@ class _$PaymentCWProxyImpl implements _$PaymentCWProxy {
       method: method == const $CopyWithPlaceholder()
           ? _value.method
           // ignore: cast_nullable_to_non_nullable
-          : method as PaymentMethodEnum,
+          : method as String,
       gross: gross == const $CopyWithPlaceholder()
           ? _value.gross
           // ignore: cast_nullable_to_non_nullable
@@ -327,6 +334,10 @@ class _$PaymentCWProxyImpl implements _$PaymentCWProxy {
           ? _value.updatedAt
           // ignore: cast_nullable_to_non_nullable
           : updatedAt as DateTime,
+      version: version == const $CopyWithPlaceholder()
+          ? _value.version
+          // ignore: cast_nullable_to_non_nullable
+          : version as int?,
     );
   }
 }
@@ -394,14 +405,7 @@ Payment _$PaymentFromJson(Map<String, dynamic> json) => $checkedCreate(
           unknownValue: PaymentDebtorKindEnum.unknownDefaultOpenApi,
         ),
       ),
-      method: $checkedConvert(
-        'method',
-        (v) => $enumDecode(
-          _$PaymentMethodEnumEnumMap,
-          v,
-          unknownValue: PaymentMethodEnum.unknownDefaultOpenApi,
-        ),
-      ),
+      method: $checkedConvert('method', (v) => v as String),
       gross: $checkedConvert(
         'gross',
         (v) => Money.fromJson(v as Map<String, dynamic>),
@@ -459,6 +463,7 @@ Payment _$PaymentFromJson(Map<String, dynamic> json) => $checkedCreate(
         'updated_at',
         (v) => DateTime.parse(v as String),
       ),
+      version: $checkedConvert('version', (v) => (v as num?)?.toInt()),
     );
     return val;
   },
@@ -489,7 +494,7 @@ Map<String, dynamic> _$PaymentToJson(Payment instance) => <String, dynamic>{
   'payer_display_name': instance.payerDisplayName,
   'unit_id': instance.unitId,
   'debtor_kind': _$PaymentDebtorKindEnumEnumMap[instance.debtorKind],
-  'method': _$PaymentMethodEnumEnumMap[instance.method]!,
+  'method': instance.method,
   'gross': instance.gross.toJson(),
   'fee': instance.fee.toJson(),
   'net': instance.net.toJson(),
@@ -508,19 +513,13 @@ Map<String, dynamic> _$PaymentToJson(Payment instance) => <String, dynamic>{
   'bank_transaction_id': instance.bankTransactionId,
   'created_at': instance.createdAt.toIso8601String(),
   'updated_at': instance.updatedAt.toIso8601String(),
+  'version': ?instance.version,
 };
 
 const _$PaymentDebtorKindEnumEnumMap = {
   PaymentDebtorKindEnum.owner: 'owner',
   PaymentDebtorKindEnum.tenant: 'tenant',
   PaymentDebtorKindEnum.unknownDefaultOpenApi: 'unknown_default_open_api',
-};
-
-const _$PaymentMethodEnumEnumMap = {
-  PaymentMethodEnum.cash: 'cash',
-  PaymentMethodEnum.bankTransfer: 'bank_transfer',
-  PaymentMethodEnum.card: 'card',
-  PaymentMethodEnum.unknownDefaultOpenApi: 'unknown_default_open_api',
 };
 
 const _$PaymentStatusEnumEnumMap = {

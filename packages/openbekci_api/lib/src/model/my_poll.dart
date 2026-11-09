@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:openbekci_api/src/model/my_poll_answer.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -25,6 +26,8 @@ class MyPoll {
     required  this.title,
 
     required  this.answeredUnits,
+
+    required  this.answers,
   });
 
   @JsonKey(
@@ -63,19 +66,34 @@ class MyPoll {
 
 
 
+      /// What the caller answered, per unit (their own answers only, never another owner's).
+  @JsonKey(
+    
+    name: r'answers',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final List<MyPollAnswer> answers;
+
+
+
 
 
     @override
     bool operator ==(Object other) => identical(this, other) || other is MyPoll &&
       other.agendaItemId == agendaItemId &&
       other.title == title &&
-      other.answeredUnits == answeredUnits;
+      other.answeredUnits == answeredUnits &&
+      other.answers == answers;
 
     @override
     int get hashCode =>
         agendaItemId.hashCode +
         title.hashCode +
-        answeredUnits.hashCode;
+        answeredUnits.hashCode +
+        answers.hashCode;
 
   factory MyPoll.fromJson(Map<String, dynamic> json) => _$MyPollFromJson(json);
 

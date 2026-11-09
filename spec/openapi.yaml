@@ -627,6 +627,51 @@ paths:
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
+  /v1/me/profile:
+    patch:
+      operationId: me.updateProfile
+      x-openbekci-roles:
+        - sessions.manage_own
+      summary: Update my profile
+      description: |-
+        **Release 0.1.** Display name and locale of the signed-in account (`PATCH /v1/me/profile`). Contact changes go through
+        `me.startContactChange`. Send the `version` of `GET /v1/me` (`user.version`) in `If-Match`; a stale one is 409
+        `version_conflict`. Returns the updated `user`, with its new `version`. The display name is the account's own: it wins over the
+        name of the linked person in `GET /v1/me`; an empty string clears it. The locale is one the server has texts for: `tr` or `en`.
+
+        Problems: `version_conflict` (409), `validation_failed` (422).
+      tags:
+        - me
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-idempotent: optional
+      x-stability: stable
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeUser'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
   /v1/auth/web-login-link:exchange:
     post:
       operationId: auth.exchangeWebLoginLink
@@ -5899,6 +5944,90 @@ paths:
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/reference/{kind}:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: kind
+        in: path
+        required: true
+        description: The kind of reference data (open; for example `province`, `district`, `holiday`, `bank`). The kinds an organization has are those of its enabled packs.
+        schema:
+          type: string
+    get:
+      operationId: codes.listReference
+      summary: List reference data of a kind
+      description: |-
+        **Release 0.4.** Reference data served by the packs enabled for the organization: administrative areas for cascading address selects (`province`, then `district` with `parent` = the province code), public holidays (`holiday`, `parent` = a year) and similar. `address_format` returns the address fields of the organization's country as data. 404 when no enabled pack serves the kind.
+
+        Permission: `codes.read`.
+      tags:
+        - codes
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        member:
+          - codes.read
+      x-stability: preview
+      parameters:
+        - name: parent
+          in: query
+          description: Only the items below this parent code (a province code for districts, a year for holidays).
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferenceList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/privacy/consents:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+    get:
+      operationId: codes.listConsents
+      summary: Privacy notice and consent texts
+      description: |-
+        **Release 0.4.** The privacy notice and the consent texts of the organization in a locale, with the version clients record acceptance of. A pack enabled for the organization supplies its own (the Turkish pack: the KVKK aydınlatma metni and one açık rıza text per processing purpose); without a pack the generic privacy notice is returned. Markdown.
+
+        Permission: `codes.read`.
+      tags:
+        - codes
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        member:
+          - codes.read
+      x-stability: preview
+      parameters:
+        - name: locale
+          in: query
+          description: The locale of the texts (`tr`, `en`); default the organization's locale.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
   /v1/orgs/{org_id}/codes:
     parameters:
       - $ref: '#/components/parameters/OrgId'
@@ -9729,6 +9858,62 @@ paths:
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/meetings/{meeting_id}/documents/{kind}:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: meeting_id
+        in: path
+        required: true
+        description: Id of the meeting.
+        schema:
+          type: string
+          format: uuid
+      - name: kind
+        in: path
+        required: true
+        description: 'The document a pack provides (open; known: `delivery_checklist`, `proxy_form`, `decision_book_draft`).'
+        schema:
+          type: string
+    get:
+      operationId: governance.getMeetingDocument
+      summary: Download a document only a pack provides
+      description: |-
+        **Release 0.4.** Documents of a meeting that have no generic equivalent and exist only when a pack enabled for the organization has a template for the site's locale: the per-owner call delivery checklist, the proxy form (blank, or filled for `person_id`) and the numbered karar defteri page draft. 404 when no enabled pack provides the document.
+
+        Permission: `meetings.manage`.
+      tags:
+        - governance
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        - meetings.manage
+      x-stability: preview
+      parameters:
+        - name: person_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: The owner a proxy form is filled for.
+      responses:
+        '200':
+          description: The file.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
   /v1/orgs/{org_id}/meetings/{meeting_id}/call-letter:
     parameters:
       - $ref: '#/components/parameters/OrgId'
@@ -11720,6 +11905,72 @@ paths:
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/facilities/{facility_id}/bookings:preview:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: facility_id
+        in: path
+        required: true
+        description: Id of the facility.
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: community.previewBooking
+      summary: Preview a booking
+      description: |-
+        **Release 0.3.** What `community.createBooking` would do for the same body, without writing anything: the fee and the side it would be charged to, the refund rule that would apply, the unit's quota left in the period of the start, and the rule violations that would make create fail (the same field-error codes create answers 422 with). A blocked date or a taken slot is reported in `conflict` (create answers 409). The body is the one create takes; its `facility_id` must equal the path's, else 422 `facility_id` `invalid_value`.
+
+        Refusals that depend on who asks (not allowed to book, closed facility, someone else's unit) are answered as create would, with 403, 404, 409 or 422.
+
+        Permission: `bookings.create`.
+
+        Problems: `validation_failed` (422), `conflict` (409).
+      tags:
+        - community
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - bookings.create
+        site_manager:
+          - bookings.create
+        board_member:
+          - bookings.create
+        owner:
+          - bookings.create
+        tenant:
+          - bookings.create
+        household:
+          - bookings.create
+      x-idempotent: none
+      x-stability: preview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingPreview'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
   /v1/orgs/{org_id}/bookings:
     parameters:
       - $ref: '#/components/parameters/OrgId'
@@ -12757,6 +13008,59 @@ paths:
         '403':
           $ref: '#/components/responses/Problem'
         '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/visitor-approval-requests/{request_id}:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: request_id
+        in: path
+        required: true
+        description: Id of the request.
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: community.getVisitorApprovalRequest
+      summary: One visitor approval request
+      description: |-
+        **Release 0.3.** One approval request, in the shape of the list items (a pending request past its expiry reads as `expired`). Served to the resident it is addressed to (a unit they live in or own) and to the site's overview roles; anyone else gets 404, so a request is never confirmed to exist. The guard console polls the visitor with `community.getGateVisitor` instead.
+
+        Permission (any one of): `visitors.decide` (own units), `visitors.read`.
+      tags:
+        - community
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - visitors.read
+        site_manager:
+          - visitors.read
+        board_member:
+          - visitors.read
+        auditor:
+          - visitors.read
+        owner:
+          - visitors.decide
+        tenant:
+          - visitors.decide
+        household:
+          - visitors.decide
+      x-stability: preview
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VisitorApprovalRequest'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
@@ -20470,6 +20774,457 @@ paths:
           $ref: '#/components/responses/Problem'
         default:
           $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/payments/{payment_id}:refund:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: payment_id
+        in: path
+        required: true
+        description: Id of the payment.
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: money.refundPayment
+      summary: Refund a card payment
+      description: |-
+        **Release 0.4.** Refunds a payment made through a payment provider in full: the provider refunds first, then the
+        reversal is posted (gross back out of the clearing account, the fee reversed, the allocations released) and the
+        payment becomes `refunded`; its checkout becomes `refunded`. Partial refunds are not supported by the ledger.
+        A payment already refunded is returned unchanged. Re-authentication is not required (backend plan section 16 lists
+        it for other operations); the refund is audited under the manager's name.
+
+        `If-Match` is required: send the payment's `version` (a stale one is 409 `version_conflict`).
+
+        Permission: `money.post`.
+
+        Problems: `conflict` (409, not a provider payment or not confirmed), `version_conflict` (409),
+        `idempotency_mismatch` (422), `pack_error` (the provider refused or failed).
+      tags:
+        - money
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - money.post
+        site_manager:
+          - money.post
+        board_member:
+          - money.post
+        accountant:
+          - money.post
+      x-idempotent: required
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKeyRequired'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRefund'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/checkouts:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+    post:
+      operationId: money.createCheckout
+      summary: Start a card checkout
+      description: |-
+        **Release 0.4.** Starts a hosted card checkout for one side of a unit, for selected charges or an amount, and
+        returns the provider's `checkout_url`, the `return_url` and the `checkout_id` to poll (`money.getCheckout`).
+
+        A resident may pay only a side their current occupancy reaches: an owner both sides, a tenant the tenant side, a
+        household member their own side when `may_see_money` was granted (otherwise 403). A manager of the site may start
+        one for any side. The provider is the one of the enabled packs (the setting `payments.provider` picks one when
+        several are enabled); whose account it uses follows `payments.merchant_of_record`. Card data never passes through
+        the server: the payer enters it on the provider's page.
+
+        Permission: `payments.checkout`.
+
+        Problems: `payment_provider_unavailable` (409, no provider is enabled for the site), `validation_failed` (422,
+        `charge_ids` not open, nothing to pay), `idempotency_mismatch` (422), `pack_error` (the provider failed).
+      tags:
+        - money
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - payments.checkout
+        site_manager:
+          - payments.checkout
+        owner:
+          - payments.checkout
+        tenant:
+          - payments.checkout
+        household:
+          - payments.checkout
+      x-idempotent: required
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKeyRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+    get:
+      operationId: money.listCheckouts
+      summary: List the checkouts of a site
+      description: |-
+        **Release 0.4.** The card checkouts of a site for its managers, oldest first.
+
+        Permission: `money.read`.
+      tags:
+        - money
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - money.read
+        site_manager:
+          - money.read
+        board_member:
+          - money.read
+        auditor:
+          - money.read
+        accountant:
+          - money.read
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/SiteIdRequired'
+        - name: status
+          in: query
+          schema:
+            type: string
+            x-known-values:
+              - pending
+              - paid
+              - failed
+              - expired
+              - refunded
+          description: Filter by `status`.
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/checkouts/{checkout_id}:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: checkout_id
+        in: path
+        required: true
+        description: Id of the checkout.
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: money.getCheckout
+      summary: Poll a checkout
+      description: |-
+        **Release 0.4.** The status poll of a checkout: `pending`, `paid`, `failed`, `expired` or `refunded`, and the
+        resulting `payment_id` once paid. A client opens `checkout_url`, and after the provider returns the payer to
+        `return_url` polls this until the status is no longer `pending` (the receipt arrives as a notification).
+
+        A pending checkout is reconciled with the provider (at most every few seconds), so a payment whose webhook was
+        lost is still found, and a pending checkout past `expires_at` is expired on the spot. Only the person who started
+        the checkout, a manager of the site and a resident who reaches the unit side can read it (404 otherwise).
+
+        Permission: `payments.checkout`.
+      tags:
+        - money
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - payments.checkout
+        site_manager:
+          - payments.checkout
+        owner:
+          - payments.checkout
+        tenant:
+          - payments.checkout
+        household:
+          - payments.checkout
+      x-stability: preview
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/me/checkouts:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+    get:
+      operationId: money.listMyCheckouts
+      summary: List my checkouts
+      description: |-
+        **Release 0.4.** The card checkouts the caller started in this organization, oldest first.
+
+        Permission: `payments.checkout`.
+      tags:
+        - money
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - payments.checkout
+        site_manager:
+          - payments.checkout
+        owner:
+          - payments.checkout
+        tenant:
+          - payments.checkout
+        household:
+          - payments.checkout
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/payment-settlements:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+    get:
+      operationId: money.listPaymentSettlements
+      summary: List provider settlements
+      description: |-
+        **Release 0.4.** The payouts of the payment providers posted for a site, newest first. A periodic job asks each
+        enabled provider for its payouts and posts them: with the site as merchant of record, bank against the provider's
+        clearing account; with the organization as merchant of record, each site's share against its client money account.
+
+        Permission: `money.read`.
+      tags:
+        - money
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - money.read
+        site_manager:
+          - money.read
+        board_member:
+          - money.read
+        auditor:
+          - money.read
+        accountant:
+          - money.read
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/SiteIdRequired'
+        - name: provider
+          in: query
+          schema:
+            type: string
+          description: Only the payouts of this payment provider.
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderSettlementList'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/payment-clearing:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+    get:
+      operationId: money.getPaymentClearing
+      summary: Clearing balance per provider
+      description: |-
+        **Release 0.4.** What a site has not yet received from each of its payment providers (the balance of the provider's
+        clearing account: card payments received minus payouts posted), the effective merchant of record of the site and,
+        when the organization collects centrally, the client money it holds for the site.
+
+        Permission: `money.read`.
+      tags:
+        - money
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - money.read
+        site_manager:
+          - money.read
+        board_member:
+          - money.read
+        auditor:
+          - money.read
+        accountant:
+          - money.read
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/SiteIdRequired'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentClearing'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+  /v1/orgs/{org_id}/payment-clearing:payout:
+    parameters:
+      - $ref: '#/components/parameters/OrgId'
+    post:
+      operationId: money.payoutClientMoney
+      summary: Record a client money payout to a site
+      description: |-
+        **Release 0.4.** Records that the organization, as merchant of record, paid client money out to a site's bank
+        account: debit the site's bank account (`1100`), credit its client money account (`1195`), so the balance the
+        organization owes the site (`client_money_owed` of `money.getPaymentClearing`) goes down. The amount cannot
+        exceed that balance. `reference` (the bank transfer reference) is kept in the entry's memo and the audit trail.
+
+        Permission: `money.post` at the site.
+
+        Problems: `validation_failed` (422, `amount` not positive, in another currency or above the balance, `reference`
+        missing, `paid_on` in the future), `locked_period` (409), `idempotency_mismatch` (422).
+      tags:
+        - money
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-openbekci-roles:
+        org_admin:
+          - money.post
+        site_manager:
+          - money.post
+        board_member:
+          - money.post
+        accountant:
+          - money.post
+      x-idempotent: required
+      x-stability: preview
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKeyRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientMoneyPayoutCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentClearing'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
   /v1/orgs/{org_id}/payments/{payment_id}/receipt:
     parameters:
       - $ref: '#/components/parameters/OrgId'
@@ -22540,6 +23295,8 @@ components:
             - agent_session_expired
             - api_key_revoked
             - api_key_expired
+            - payment_provider_unavailable
+            - merchant_change_blocked
         detail:
           type: string
           description: Human-readable explanation, not for machine parsing.
@@ -23053,6 +23810,7 @@ components:
         - default_locale
         - roles
         - permissions
+        - occupant_permissions
         - sites
         - person_id
       properties:
@@ -23071,7 +23829,13 @@ components:
             $ref: '#/components/schemas/RoleGrant'
         permissions:
           type: array
-          description: Effective permissions in this organization, from the caller's active memberships and the role to permission matrix.
+          description: Effective permissions in this organization from the caller's active role memberships and the role to permission matrix. Empty for a resident who holds no role; see `occupant_permissions`.
+          items:
+            $ref: '#/components/schemas/PermissionGrant'
+        occupant_permissions:
+          type: array
+          description: |
+            Permissions the caller holds in this organization through a current unit occupancy (owner, tenant or household member, S3), as a portal user, each limited to the sites (`site_ids`) of the units they occupy. They are not role permissions and are never listed in `permissions`; a client gates resident screens (statements, declaring a payment, creating tickets) with this list and the staff screens with `permissions`. Narrowing to the caller's own unit and side still happens on the server (`occupancies[].side`, `may_see_money`). Former occupants appear in `occupancies` only; they hold the S7 read right, not these.
           items:
             $ref: '#/components/schemas/PermissionGrant'
         sites:
@@ -23313,13 +24077,14 @@ components:
         - phone
         - locale
         - is_platform_admin
+        - version
       properties:
         id:
           type: string
           format: uuid
         display_name:
           type: string
-          description: The name of the person linked to the account (first organization), else the email or phone.
+          description: The account's own display name when set (`PATCH /v1/me/profile`), else the name of the person linked to the account (first organization), else the email or phone.
         email:
           type: string
           nullable: true
@@ -23330,6 +24095,20 @@ components:
           type: string
         is_platform_admin:
           type: boolean
+        version:
+          type: integer
+          description: Send it in `If-Match` of `PATCH /v1/me/profile`. Grows with every change of the account (profile, password).
+    ProfileUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        display_name:
+          type: string
+          maxLength: 200
+          description: The account's display name; an empty string clears it.
+        locale:
+          type: string
+          description: One of the locales the server has texts for, `tr` or `en`.
     PermissionGrant:
       type: object
       description: |
@@ -23430,6 +24209,7 @@ components:
         - org.read
         - packs.manage
         - packs.read
+        - payments.checkout
         - payments.declare
         - payments.record
         - people.erase
@@ -24009,6 +24789,91 @@ components:
           type: string
         description:
           type: string
+    ReferenceItem:
+      type: object
+      required:
+        - code
+        - name
+      properties:
+        code:
+          type: string
+          description: Stable code of the item (a plate code, an ISO date for a holiday).
+        name:
+          type: string
+        parent:
+          type: string
+          description: The code of the item above this one (the province of a district, the year of a holiday).
+    ReferenceList:
+      type: object
+      required:
+        - kind
+        - items
+      properties:
+        kind:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReferenceItem'
+        address_format:
+          type: array
+          description: For kind `address_format`, the address fields of the organization's country.
+          items:
+            $ref: '#/components/schemas/AddressField'
+    AddressField:
+      type: object
+      required:
+        - key
+        - label_key
+        - required
+      properties:
+        key:
+          type: string
+          description: '`line1`, `province`, `district`, `postal_code`, ...'
+        label_key:
+          type: string
+          description: Catalog key of the label (see the codes endpoint).
+        required:
+          type: boolean
+        pattern:
+          type: string
+          description: RE2 regular expression the value must match.
+        reference:
+          type: string
+          description: The reference data kind that offers the options.
+    Consent:
+      type: object
+      required:
+        - id
+        - version
+        - locale
+        - markdown
+      properties:
+        id:
+          type: string
+          description: '`core.privacy_notice`, or the id of a pack''s text (`tr.privacy_notice`, `tr.consent_identity`, ...); labelled by the codes endpoint.'
+        pack:
+          type: string
+          description: The pack that supplies the text; absent for the core's notice.
+        version:
+          type: string
+          description: Clients record acceptance of this version.
+        locale:
+          type: string
+        markdown:
+          type: string
+    ConsentList:
+      type: object
+      required:
+        - locale
+        - items
+      properties:
+        locale:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Consent'
     Codes:
       type: object
       required:
@@ -25079,6 +25944,7 @@ components:
           type: string
           format: date
           nullable: true
+          description: Exclusive end date, the first day the person no longer holds the occupancy (the move-out day); null while open. Money and ticket access of a former occupant covers the days before it.
         created_at:
           type: string
           format: date-time
@@ -25149,6 +26015,7 @@ components:
           type: string
           format: date
           nullable: true
+          description: Exclusive end date, the first day the person no longer holds the occupancy (the move-out day); null while open. Money and ticket access of a former occupant covers the days before it.
     OccupancyList:
       type: object
       required:
@@ -25237,6 +26104,7 @@ components:
           type: string
           format: date
           nullable: true
+          description: Exclusive end date, the first day the person no longer holds the occupancy (the move-out day); null while open. Money and ticket access of a former occupant covers the days before it.
     Organization:
       type: object
       description: The access boundary (D2).
@@ -25277,6 +26145,12 @@ components:
         settings:
           type: object
           additionalProperties: true
+          description: |-
+            Organization settings, merged key by key on update (a null value removes the key). Core keys:
+            `payments.merchant_of_record` (`site`, the default: each site collects card payments into its own provider
+            account; or `organization`: the management company collects centrally and holds the net as client money owed per
+            site; a site may override it, see `tenancy.updateSiteSettings`, decision M5) and `payments.provider` (the id of
+            the payment provider card checkout uses when several are enabled).
         created_at:
           type: string
           format: date-time
@@ -25301,6 +26175,7 @@ components:
         settings:
           type: object
           additionalProperties: true
+          description: Merged key by key into the stored settings; a null value removes the key. See `Org.settings` for the `payments.*` keys.
     Person:
       type: object
       description: A person of the organization; exists before an account.
@@ -25717,6 +26592,43 @@ components:
           additionalProperties: true
           nullable: true
           description: Pack-defined settings (schema-driven in 0.4).
+        payments:
+          type: object
+          description: Card payment capabilities and the merchant of record of the site (release 0.4).
+          required:
+            - card
+            - merchant_of_record
+            - merchant_of_record_override
+          properties:
+            card:
+              type: object
+              description: Whether "Pay by card" exists for the site; clients show it only when `available` is true.
+              required:
+                - available
+                - provider
+              properties:
+                available:
+                  type: boolean
+                  description: A payment provider of an enabled pack is available for the site.
+                provider:
+                  type: string
+                  nullable: true
+                  description: Id of the provider checkout would use.
+            merchant_of_record:
+              type: string
+              description: The effective merchant of record (the site override, else the organization setting, else `site`). Open enum.
+              enum:
+                - site
+                - organization
+              x-open-enum: true
+            merchant_of_record_override:
+              type: string
+              nullable: true
+              description: The site's own override of the organization setting, null when it follows the organization. Open enum.
+              enum:
+                - site
+                - organization
+              x-open-enum: true
         pack_defaults:
           type: object
           description: |
@@ -25920,6 +26832,16 @@ components:
           additionalProperties: true
           nullable: true
           description: Pack-defined settings (schema-driven in 0.4).
+        merchant_of_record:
+          type: string
+          nullable: true
+          description: |-
+            Per-site override of the organization setting `payments.merchant_of_record` (decision M5): `site` (the site collects
+            into its own provider account) or `organization` (the management company collects centrally and holds the net as
+            client money). null removes the override. Changing it needs `org.manage`, not just `sites.manage`.
+          enum:
+            - site
+            - organization
     SiteTransfer:
       type: object
       description: Record of a site export, import or offboarding (D2).
@@ -26789,7 +27711,7 @@ components:
           type: string
           format: date
           nullable: true
-          description: Null while the occupancy is current.
+          description: Exclusive end date, the first day the person no longer holds the occupancy (the move-out day); null while the occupancy is current. A former occupant's money window ends the day before.
       example:
         id: 0192a3f0-1000-7000-8000-000000000005
         org_id: 0192a3f0-1000-7000-8000-000000000001
@@ -27510,7 +28432,8 @@ components:
           type: string
         visibility:
           type: string
-          description: Open enum.
+          description: |
+            Open enum. The creator chooses (O3): `private` is about one unit (a resident needs `unit_id` of a unit they occupy, or exactly one), `common` about the shared parts of the site or block. Left out, the category's default applies. Managers may set it for any ticket they open.
           enum:
             - private
             - common
@@ -29809,6 +30732,7 @@ components:
         - agenda_item_id
         - title
         - answered_units
+        - answers
       properties:
         agenda_item_id:
           type: string
@@ -29820,6 +30744,11 @@ components:
           items:
             type: string
             format: uuid
+        answers:
+          type: array
+          description: What the caller answered, per unit (their own answers only, never another owner's).
+          items:
+            $ref: '#/components/schemas/MyPollAnswer'
     MyMeeting:
       type: object
       required:
@@ -36234,12 +37163,10 @@ components:
           nullable: true
         method:
           type: string
-          description: '`card:<provider>` values arrive in 0.4. Open enum.'
-          enum:
+          description: '`cash`, `bank_transfer`, or `card:<provider>` for a payment made through a payment provider (for example `card:iyzico`). Open set: clients tolerate unknown values.'
+          x-known-values:
             - cash
             - bank_transfer
-            - card
-          x-open-enum: true
         gross:
           $ref: '#/components/schemas/Money'
         fee:
@@ -36302,6 +37229,10 @@ components:
         updated_at:
           type: string
           format: date-time
+        version:
+          type: integer
+          format: int64
+          description: Moves whenever the payment changes status; send it as `If-Match` to refund a provider payment.
       example:
         id: 0192a3f0-1000-7000-8000-000000000003
         org_id: 0192a3f0-1000-7000-8000-000000000001
@@ -36344,6 +37275,7 @@ components:
         bank_transaction_id: null
         created_at: '2026-03-01T09:00:00Z'
         updated_at: '2026-03-01T09:00:00Z'
+        version: 1
     PaymentAllocation:
       type: object
       required:
@@ -36474,6 +37406,7 @@ components:
             bank_transaction_id: null
             created_at: '2026-03-01T09:00:00Z'
             updated_at: '2026-03-01T09:00:00Z'
+            version: 1
         next_cursor: null
     PaymentVoid:
       type: object
@@ -36555,7 +37488,13 @@ components:
           format: date
         kind:
           type: string
-          description: Open enum.
+          description: |
+            Open enum. `declared_payment` is a payment the resident declared that a manager has not confirmed yet (`pending_declared`):
+            a memo line that moves no balance (`debit`, `credit`, `principal` and `late_fee` are zero, `balance` is the running
+            balance of the line before it), carrying the amount in `declared_amount` and the payment in `ref_type` `payment` / `ref_id`.
+            Once confirmed it is replaced by an ordinary `payment` line.
+            `fee` is a booked late fee line (`late_fee` is kept for older clients) and `waiver` a waived fee; the late fee accrued up to today and not booked yet
+            is one `fee` line with `accrued: true` (its amount is already in `balance` and `closing_balance`; never add it again).
           enum:
             - opening
             - charge
@@ -36565,6 +37504,9 @@ components:
             - refund
             - adjustment
             - reversal
+            - fee
+            - waiver
+            - declared_payment
           x-open-enum: true
         description:
           type: string
@@ -36598,6 +37540,13 @@ components:
           allOf:
             - $ref: '#/components/schemas/Money'
           description: Running balance.
+        accrued:
+          type: boolean
+          description: True on the single `fee` line that is the late fee accrued to the end of the statement and not booked yet (M4).
+        declared_amount:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: 'Only on `declared_payment` lines: the amount the resident declared.'
     BankImporter:
       type: object
       required:
@@ -37976,6 +38925,140 @@ components:
           description: Door numbers of units without an owner of record; nobody votes for them.
           items:
             type: string
+    MyPollAnswer:
+      type: object
+      required:
+        - unit_id
+        - answer
+        - answered_at
+      properties:
+        unit_id:
+          type: string
+          format: uuid
+        answer:
+          type: string
+          description: Open enum.
+          enum:
+            - 'yes'
+            - 'no'
+            - abstain
+          x-open-enum: true
+        answered_at:
+          type: string
+          format: date-time
+    BookingPreview:
+      type: object
+      description: What creating the booking would do, computed without writing anything.
+      required:
+        - facility_id
+        - unit_id
+        - start
+        - end
+        - fee
+        - refund_rule
+        - quota
+        - violations
+        - conflict
+        - bookable
+      properties:
+        facility_id:
+          type: string
+          format: uuid
+        unit_id:
+          type: string
+          format: uuid
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        fee:
+          type: object
+          nullable: true
+          description: The fee create would post as a charge; null when the facility is free.
+          required:
+            - amount
+            - currency
+            - debtor_kind
+          properties:
+            amount:
+              type: integer
+              format: int64
+              description: Minor units.
+            currency:
+              type: string
+            debtor_kind:
+              type: string
+              description: Side the charge would go to (owner or tenant).
+              x-open-enum: true
+              enum:
+                - owner
+                - tenant
+        refund_rule:
+          type: object
+          required:
+            - cancel_refund_cutoff_hours
+            - refundable_until
+          properties:
+            cancel_refund_cutoff_hours:
+              type: integer
+              nullable: true
+              description: The facility's cutoff; null when cancelling never refunds a resident (a manager's cancel always does).
+            refundable_until:
+              type: string
+              format: date-time
+              nullable: true
+              description: A resident cancelling up to this instant gets the fee back; null without a fee or a cutoff.
+        quota:
+          type: object
+          required:
+            - limit
+            - period
+            - used
+            - remaining
+            - period_from
+            - period_to
+          properties:
+            limit:
+              type: integer
+              nullable: true
+              description: Bookings per unit per period; null when the facility has no quota.
+            period:
+              type: string
+              nullable: true
+              description: week or month; the period that contains `start`.
+            used:
+              type: integer
+              description: Confirmed bookings of the unit in that period.
+            remaining:
+              type: integer
+              nullable: true
+              description: Bookings left before this one; 0 means the quota is used up.
+            period_from:
+              type: string
+              format: date-time
+              nullable: true
+            period_to:
+              type: string
+              format: date-time
+              nullable: true
+        violations:
+          type: array
+          description: The rules this request breaks, as create would answer 422 `validation_failed` (same codes). Managers are not held to the lead time, the horizon or the quota.
+          items:
+            $ref: '#/components/schemas/ProblemFieldError'
+        conflict:
+          type: string
+          nullable: true
+          description: The 409 create would answer with, if any. Open enum.
+          x-open-enum: true
+          enum:
+            - facility_blocked
+            - slot_taken
+        bookable:
+          type: boolean
+          description: True when create would succeed right now.
     Job:
       type: object
       description: A background job (River).
@@ -38874,6 +39957,339 @@ components:
       properties:
         reason:
           type: string
+    PaymentRefund:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 500
+          description: Why the payment is refunded (audited and sent to the provider).
+    Checkout:
+      type: object
+      description: |-
+        **Release 0.4.** A hosted card checkout for one side of a unit. Open `checkout_url` in a browser (a Custom Tab on
+        mobile, a top-level navigation on the web); the provider returns the payer to `return_url`; poll
+        `money.getCheckout` until `status` is final.
+
+        State machine: `pending` becomes `paid` (the provider confirmed the money), `failed` (the provider declined, or
+        could not create the checkout) or `expired` (`expires_at` passed). A payment that arrives for an `expired` or
+        `failed` checkout is still recorded and the checkout becomes `paid`. A `paid` checkout becomes `refunded`
+        when the payment is refunded.
+      required:
+        - id
+        - org_id
+        - site_id
+        - unit_id
+        - debtor_kind
+        - charge_ids
+        - provider
+        - merchant_of_record
+        - amount
+        - status
+        - checkout_url
+        - return_url
+        - expires_at
+        - payment_id
+        - failure_code
+        - created_by
+        - created_at
+        - completed_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The checkout id (`checkout_id`).
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        unit_id:
+          type: string
+          format: uuid
+        debtor_kind:
+          type: string
+          description: The unit side that pays. Open enum.
+          enum:
+            - owner
+            - tenant
+          x-open-enum: true
+        charge_ids:
+          type: array
+          description: The charges the payment is applied to; empty means oldest first.
+          items:
+            type: string
+            format: uuid
+        provider:
+          type: string
+          description: Id of the payment provider (`<packid>` or `<packid>.<name>`).
+        merchant_of_record:
+          type: string
+          description: Whose provider account the checkout was created on (core setting `payments.merchant_of_record`). Open enum.
+          enum:
+            - site
+            - organization
+          x-open-enum: true
+        amount:
+          $ref: '#/components/schemas/Money'
+        status:
+          type: string
+          description: Open enum.
+          enum:
+            - pending
+            - paid
+            - failed
+            - expired
+            - refunded
+          x-open-enum: true
+        checkout_url:
+          type: string
+          nullable: true
+          description: The provider's hosted page; null only when creation failed.
+        return_url:
+          type: string
+          description: Where the provider sends the payer back to, `{BASE_URL}/orgs/{org}/pay/return?checkout_id=...` or, for `client=mobile`, `openbekci://pay/return?org_id=...&checkout_id=...`.
+        expires_at:
+          type: string
+          format: date-time
+        payment_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: The payment once the checkout is `paid` (or `refunded`).
+        failure_code:
+          type: string
+          nullable: true
+          description: '`provider_error` or `provider_declined` when the checkout failed.'
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        amount_mismatch:
+          type: boolean
+          description: |-
+            True when the provider confirmed another gross amount than `amount` (a partial capture, an adjustment at the
+            provider). The payment holds `confirmed_amount`, never `amount`; the difference is audited
+            (`checkout.amount_mismatch`). Absent or false otherwise.
+        confirmed_amount:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          nullable: true
+          description: The gross amount the provider confirmed, set only when it differs from `amount`.
+      example:
+        id: 0192a3f0-1000-7000-8000-000000000020
+        org_id: 0192a3f0-1000-7000-8000-000000000001
+        site_id: 0192a3f0-1000-7000-8000-000000000002
+        unit_id: 0192a3f0-1000-7000-8000-000000000003
+        debtor_kind: tenant
+        charge_ids: []
+        provider: example
+        merchant_of_record: site
+        amount:
+          amount: 150000
+          currency: TRY
+        status: pending
+        checkout_url: https://pay.example.test/checkout/ex_0192a3f0
+        return_url: https://app.example.test/orgs/0192a3f0-1000-7000-8000-000000000001/pay/return?checkout_id=0192a3f0-1000-7000-8000-000000000020
+        expires_at: '2026-11-09T11:00:00Z'
+        payment_id: null
+        failure_code: null
+        created_by: 0192a3f0-1000-7000-8000-000000000009
+        created_at: '2026-11-09T10:00:00Z'
+        completed_at: null
+    CheckoutList:
+      type: object
+      required:
+        - items
+        - next_cursor
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Checkout'
+        next_cursor:
+          type: string
+          nullable: true
+          description: Pass as `cursor` for the next page; null on the last page.
+    CheckoutCreate:
+      type: object
+      description: Start a card checkout for one side of a unit, for selected charges or an amount.
+      required:
+        - unit_id
+        - debtor_kind
+      properties:
+        unit_id:
+          type: string
+          format: uuid
+        debtor_kind:
+          type: string
+          description: The unit side that pays. A resident may pay only a side their current occupancy reaches (an owner both sides, a tenant the tenant side, a household member their own side with `may_see_money`).
+          enum:
+            - owner
+            - tenant
+        charge_ids:
+          type: array
+          description: Charges to pay (each must be open on that side). Omitted or empty means oldest first.
+          maxItems: 200
+          items:
+            type: string
+            format: uuid
+        amount:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: The gross amount to pay, in the site currency. With `charge_ids` it defaults to what is open on them; without, to everything open on the side (an amount above what is open becomes credit).
+        client:
+          type: string
+          description: '`mobile` makes `return_url` the app''s `openbekci://pay/return`; the default `web` the web app''s pay return page.'
+          enum:
+            - web
+            - mobile
+          default: web
+    ProviderSettlement:
+      type: object
+      description: |-
+        **Release 0.4.** A payout of a payment provider as posted to one site. With the organization as merchant of record
+        one payout covers several sites and is listed once per site, each with its own share and entry.
+      required:
+        - provider
+        - ref
+        - site_id
+        - net
+        - gross
+        - fee
+        - settled_on
+        - entry_id
+        - merchant_of_record
+        - created_at
+      properties:
+        provider:
+          type: string
+        ref:
+          type: string
+          description: The provider's settlement id.
+        site_id:
+          type: string
+          format: uuid
+        net:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: The part of the payout posted to this site.
+        gross:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          nullable: true
+          description: Gross of the payout when the provider reported it and the payout is not split.
+        fee:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          nullable: true
+        settled_on:
+          type: string
+          format: date
+        entry_id:
+          type: string
+          format: uuid
+          description: The journal entry (bank against clearing, or client money against clearing).
+        merchant_of_record:
+          type: string
+          description: Open enum.
+          enum:
+            - site
+            - organization
+          x-open-enum: true
+        created_at:
+          type: string
+          format: date-time
+    ProviderSettlementList:
+      type: object
+      required:
+        - items
+        - next_cursor
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderSettlement'
+        next_cursor:
+          type: string
+          nullable: true
+          description: Pass as `cursor` for the next page; null on the last page.
+    PaymentClearing:
+      type: object
+      description: |-
+        **Release 0.4.** What a site has not yet received from its payment providers, and what the organization holds for
+        it as client money.
+      required:
+        - site_id
+        - merchant_of_record
+        - providers
+        - client_money_owed
+      properties:
+        site_id:
+          type: string
+          format: uuid
+        merchant_of_record:
+          type: string
+          description: The effective merchant of record of the site. Open enum.
+          enum:
+            - site
+            - organization
+          x-open-enum: true
+        providers:
+          type: array
+          items:
+            type: object
+            required:
+              - provider
+              - balance
+            properties:
+              provider:
+                type: string
+              balance:
+                allOf:
+                  - $ref: '#/components/schemas/Money'
+                description: 'The clearing balance: card payments received minus payouts posted.'
+        client_money_owed:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: What the organization holds for the site and has not passed on (merchant of record `organization`); zero otherwise.
+        client_money_paid_out:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: What the organization has paid out to the site so far (`money.payoutClientMoney`); absent on older servers.
+    ClientMoneyPayoutCreate:
+      type: object
+      description: '**Release 0.4.** The organization paid client money out to a site''s bank account.'
+      required:
+        - site_id
+        - amount
+        - reference
+      properties:
+        site_id:
+          type: string
+          format: uuid
+        amount:
+          $ref: '#/components/schemas/Money'
+        reference:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: The bank transfer reference.
+        paid_on:
+          type: string
+          format: date
+          description: The day the money arrived; defaults to today at the site, never in the future.
     StatementSend:
       type: object
       required:
@@ -40253,6 +41669,7 @@ x-openbekci-roles:
     - org.read
     - packs.manage
     - packs.read
+    - payments.checkout
     - payments.declare
     - payments.record
     - people.erase
@@ -40335,6 +41752,7 @@ x-openbekci-roles:
     - occupancies.manage
     - occupancies.read
     - org.read
+    - payments.checkout
     - payments.declare
     - payments.record
     - people.manage

@@ -1,3 +1,4 @@
+import 'package:openbekci_api/src/model/access_settings.dart';
 import 'package:openbekci_api/src/model/address.dart';
 import 'package:openbekci_api/src/model/agenda_item.dart';
 import 'package:openbekci_api/src/model/agenda_item_list.dart';
@@ -19,6 +20,9 @@ import 'package:openbekci_api/src/model/branding.dart';
 import 'package:openbekci_api/src/model/change_password_request.dart';
 import 'package:openbekci_api/src/model/charge.dart';
 import 'package:openbekci_api/src/model/charge_list.dart';
+import 'package:openbekci_api/src/model/checkout.dart';
+import 'package:openbekci_api/src/model/checkout_create.dart';
+import 'package:openbekci_api/src/model/checkout_list.dart';
 import 'package:openbekci_api/src/model/code_label.dart';
 import 'package:openbekci_api/src/model/codes.dart';
 import 'package:openbekci_api/src/model/credentials.dart';
@@ -77,6 +81,7 @@ import 'package:openbekci_api/src/model/money.dart';
 import 'package:openbekci_api/src/model/my_meeting.dart';
 import 'package:openbekci_api/src/model/my_person_update.dart';
 import 'package:openbekci_api/src/model/my_poll.dart';
+import 'package:openbekci_api/src/model/my_poll_answer.dart';
 import 'package:openbekci_api/src/model/my_side.dart';
 import 'package:openbekci_api/src/model/notification.dart';
 import 'package:openbekci_api/src/model/notification_list.dart';
@@ -100,6 +105,7 @@ import 'package:openbekci_api/src/model/poll_answer.dart';
 import 'package:openbekci_api/src/model/poll_answer_set.dart';
 import 'package:openbekci_api/src/model/problem.dart';
 import 'package:openbekci_api/src/model/problem_field_error.dart';
+import 'package:openbekci_api/src/model/profile_update.dart';
 import 'package:openbekci_api/src/model/push_info.dart';
 import 'package:openbekci_api/src/model/reauth_email_code.dart';
 import 'package:openbekci_api/src/model/reauth_password.dart';
@@ -116,6 +122,10 @@ import 'package:openbekci_api/src/model/session.dart';
 import 'package:openbekci_api/src/model/session_list.dart';
 import 'package:openbekci_api/src/model/session_response.dart';
 import 'package:openbekci_api/src/model/site.dart';
+import 'package:openbekci_api/src/model/site_settings.dart';
+import 'package:openbekci_api/src/model/site_settings_pack_defaults_value.dart';
+import 'package:openbekci_api/src/model/site_settings_payments.dart';
+import 'package:openbekci_api/src/model/site_settings_payments_card.dart';
 import 'package:openbekci_api/src/model/statement.dart';
 import 'package:openbekci_api/src/model/statement_line.dart';
 import 'package:openbekci_api/src/model/ticket.dart';
@@ -169,6 +179,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return (valueString == 'true' || valueString == '1') as ReturnType;
         case 'double':
           return (value is double ? value : double.parse('$value')) as ReturnType;
+        case 'AccessSettings':
+          return AccessSettings.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Address':
           return Address.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AgendaItem':
@@ -211,6 +223,12 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return Charge.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ChargeList':
           return ChargeList.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'Checkout':
+          return Checkout.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'CheckoutCreate':
+          return CheckoutCreate.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'CheckoutList':
+          return CheckoutList.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CodeLabel':
           return CodeLabel.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Codes':
@@ -327,6 +345,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return MyPersonUpdate.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'MyPoll':
           return MyPoll.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MyPollAnswer':
+          return MyPollAnswer.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'MySide':
           return MySide.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Notification':
@@ -376,6 +396,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return Problem.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ProblemFieldError':
           return ProblemFieldError.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ProfileUpdate':
+          return ProfileUpdate.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'PushInfo':
           return PushInfo.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ReauthEmailCode':
@@ -408,6 +430,14 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return SessionResponse.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Site':
           return Site.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'SiteSettings':
+          return SiteSettings.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'SiteSettingsPackDefaultsValue':
+          return SiteSettingsPackDefaultsValue.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'SiteSettingsPayments':
+          return SiteSettingsPayments.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'SiteSettingsPaymentsCard':
+          return SiteSettingsPaymentsCard.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Statement':
           return Statement.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'StatementLine':

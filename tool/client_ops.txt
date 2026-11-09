@@ -81,3 +81,8 @@ governance.getCallLetter
 governance.getMinutes
 governance.listDecisions
 governance.getDecision
+# phase D: card checkout
+money.createCheckout
+money.getCheckout
+money.listMyCheckouts
+tenancy.getSiteSettings

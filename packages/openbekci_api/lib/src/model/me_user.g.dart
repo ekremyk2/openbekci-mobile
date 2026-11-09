@@ -19,6 +19,8 @@ abstract class _$MeUserCWProxy {
 
   MeUser isPlatformAdmin(bool isPlatformAdmin);
 
+  MeUser version(int version);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `MeUser(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -32,6 +34,7 @@ abstract class _$MeUserCWProxy {
     String? phone,
     String locale,
     bool isPlatformAdmin,
+    int version,
   });
 }
 
@@ -61,6 +64,9 @@ class _$MeUserCWProxyImpl implements _$MeUserCWProxy {
       this(isPlatformAdmin: isPlatformAdmin);
 
   @override
+  MeUser version(int version) => this(version: version);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `MeUser(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -74,6 +80,7 @@ class _$MeUserCWProxyImpl implements _$MeUserCWProxy {
     Object? phone = const $CopyWithPlaceholder(),
     Object? locale = const $CopyWithPlaceholder(),
     Object? isPlatformAdmin = const $CopyWithPlaceholder(),
+    Object? version = const $CopyWithPlaceholder(),
   }) {
     return MeUser(
       id: id == const $CopyWithPlaceholder()
@@ -100,6 +107,10 @@ class _$MeUserCWProxyImpl implements _$MeUserCWProxy {
           ? _value.isPlatformAdmin
           // ignore: cast_nullable_to_non_nullable
           : isPlatformAdmin as bool,
+      version: version == const $CopyWithPlaceholder()
+          ? _value.version
+          // ignore: cast_nullable_to_non_nullable
+          : version as int,
     );
   }
 }
@@ -127,6 +138,7 @@ MeUser _$MeUserFromJson(Map<String, dynamic> json) => $checkedCreate(
         'phone',
         'locale',
         'is_platform_admin',
+        'version',
       ],
     );
     final val = MeUser(
@@ -136,6 +148,7 @@ MeUser _$MeUserFromJson(Map<String, dynamic> json) => $checkedCreate(
       phone: $checkedConvert('phone', (v) => v as String?),
       locale: $checkedConvert('locale', (v) => v as String),
       isPlatformAdmin: $checkedConvert('is_platform_admin', (v) => v as bool),
+      version: $checkedConvert('version', (v) => (v as num).toInt()),
     );
     return val;
   },
@@ -152,4 +165,5 @@ Map<String, dynamic> _$MeUserToJson(MeUser instance) => <String, dynamic>{
   'phone': instance.phone,
   'locale': instance.locale,
   'is_platform_admin': instance.isPlatformAdmin,
+  'version': instance.version,
 };

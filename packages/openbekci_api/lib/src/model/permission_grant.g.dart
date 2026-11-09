@@ -176,6 +176,7 @@ const _$PermissionEnumMap = {
   Permission.orgPeriodRead: 'org.read',
   Permission.packsPeriodManage: 'packs.manage',
   Permission.packsPeriodRead: 'packs.read',
+  Permission.paymentsPeriodCheckout: 'payments.checkout',
   Permission.paymentsPeriodDeclare: 'payments.declare',
   Permission.paymentsPeriodRecord: 'payments.record',
   Permission.peoplePeriodErase: 'people.erase',

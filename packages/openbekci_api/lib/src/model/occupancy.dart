@@ -204,6 +204,7 @@ class Occupancy {
 
 
 
+      /// Exclusive end date, the first day the person no longer holds the occupancy (the move-out day); null while open. Money and ticket access of a former occupant covers the days before it.
   @JsonKey(
     
     name: r'valid_to',
