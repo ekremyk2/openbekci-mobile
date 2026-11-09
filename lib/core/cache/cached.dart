@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart' show Response;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openbekci_mobile/core/api/api_client.dart';
+import 'package:openbekci_mobile/core/api/app_error.dart';
 import 'package:openbekci_mobile/core/cache/cache_policy.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 
@@ -70,3 +71,21 @@ List<E> decodeList<E>(
 
 /// Unwraps a generated call (see [unwrap]) for [fetchPages].
 Future<T> call<T>(Future<Response<T>> Function() request) => unwrap(request);
+
+/// Follows `next_cursor` to the end, for figures that must be computed over
+/// the whole list (a balance). Never returns a partial list: more than
+/// [maxPages] pages fail with an `incomplete` error instead.
+Future<List<E>> fetchAllPages<E>(
+  Future<({List<E> items, String? next})> Function(String? cursor) page, {
+  int maxPages = 200,
+}) async {
+  final all = <E>[];
+  String? cursor;
+  for (var i = 0; i < maxPages; i++) {
+    final p = await page(cursor);
+    all.addAll(p.items);
+    cursor = p.next;
+    if (cursor == null || cursor.isEmpty) return all;
+  }
+  throw const AppError(code: 'incomplete_list');
+}

@@ -596,7 +596,6 @@ void main() {
           ),
           from: '2000-01-01',
           to: _isoToday(),
-          side: ownerSide,
         ),
       );
       expect(statement, isNotNull);

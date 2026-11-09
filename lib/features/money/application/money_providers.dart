@@ -37,15 +37,10 @@ final statementProvider =
           final ctx = ref.read(orgContextProvider);
           final siteId = scope.siteId;
           final timezone = ctx?.timezone ?? 'UTC';
-          final side = ref
-              .read(dashboardProvider)
-              .value
-              ?.data
-              ?.sides
-              .where(
-                (x) => x.unitId == q.unitId && x.debtorKind.value == q.kind,
-              )
-              .firstOrNull;
+          final id = '${q.unitId}:${q.kind}';
+          final former = ref
+              .read(statementTargetsProvider)
+              .any((t) => t.id == id && t.former);
           final statement = siteId == null
               ? await MoneyRepository(api).statement(
                   orgId: scope.orgId,
@@ -63,10 +58,10 @@ final statementProvider =
                     unitId: q.unitId,
                     unitLabel: '',
                     kind: q.kind,
+                    former: former,
                   ),
                   from: q.from,
                   to: q.to,
-                  side: side,
                 );
           return statement.toJson();
         },

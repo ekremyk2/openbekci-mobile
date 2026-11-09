@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:openbekci_api/openbekci_api.dart' hide File, Notification;
+import 'package:openbekci_mobile/core/api/app_error.dart';
+import 'package:openbekci_mobile/core/cache/cached.dart';
 import 'package:openbekci_mobile/core/org/org_context.dart';
 import 'package:openbekci_mobile/core/services/services.dart';
 import 'package:openbekci_mobile/features/announcements/application/announcements_providers.dart';
@@ -240,6 +242,134 @@ void main() {
         expect(st.totalDue.amount, 170000);
       },
     );
+
+    test('a confirmed payment credits its net, not its gross', () {
+      final net = Payment.fromJson({
+        ...paymentJson(id: 'p3', status: 'confirmed', amount: 20000),
+        'fee': money(500),
+        'net': money(19500),
+      });
+      final st = statementFromLedger(
+        target: target,
+        charges: [charge('c1', 100000, '2026-10-01')],
+        payments: [net],
+        currency: 'TRY',
+        today: '2026-11-09',
+      );
+      expect(st.closingBalance.amount, 80500);
+    });
+
+    test('a statement that ends before today carries no fee of today', () {
+      final st = statementFromLedger(
+        target: target,
+        charges: [charge('c1', 100000, '2026-03-01')],
+        payments: const [],
+        currency: 'TRY',
+        today: '2026-11-09',
+        to: '2026-06-30',
+        side: MySide.fromJson(sideJson(total: 85000)),
+      );
+      expect(st.accruedLateFee.amount, 0);
+      expect(st.totalDue.amount, 100000);
+    });
+
+    test('a negative charge is a credit line, not a negative debit', () {
+      final st = statementFromLedger(
+        target: target,
+        charges: [
+          charge('c1', 100000, '2026-10-01'),
+          charge('c2', -5000, '2026-10-02'),
+        ],
+        payments: const [],
+        currency: 'TRY',
+        today: '2026-11-09',
+      );
+      expect(st.lines.last.debit.amount, 0);
+      expect(st.lines.last.credit.amount, 5000);
+      expect(st.closingBalance.amount, 95000);
+    });
+  });
+
+  group('server statement with the accrued fee booked as a line', () {
+    Statement fromServer({int fee = 5000, String description = 'accrued'}) =>
+        Statement.fromJson({
+          'debtor': {
+            'mode': 'unit_side',
+            'unit_id': unit12,
+            'debtor_kind': 'owner',
+          },
+          'from': '2026-01-01',
+          'to': '2026-11-09',
+          'opening_balance': money(0),
+          'lines': [
+            {
+              'date': '2026-10-01',
+              'kind': 'charge',
+              'description': 'October dues',
+              'debit': money(100000),
+              'credit': money(0),
+              'principal': money(100000),
+              'late_fee': money(0),
+              'balance': money(100000),
+              'debtor_kind': 'owner',
+              'debtor_display_name': null,
+              'ref_type': null,
+              'ref_id': null,
+            },
+            {
+              'date': '2026-11-09',
+              'kind': 'fee',
+              'description': description,
+              'debit': money(fee),
+              'credit': money(0),
+              'principal': money(0),
+              'late_fee': money(fee),
+              'balance': money(100000 + fee),
+              'debtor_kind': 'owner',
+              'debtor_display_name': null,
+              'ref_type': null,
+              'ref_id': null,
+            },
+          ],
+          'closing_balance': money(100000 + fee),
+          'accrued_late_fee': money(fee),
+          'total_due': money(100000 + fee),
+          'credit': money(0),
+        });
+
+    test('the accrued line is listed once: the screen shows it separately', () {
+      final st = withoutAccruedLine(fromServer());
+      expect(st.lines.length, 1);
+      expect(st.closingBalance.amount, 100000);
+      expect(st.accruedLateFee.amount, 5000);
+      expect(st.totalDue.amount, 105000);
+    });
+
+    test('a booked fee line stays', () {
+      final st = withoutAccruedLine(fromServer(description: 'Late fee Oct'));
+      expect(st.lines.length, 2);
+      expect(st.closingBalance.amount, 105000);
+    });
+  });
+
+  group('lists that decide a balance', () {
+    test(
+      'fetchAllPages follows every cursor and never returns a partial list',
+      () async {
+        Future<({List<int> items, String? next})> page(String? c) async {
+          final n = c == null ? 0 : int.parse(c);
+          return (items: [n], next: n < 9 ? '${n + 1}' : null);
+        }
+
+        expect(await fetchAllPages<int>(page), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        expect(
+          () => fetchAllPages<int>(page, maxPages: 5),
+          throwsA(isA<AppError>()),
+        );
+        // The display helper keeps its cap.
+        expect((await fetchPages<int>(page, maxPages: 5)).length, 5);
+      },
+    );
   });
 
   group('tickets', () {
@@ -330,13 +460,22 @@ void main() {
     test('photos are scaled down and re-encoded as JPEG (EXIF dropped)', () {
       final big = img.Image(width: 3000, height: 1500);
       final bytes = compressPhotoSync(img.encodePng(big), maxEdge: 1000);
-      final out = img.decodeImage(bytes)!;
+      final out = img.decodeImage(bytes!)!;
       expect(out.width, 1000);
       expect(out.height, 500);
       expect(bytes.sublist(0, 2), [0xff, 0xd8]);
-      // Not an image: returned unchanged.
+      // Not an image: nothing to upload (the original may carry its EXIF).
       final junk = img.encodePng(img.Image(width: 1, height: 1)).sublist(0, 4);
-      expect(compressPhotoSync(junk), junk);
+      expect(compressPhotoSync(junk), isNull);
+    });
+
+    test('the EXIF orientation is applied before the EXIF is dropped', () {
+      final tall = img.Image(width: 40, height: 20)
+        ..exif.imageIfd.orientation = 6; // rotate 90 clockwise
+      final out = img.decodeImage(compressPhotoSync(img.encodeJpg(tall))!)!;
+      expect(out.width, 20);
+      expect(out.height, 40);
+      expect(out.exif.imageIfd.hasOrientation, isFalse);
     });
   });
 
@@ -412,18 +551,52 @@ void main() {
       expect(
         routeForNotification(
           n('announcement.published', {'announcement_id': 'x'}),
+          orgId: 'o',
         ),
         '/more/announcements/x',
       );
       expect(
         routeForNotification(
           n('ticket.commented', const {}, '/orgs/o/tickets/t9'),
+          orgId: 'o',
         ),
         '/tickets/t9',
       );
-      expect(routeForNotification(n('payment.confirmed')), '/money');
-      expect(routeForNotification(n('visitor.arrived')), isNull);
-      expect(routeForNotification(n('brand.new_type')), isNull);
+      expect(
+        routeForNotification(n('payment.confirmed'), orgId: 'o'),
+        '/money',
+      );
+      expect(routeForNotification(n('visitor.arrived'), orgId: 'o'), isNull);
+      expect(routeForNotification(n('brand.new_type'), orgId: 'o'), isNull);
+    });
+
+    test('a link into another organization never navigates', () {
+      expect(
+        routeForNotification(
+          n('ticket.commented', const {}, '/orgs/other/tickets/t9'),
+          orgId: 'o',
+        ),
+        isNull,
+      );
+    });
+
+    test('ids that are not plain ids never reach a route path', () {
+      for (final bad in ['../../profile', 'a/b', 'x?y=1', '', 'a b']) {
+        expect(
+          routeForNotification(
+            n('ticket.commented', {'ticket_id': bad}),
+            orgId: 'o',
+          ),
+          '/tickets',
+        );
+        expect(
+          routeForNotification(
+            n('announcement.published', {'announcement_id': bad}),
+            orgId: 'o',
+          ),
+          '/more/announcements',
+        );
+      }
     });
   });
 

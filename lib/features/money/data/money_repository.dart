@@ -12,19 +12,25 @@ class MoneyRepository {
 
   final ApiClient api;
 
+  /// Pages a balance may be built from: more than this and the lists are
+  /// refused rather than summed (a partial ledger is a wrong balance).
+  static const _ledgerPages = 200;
+
   Future<Statement> statement({
     required String orgId,
     required String unitId,
     required String kind,
     String? from,
     String? to,
-  }) => unwrap(
-    () => api.money.moneyGetUnitStatement(
-      orgId: orgId,
-      unitId: unitId,
-      debtorKind: kind,
-      from: from,
-      to: to,
+  }) async => withoutAccruedLine(
+    await unwrap(
+      () => api.money.moneyGetUnitStatement(
+        orgId: orgId,
+        unitId: unitId,
+        debtorKind: kind,
+        from: from,
+        to: to,
+      ),
     ),
   );
 
@@ -33,7 +39,7 @@ class MoneyRepository {
     required String siteId,
     required String unitId,
     required String kind,
-  }) => fetchPages<Charge>((cursor) async {
+  }) => fetchAllPages<Charge>((cursor) async {
     final page = await unwrap(
       () => api.money.moneyListCharges(
         orgId: orgId,
@@ -44,7 +50,7 @@ class MoneyRepository {
       ),
     );
     return (items: page.items, next: page.nextCursor);
-  }, maxPages: 6);
+  });
 
   /// The statement of [target]. The statement endpoint is the contract's
   /// answer; a server that refuses residents on it (403: the handler checks
@@ -58,7 +64,6 @@ class MoneyRepository {
     required StatementTarget target,
     String? from,
     String? to,
-    MySide? side,
   }) async {
     try {
       return await statement(
@@ -70,6 +75,26 @@ class MoneyRepository {
       );
     } on AppError catch (e) {
       if (e.status != 403) rethrow;
+      // Today's fee and total come from the dashboard, read fresh (never the
+      // cached copy) so they match the lists fetched next. A current side the
+      // dashboard does not list cannot be priced: keep the refusal.
+      MySide? side;
+      if (!target.former) {
+        final dash = await unwrap(
+          () => api.dashboards.dashboardsGetMyDashboard(
+            orgId: orgId,
+            siteId: siteId,
+          ),
+        );
+        side = dash.sides
+            .where(
+              (x) =>
+                  x.unitId == target.unitId &&
+                  x.debtorKind.value == target.kind,
+            )
+            .firstOrNull;
+        if (side == null) rethrow;
+      }
       final results = await Future.wait<Object>([
         charges(
           orgId: orgId,
@@ -82,6 +107,7 @@ class MoneyRepository {
           siteId: siteId,
           unitId: target.unitId,
           kind: target.kind,
+          complete: true,
         ),
       ]);
       return statementFromLedger(
@@ -114,7 +140,8 @@ class MoneyRepository {
     required String siteId,
     String? unitId,
     String? kind,
-  }) => fetchPages<Payment>((cursor) async {
+    bool complete = false,
+  }) => _paged<Payment>(complete, (cursor) async {
     final page = await unwrap(
       () => api.money.moneyListPayments(
         orgId: orgId,
@@ -125,7 +152,7 @@ class MoneyRepository {
       ),
     );
     return (items: page.items, next: page.nextCursor);
-  }, maxPages: 3);
+  }, maxPages: complete ? _ledgerPages : 3);
 
   Future<BankDetails> bankDetails({
     required String orgId,
@@ -181,3 +208,11 @@ class MoneyRepository {
     required String paymentId,
   }) => api.getBytes('/v1/orgs/$orgId/payments/$paymentId/receipt');
 }
+
+Future<List<E>> _paged<E>(
+  bool complete,
+  Future<({List<E> items, String? next})> Function(String? cursor) page, {
+  required int maxPages,
+}) => complete
+    ? fetchAllPages<E>(page, maxPages: maxPages)
+    : fetchPages<E>(page, maxPages: maxPages);

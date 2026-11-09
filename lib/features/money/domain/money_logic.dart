@@ -201,7 +201,7 @@ Statement statementFromLedger({
             _LedgerEvent(
               date: p.receivedOn,
               debit: false,
-              amount: p.gross.amount,
+              amount: p.net.amount,
               text: p.reference ?? '',
               type: 'payment',
               id: p.id,
@@ -241,14 +241,20 @@ Statement statementFromLedger({
         debtorDisplayName: null,
         principal: money(e.debit ? e.amount : 0),
         lateFee: money(0),
-        debit: money(e.debit ? e.amount : 0),
-        credit: money(e.debit ? 0 : e.amount),
+        // Signs as the server's lines: a negative charge (a waiver) is a
+        // credit, never a negative debit.
+        debit: money(e.signed > 0 ? e.signed : 0),
+        credit: money(e.signed < 0 ? -e.signed : 0),
         balance: money(balance),
       ),
     );
   }
   final closing = lines.isEmpty ? opening : lines.last.balance.amount;
-  final fee = side?.accruedLateFee.amount ?? 0;
+  // The dashboard figures are "today's": they only belong to a statement that
+  // runs up to today (the server accrues to `min(today, to)`).
+  final upToToday = !toDate.isBefore(DateTime.parse(today));
+  final todays = upToToday ? side : null;
+  final fee = todays?.accruedLateFee.amount ?? 0;
   return Statement(
     debtor: DebtorRef(
       mode: DebtorRefModeEnum.unitSide,
@@ -265,7 +271,7 @@ Statement statementFromLedger({
     lines: lines,
     closingBalance: money(closing),
     accruedLateFee: money(fee),
-    totalDue: side?.total ?? money(closing + fee),
+    totalDue: todays?.total ?? money(closing + fee),
     credit: money(closing < 0 ? -closing : 0),
   );
 }
@@ -286,4 +292,38 @@ class _LedgerEvent {
   final String text;
   final String type;
   final String id;
+
+  /// Signed from the debtor's point of view: positive owes more.
+  int get signed => debit ? amount : -amount;
+}
+
+/// The statement endpoint books the fee accrued so far as a last line
+/// (a fee line, description `accrued`) and counts it in `closing_balance` and
+/// `total_due`, while the contract also reports it as `accrued_late_fee`.
+/// The screen shows the accrued fee as its own "not booked yet" row after the
+/// booked lines (M4), so that line is taken out here and the closing balance
+/// is the booked one again; the fee is then listed once and
+/// `total_due == closing + accrued`.
+Statement withoutAccruedLine(Statement s) {
+  final fee = s.accruedLateFee.amount;
+  if (fee <= 0 || s.lines.isEmpty) return s;
+  final last = s.lines.last;
+  if (last.description != 'accrued' ||
+      last.lateFee.amount != fee ||
+      last.debit.amount - last.credit.amount != fee) {
+    return s;
+  }
+  final lines = s.lines.sublist(0, s.lines.length - 1);
+  final booked = lines.isEmpty ? s.openingBalance : lines.last.balance;
+  return Statement(
+    debtor: s.debtor,
+    from: s.from,
+    to: s.to,
+    openingBalance: s.openingBalance,
+    lines: lines,
+    closingBalance: booked,
+    accruedLateFee: s.accruedLateFee,
+    totalDue: s.totalDue,
+    credit: s.credit,
+  );
 }
