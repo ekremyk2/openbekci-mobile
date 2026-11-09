@@ -2,6 +2,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:openbekci_mobile/core/links/app_link.dart';
 
 void main() {
+  test('card checkout return link', () {
+    final link =
+        AppLink.parse('openbekci://pay/return?org_id=o1&checkout_id=c1')!
+            as PayReturnLink;
+    expect([link.orgId, link.checkoutId], ['o1', 'c1']);
+    expect(AppLink.parse('openbekci://pay/return?org_id=o1'), isNull);
+  });
+
+  test('mobile links carry the instance host first', () {
+    final magic =
+        AppLink.parse(
+              'openbekci://localhost:8485/login/magic?token=t0k&scheme=http',
+            )!
+            as MagicLoginLink;
+    expect([magic.token, magic.origin], ['t0k', 'http://localhost:8485']);
+    final invite =
+        AppLink.parse('openbekci://Gul.Example.org/invite/a.b')! as InviteLink;
+    expect([invite.token, invite.origin], ['a.b', 'https://gul.example.org']);
+  });
+
   group('web links', () {
     test('invitation', () {
       final link = AppLink.parse('https://Gul.Example.org/invite/abc123');

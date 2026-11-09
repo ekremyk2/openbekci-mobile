@@ -155,7 +155,7 @@ class MeOccupancy {
 
 
 
-      /// Null while the occupancy is current.
+      /// Exclusive end date, the first day the person no longer holds the occupancy (the move-out day); null while the occupancy is current. A former occupant's money window ends the day before.
   @JsonKey(
     
     name: r'valid_to',

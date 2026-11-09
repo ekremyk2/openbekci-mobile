@@ -9,6 +9,7 @@ import 'package:openbekci_mobile/core/auth/link_handler.dart';
 import 'package:openbekci_mobile/core/instance/discovery.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/core/widgets/form_support.dart';
+import 'package:openbekci_mobile/features/onboarding/application/onboarding_providers.dart';
 import 'package:openbekci_mobile/l10n/gen/app_localizations.dart';
 
 Future<void> _finishSignIn(WidgetRef ref, SignInResult result) async {
@@ -114,9 +115,13 @@ class _MethodTile extends StatelessWidget {
 
 /// Phone number, then the 6-digit code (primary method, decision D5).
 class SmsSignInScreen extends ConsumerStatefulWidget {
-  const new({this.resendCooldown = 30, super.key});
+  const new({this.resendCooldown = 30, this.joinCode, super.key});
 
   final int resendCooldown;
+
+  /// A site join code: the code is then sent through the join sign-up (an
+  /// account is created when the number is new), else through sign-in.
+  final String? joinCode;
 
   @override
   ConsumerState<SmsSignInScreen> createState() => _SmsSignInScreenState();
@@ -149,7 +154,14 @@ class _SmsSignInScreenState extends ConsumerState<SmsSignInScreen>
   }
 
   Future<void> _send() => submit(() async {
-    await ref.read(authRepositoryProvider).requestOtp(_phone.text.trim());
+    final join = widget.joinCode;
+    if (join == null) {
+      await ref.read(authRepositoryProvider).requestOtp(_phone.text.trim());
+    } else {
+      await ref
+          .read(joinRepositoryProvider)
+          .signUp(join, phone: _phone.text.trim());
+    }
     if (!mounted) return;
     setState(() => _codeSent = true);
     _startCooldown();

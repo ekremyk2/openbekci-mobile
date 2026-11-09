@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openbekci_api/openbekci_api.dart' hide Notification;
 import 'package:openbekci_mobile/core/api/api_client.dart';
@@ -94,39 +96,70 @@ final paymentsProvider =
       );
     });
 
-/// What the server offers for paying (plan 7.1 Pay: "two paths, chosen by
-/// what the server offers"). Card checkout arrives in phase D; its entry
-/// point stays hidden until the instance advertises it.
-class PaymentCapabilities {
-  const new({required this.checkout});
-
-  factory fromPacks(Iterable<String> packs) =>
-      PaymentCapabilities(checkout: packs.contains(checkoutPack));
-
-  /// The pack id under which an instance advertises provider checkout
-  /// (`packs` of discovery and `GET /v1/instance`).
-  static const checkoutPack = 'payments.checkout';
-
-  static const none = PaymentCapabilities(checkout: false);
-
-  final bool checkout;
-}
-
-final instanceDocProvider = FutureProvider<Instance?>((ref) async {
+/// Whether "Pay by card" exists for the site (`payments.card.available` of
+/// the site settings); any failure hides the button.
+final cardAvailableProvider = FutureProvider<bool>((ref) async {
   final api = ref.watch(apiProvider);
-  if (api == null) return null;
+  final scope = ref.watch(scopeProvider);
+  final siteId = scope?.siteId;
+  if (api == null || siteId == null) return false;
   try {
-    return await unwrap(api.instance.instanceGetInstance);
+    final s = await unwrap(
+      () => api.tenancy.tenancyGetSiteSettings(
+        orgId: scope!.orgId,
+        siteId: siteId,
+      ),
+    );
+    return s.payments?.card.available ?? false;
   } on Object {
-    return null;
+    return false;
   }
 });
 
-final paymentCapabilitiesProvider = Provider<PaymentCapabilities>((ref) {
-  final doc = ref.watch(instanceDocProvider).value;
-  return doc == null
-      ? PaymentCapabilities.none
-      : PaymentCapabilities.fromPacks(doc.packs);
+/// Open charges of one side, for the checkout picker.
+final openChargesProvider = FutureProvider.autoDispose
+    .family<List<Charge>, StatementTarget>((ref, target) async {
+      final repo = ref.watch(moneyRepositoryProvider);
+      final ctx = ref.watch(orgContextProvider);
+      if (repo == null || ctx?.siteId == null) return const [];
+      final all = await repo.charges(
+        orgId: ctx!.orgId,
+        siteId: ctx.siteId!,
+        unitId: target.unitId,
+        kind: target.kind,
+      );
+      return [
+        for (final c in all)
+          if (c.status == ChargeStatusEnum.open ||
+              c.status == ChargeStatusEnum.partiallyPaid)
+            c,
+      ];
+    });
+
+/// A checkout polled with backoff until it leaves `pending`.
+final checkoutPollProvider = StreamProvider.autoDispose
+    .family<Checkout, ({String orgId, String id})>((ref, q) async* {
+      final repo = ref.watch(moneyRepositoryProvider);
+      if (repo == null) return;
+      for (var attempt = 0; attempt < checkoutPollAttempts; attempt++) {
+        final c = await repo.checkout(orgId: q.orgId, id: q.id);
+        yield c;
+        if (c.status != CheckoutStatusEnum.pending) return;
+        // A timer, not Future.delayed: disposing the provider cancels it.
+        final wait = Completer<void>();
+        final timer = Timer(checkoutPollDelay(attempt), wait.complete);
+        ref.onDispose(timer.cancel);
+        await wait.future;
+      }
+    });
+
+final myCheckoutsProvider = FutureProvider.autoDispose<List<Checkout>>((
+  ref,
+) async {
+  final repo = ref.watch(moneyRepositoryProvider);
+  final orgId = ref.watch(scopeProvider)?.orgId;
+  if (repo == null || orgId == null) return const [];
+  return (await repo.myCheckouts(orgId)).reversed.toList();
 });
 
 String _isoDate(DateTime d) =>

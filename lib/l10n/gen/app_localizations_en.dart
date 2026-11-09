@@ -993,6 +993,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stmtKindRefund => 'Refund';
 
   @override
+  String get stmtKindWaiver => 'Waiver';
+
+  @override
   String get stmtKindReversal => 'Reversal';
 
   @override
@@ -1794,4 +1797,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get channelSystem => 'System';
+
+  @override
+  String get checkoutChargesTitle => 'Charges to pay';
+
+  @override
+  String get checkoutChargesHint =>
+      'Select charges, or leave all unselected to pay what is open, oldest first.';
+
+  @override
+  String checkoutAmount(String currency) {
+    return 'Other amount ($currency, optional)';
+  }
+
+  @override
+  String get checkoutContinue => 'Continue to payment';
+
+  @override
+  String get checkoutStatusTitle => 'Card payment';
+
+  @override
+  String get checkoutPending => 'Waiting for the payment';
+
+  @override
+  String get checkoutPendingBody =>
+      'We are checking with the payment provider. You can leave this screen; the receipt arrives as a notification.';
+
+  @override
+  String get checkoutPaid => 'Payment received';
+
+  @override
+  String get checkoutFailed => 'The payment did not go through';
+
+  @override
+  String get checkoutExpired => 'The payment page expired';
+
+  @override
+  String get checkoutRefunded => 'Payment refunded';
+
+  @override
+  String checkoutMismatch(String confirmed, String asked) {
+    return 'The provider confirmed $confirmed instead of $asked. What was paid is booked; the rest stays open.';
+  }
+
+  @override
+  String get checkoutReopen => 'Open payment page';
+
+  @override
+  String get checkoutRefresh => 'Check again';
+
+  @override
+  String get myCheckoutsTitle => 'Card payments';
+
+  @override
+  String get myCheckoutsEmpty => 'No card payments yet.';
+
+  @override
+  String get joinSignUp => 'Sign up with your phone number';
 }

@@ -31,6 +31,8 @@ class MeUser {
     required  this.locale,
 
     required  this.isPlatformAdmin,
+
+     this.version,
   });
 
   @JsonKey(
@@ -45,7 +47,7 @@ class MeUser {
 
 
 
-      /// The name of the person linked to the account (first organization), else the email or phone.
+      /// The account's own display name when set (`PATCH /v1/me/profile`), else the name of the person linked to the account (first organization), else the email or phone.
   @JsonKey(
     
     name: r'display_name',
@@ -106,6 +108,19 @@ class MeUser {
 
 
 
+      /// Send it in `If-Match` of `PATCH /v1/me/profile`. Grows with every change of the account (profile, password).
+  @JsonKey(
+    
+    name: r'version',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final int? version;
+
+
+
 
 
     @override
@@ -115,7 +130,8 @@ class MeUser {
       other.email == email &&
       other.phone == phone &&
       other.locale == locale &&
-      other.isPlatformAdmin == isPlatformAdmin;
+      other.isPlatformAdmin == isPlatformAdmin &&
+      other.version == version;
 
     @override
     int get hashCode =>
@@ -124,7 +140,8 @@ class MeUser {
         (email == null ? 0 : email.hashCode) +
         (phone == null ? 0 : phone.hashCode) +
         locale.hashCode +
-        isPlatformAdmin.hashCode;
+        isPlatformAdmin.hashCode +
+        version.hashCode;
 
   factory MeUser.fromJson(Map<String, dynamic> json) => _$MeUserFromJson(json);
 

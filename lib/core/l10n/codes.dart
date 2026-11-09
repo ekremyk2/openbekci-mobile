@@ -1,7 +1,6 @@
 import 'package:openbekci_api/openbekci_api.dart'
     show
         FolderKindEnum,
-        PaymentMethodEnum,
         PaymentStatusEnum,
         SessionClientEnum,
         StatementLineKindEnum,
@@ -116,7 +115,10 @@ String statementKindLabel(AppLocalizations l, StatementLineKindEnum kind) =>
       StatementLineKindEnum.opening => l.stmtKindOpening,
       StatementLineKindEnum.charge => l.stmtKindCharge,
       StatementLineKindEnum.payment => l.stmtKindPayment,
-      StatementLineKindEnum.lateFee => l.stmtKindLateFee,
+      StatementLineKindEnum.lateFee ||
+      StatementLineKindEnum.fee => l.stmtKindLateFee,
+      StatementLineKindEnum.waiver => l.stmtKindWaiver,
+      StatementLineKindEnum.declaredPayment => l.paymentDeclaredWaiting,
       StatementLineKindEnum.credit => l.stmtKindCredit,
       StatementLineKindEnum.refund => l.stmtKindRefund,
       StatementLineKindEnum.adjustment => l.stmtKindAdjustment,
@@ -133,12 +135,12 @@ String paymentStatusLabel(AppLocalizations l, PaymentStatusEnum status) =>
       PaymentStatusEnum.unknownDefaultOpenApi => l.valueOther,
     };
 
-String paymentMethodLabel(AppLocalizations l, PaymentMethodEnum method) =>
+String paymentMethodLabel(AppLocalizations l, String method) =>
     switch (method) {
-      PaymentMethodEnum.cash => l.methodCash,
-      PaymentMethodEnum.bankTransfer => l.methodBankTransfer,
-      PaymentMethodEnum.card => l.methodCard,
-      PaymentMethodEnum.unknownDefaultOpenApi => l.valueOther,
+      'cash' => l.methodCash,
+      'bank_transfer' => l.methodBankTransfer,
+      _ when method == 'card' || method.startsWith('card:') => l.methodCard,
+      _ => l.valueOther,
     };
 
 String ticketVisibilityLabel(

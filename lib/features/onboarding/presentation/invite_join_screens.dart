@@ -229,13 +229,16 @@ class _JoinScreenState extends ConsumerState<JoinScreen>
           note: _note.text.trim(),
         );
     ref.read(lastClaimProvider.notifier).set(claim);
-    await ref.read(localClaimsProvider)?.add(claim);
     if (mounted) context.go('/claim');
   });
 
-  void _signInFirst() {
+  void _signInFirst({bool signUp = false}) {
     ref.read(pendingLinkProvider.notifier).set(JoinLink(code: widget.code));
-    context.go('/sign-in');
+    context.go(
+      signUp
+          ? '/sign-in/sms?join=${Uri.encodeComponent(widget.code)}'
+          : '/sign-in',
+    );
   }
 
   @override
@@ -279,6 +282,12 @@ class _JoinScreenState extends ConsumerState<JoinScreen>
             key: const Key('joinSignIn'),
             onPressed: _signInFirst,
             child: Text(l.signInTitle),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton(
+            key: const Key('joinSignUp'),
+            onPressed: () => _signInFirst(signUp: true),
+            child: Text(l.joinSignUp),
           ),
         ] else
           ..._picker(context, l, info),

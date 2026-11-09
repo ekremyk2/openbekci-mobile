@@ -802,7 +802,7 @@ String _isoToday() {
 /// Lets in-flight requests finish (real sockets), then tears the app down so no
 /// timer outlives the test.
 Future<void> _finish(WidgetTester tester) async {
-  await tester.pumpWidget(const SizedBox());
+  await _settle(tester);
   // Requests still in flight own a 10 s connect-timeout timer in the fake
   // clock: let them finish in real time, then advance the clock past it.
   for (var i = 0; i < 3; i++) {
@@ -811,4 +811,24 @@ Future<void> _finish(WidgetTester tester) async {
     );
     await tester.pump(const Duration(seconds: 11));
   }
+}
+
+/// Lets the claims request the home screen starts (GET /v1/me/unit-claims)
+/// finish before the widget tree goes, so no timer outlives the test.
+Future<void> _settle(WidgetTester tester) async {
+  if (find.byType(OpenBekciApp).evaluate().isNotEmpty) {
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(OpenBekciApp)),
+    );
+    // Requests started inside the test zone finish through pumps.
+    for (var i = 0; i < 50; i++) {
+      if (!container.read(pendingClaimsProvider).isLoading) break;
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)),
+      );
+      await tester.pump(const Duration(milliseconds: 20));
+    }
+  }
+  await tester.pump(const Duration(milliseconds: 100));
+  await tester.pumpWidget(const SizedBox());
 }

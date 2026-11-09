@@ -701,6 +701,7 @@ class _NewTicketState extends ConsumerState<NewTicketScreen> with SubmitState {
                         borderRadius: BorderRadius.circular(8),
                         child: Image.memory(
                           p.bytes,
+                          semanticLabel: l.attachmentPhoto,
                           width: 88,
                           height: 88,
                           fit: BoxFit.cover,

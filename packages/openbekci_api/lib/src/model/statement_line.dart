@@ -44,6 +44,10 @@ class StatementLine {
     required  this.credit,
 
     required  this.balance,
+
+     this.accrued,
+
+     this.declaredAmount,
   });
 
   @JsonKey(
@@ -58,7 +62,7 @@ class StatementLine {
 
 
 
-      /// Open enum.
+      /// Open enum. `declared_payment` is a payment the resident declared that a manager has not confirmed yet (`pending_declared`): a memo line that moves no balance (`debit`, `credit`, `principal` and `late_fee` are zero, `balance` is the running balance of the line before it), carrying the amount in `declared_amount` and the payment in `ref_type` `payment` / `ref_id`. Once confirmed it is replaced by an ordinary `payment` line. `fee` is a booked late fee line (`late_fee` is kept for older clients) and `waiver` a waived fee; the late fee accrued up to today and not booked yet is one `fee` line with `accrued: true` (its amount is already in `balance` and `closing_balance`; never add it again). 
   @JsonKey(
     
     name: r'kind',
@@ -195,6 +199,32 @@ class StatementLine {
 
 
 
+      /// True on the single `fee` line that is the late fee accrued to the end of the statement and not booked yet (M4).
+  @JsonKey(
+    
+    name: r'accrued',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final bool? accrued;
+
+
+
+      /// Only on `declared_payment` lines: the amount the resident declared.
+  @JsonKey(
+    
+    name: r'declared_amount',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final Money? declaredAmount;
+
+
+
 
 
     @override
@@ -210,7 +240,9 @@ class StatementLine {
       other.lateFee == lateFee &&
       other.debit == debit &&
       other.credit == credit &&
-      other.balance == balance;
+      other.balance == balance &&
+      other.accrued == accrued &&
+      other.declaredAmount == declaredAmount;
 
     @override
     int get hashCode =>
@@ -225,7 +257,9 @@ class StatementLine {
         lateFee.hashCode +
         debit.hashCode +
         credit.hashCode +
-        balance.hashCode;
+        balance.hashCode +
+        accrued.hashCode +
+        declaredAmount.hashCode;
 
   factory StatementLine.fromJson(Map<String, dynamic> json) => _$StatementLineFromJson(json);
 
@@ -238,7 +272,7 @@ class StatementLine {
 
 }
 
-/// Open enum.
+/// Open enum. `declared_payment` is a payment the resident declared that a manager has not confirmed yet (`pending_declared`): a memo line that moves no balance (`debit`, `credit`, `principal` and `late_fee` are zero, `balance` is the running balance of the line before it), carrying the amount in `declared_amount` and the payment in `ref_type` `payment` / `ref_id`. Once confirmed it is replaced by an ordinary `payment` line. `fee` is a booked late fee line (`late_fee` is kept for older clients) and `waiver` a waived fee; the late fee accrued up to today and not booked yet is one `fee` line with `accrued: true` (its amount is already in `balance` and `closing_balance`; never add it again). 
 enum StatementLineKindEnum {
 @JsonValue(r'opening')
 opening(r'opening'),
@@ -256,6 +290,12 @@ refund(r'refund'),
 adjustment(r'adjustment'),
 @JsonValue(r'reversal')
 reversal(r'reversal'),
+@JsonValue(r'fee')
+fee(r'fee'),
+@JsonValue(r'waiver')
+waiver(r'waiver'),
+@JsonValue(r'declared_payment')
+declaredPayment(r'declared_payment'),
 @JsonValue(r'unknown_default_open_api')
 unknownDefaultOpenApi(r'unknown_default_open_api');
 

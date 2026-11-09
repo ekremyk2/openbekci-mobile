@@ -212,5 +212,7 @@ const _$ProblemCodeEnumEnumMap = {
   ProblemCodeEnum.agentSessionExpired: 'agent_session_expired',
   ProblemCodeEnum.apiKeyRevoked: 'api_key_revoked',
   ProblemCodeEnum.apiKeyExpired: 'api_key_expired',
+  ProblemCodeEnum.paymentProviderUnavailable: 'payment_provider_unavailable',
+  ProblemCodeEnum.merchantChangeBlocked: 'merchant_change_blocked',
   ProblemCodeEnum.unknownDefaultOpenApi: 'unknown_default_open_api',
 };

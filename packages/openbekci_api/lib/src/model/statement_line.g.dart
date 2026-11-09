@@ -31,6 +31,10 @@ abstract class _$StatementLineCWProxy {
 
   StatementLine balance(Money balance);
 
+  StatementLine accrued(bool? accrued);
+
+  StatementLine declaredAmount(Money? declaredAmount);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `StatementLine(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -50,6 +54,8 @@ abstract class _$StatementLineCWProxy {
     Money debit,
     Money credit,
     Money balance,
+    bool? accrued,
+    Money? declaredAmount,
   });
 }
 
@@ -99,6 +105,13 @@ class _$StatementLineCWProxyImpl implements _$StatementLineCWProxy {
   StatementLine balance(Money balance) => this(balance: balance);
 
   @override
+  StatementLine accrued(bool? accrued) => this(accrued: accrued);
+
+  @override
+  StatementLine declaredAmount(Money? declaredAmount) =>
+      this(declaredAmount: declaredAmount);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `StatementLine(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -118,6 +131,8 @@ class _$StatementLineCWProxyImpl implements _$StatementLineCWProxy {
     Object? debit = const $CopyWithPlaceholder(),
     Object? credit = const $CopyWithPlaceholder(),
     Object? balance = const $CopyWithPlaceholder(),
+    Object? accrued = const $CopyWithPlaceholder(),
+    Object? declaredAmount = const $CopyWithPlaceholder(),
   }) {
     return StatementLine(
       date: date == const $CopyWithPlaceholder()
@@ -168,6 +183,14 @@ class _$StatementLineCWProxyImpl implements _$StatementLineCWProxy {
           ? _value.balance
           // ignore: cast_nullable_to_non_nullable
           : balance as Money,
+      accrued: accrued == const $CopyWithPlaceholder()
+          ? _value.accrued
+          // ignore: cast_nullable_to_non_nullable
+          : accrued as bool?,
+      declaredAmount: declaredAmount == const $CopyWithPlaceholder()
+          ? _value.declaredAmount
+          // ignore: cast_nullable_to_non_nullable
+          : declaredAmount as Money?,
     );
   }
 }
@@ -249,6 +272,11 @@ StatementLine _$StatementLineFromJson(Map<String, dynamic> json) =>
             'balance',
             (v) => Money.fromJson(v as Map<String, dynamic>),
           ),
+          accrued: $checkedConvert('accrued', (v) => v as bool?),
+          declaredAmount: $checkedConvert(
+            'declared_amount',
+            (v) => v == null ? null : Money.fromJson(v as Map<String, dynamic>),
+          ),
         );
         return val;
       },
@@ -258,6 +286,7 @@ StatementLine _$StatementLineFromJson(Map<String, dynamic> json) =>
         'debtorKind': 'debtor_kind',
         'debtorDisplayName': 'debtor_display_name',
         'lateFee': 'late_fee',
+        'declaredAmount': 'declared_amount',
       },
     );
 
@@ -275,6 +304,8 @@ Map<String, dynamic> _$StatementLineToJson(StatementLine instance) =>
       'debit': instance.debit.toJson(),
       'credit': instance.credit.toJson(),
       'balance': instance.balance.toJson(),
+      'accrued': ?instance.accrued,
+      'declared_amount': ?instance.declaredAmount?.toJson(),
     };
 
 const _$StatementLineKindEnumEnumMap = {
@@ -286,6 +317,9 @@ const _$StatementLineKindEnumEnumMap = {
   StatementLineKindEnum.refund: 'refund',
   StatementLineKindEnum.adjustment: 'adjustment',
   StatementLineKindEnum.reversal: 'reversal',
+  StatementLineKindEnum.fee: 'fee',
+  StatementLineKindEnum.waiver: 'waiver',
+  StatementLineKindEnum.declaredPayment: 'declared_payment',
   StatementLineKindEnum.unknownDefaultOpenApi: 'unknown_default_open_api',
 };
 

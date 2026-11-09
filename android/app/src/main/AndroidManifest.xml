@@ -11,6 +11,8 @@
         android:allowBackup="false"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- app_links delivers every link (see core/auth/link_handler.dart); the engine must not route them too -->
+        <meta-data android:name="flutter_deeplinking_enabled" android:value="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

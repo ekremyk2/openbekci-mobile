@@ -7,7 +7,6 @@ import 'package:openbekci_mobile/core/org/org_context.dart';
 import 'package:openbekci_mobile/core/services/services.dart';
 import 'package:openbekci_mobile/features/announcements/application/announcements_providers.dart';
 import 'package:openbekci_mobile/features/documents/application/documents_providers.dart';
-import 'package:openbekci_mobile/features/money/application/money_providers.dart';
 import 'package:openbekci_mobile/features/money/domain/money_logic.dart';
 import 'package:openbekci_mobile/features/notifications/application/notifications_providers.dart';
 import 'package:openbekci_mobile/features/shell/presentation/app_shell.dart';
@@ -143,11 +142,10 @@ void main() {
       ]);
     });
 
-    test('card checkout is advertised through packs only', () {
-      expect(PaymentCapabilities.fromPacks(const []).checkout, isFalse);
+    test('checkout polling backs off from 2 s to a 20 s cap', () {
       expect(
-        PaymentCapabilities.fromPacks(const ['payments.checkout']).checkout,
-        isTrue,
+        [for (var i = 0; i < 6; i++) checkoutPollDelay(i).inSeconds],
+        [2, 4, 8, 16, 20, 20],
       );
     });
   });

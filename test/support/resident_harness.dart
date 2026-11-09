@@ -19,6 +19,17 @@ import 'fake_api.dart';
 import 'fixtures.dart';
 
 /// Records what the app hands to the share sheet.
+class FakeUrlOpener implements UrlOpener {
+  final opened = <Uri>[];
+  bool ok = true;
+
+  @override
+  Future<bool> open(Uri uri, {bool inApp = false}) async {
+    opened.add(uri);
+    return ok;
+  }
+}
+
 class FakeShare implements ShareService {
   final shared = <({String filename, String mime, int size, String? text})>[];
 

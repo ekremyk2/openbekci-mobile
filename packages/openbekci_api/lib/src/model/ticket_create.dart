@@ -97,7 +97,7 @@ class TicketCreate {
 
 
 
-      /// Open enum.
+      /// Open enum. The creator chooses (O3): `private` is about one unit (a resident needs `unit_id` of a unit they occupy, or exactly one), `common` about the shared parts of the site or block. Left out, the category's default applies. Managers may set it for any ticket they open. 
   @JsonKey(
     
     name: r'visibility',
@@ -170,7 +170,7 @@ class TicketCreate {
 
 }
 
-/// Open enum.
+/// Open enum. The creator chooses (O3): `private` is about one unit (a resident needs `unit_id` of a unit they occupy, or exactly one), `common` about the shared parts of the site or block. Left out, the category's default applies. Managers may set it for any ticket they open. 
 enum TicketCreateVisibilityEnum {
 @JsonValue(r'private')
 private(r'private'),

@@ -40,9 +40,3 @@ class LastClaimController extends Notifier<UnitClaim?> {
 final lastClaimProvider = NotifierProvider<LastClaimController, UnitClaim?>(
   LastClaimController.new,
 );
-
-/// The user's stored claims (see [LocalClaims]).
-final localClaimsProvider = Provider<LocalClaims?>((ref) {
-  final cache = ref.watch(cachePolicyProvider);
-  return cache == null ? null : LocalClaims(cache);
-});

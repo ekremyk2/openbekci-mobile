@@ -35,6 +35,8 @@ class OrgAccess {
 
     required  this.permissions,
 
+     this.occupantPermissions,
+
     required  this.sites,
 
     required  this.personId,
@@ -100,7 +102,7 @@ class OrgAccess {
 
 
 
-      /// Effective permissions in this organization, from the caller's active memberships and the role to permission matrix.
+      /// Effective permissions in this organization from the caller's active role memberships and the role to permission matrix. Empty for a resident who holds no role; see `occupant_permissions`.
   @JsonKey(
     
     name: r'permissions',
@@ -110,6 +112,19 @@ class OrgAccess {
 
 
   final List<PermissionGrant> permissions;
+
+
+
+      /// Permissions the caller holds in this organization through a current unit occupancy (owner, tenant or household member, S3), as a portal user, each limited to the sites (`site_ids`) of the units they occupy. They are not role permissions and are never listed in `permissions`; a client gates resident screens (statements, declaring a payment, creating tickets) with this list and the staff screens with `permissions`. Narrowing to the caller's own unit and side still happens on the server (`occupancies[].side`, `may_see_money`). Former occupants appear in `occupancies` only; they hold the S7 read right, not these. 
+  @JsonKey(
+    
+    name: r'occupant_permissions',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final List<PermissionGrant>? occupantPermissions;
 
 
 
@@ -149,6 +164,7 @@ class OrgAccess {
       other.name == name &&
       other.roles == roles &&
       other.permissions == permissions &&
+      other.occupantPermissions == occupantPermissions &&
       other.sites == sites &&
       other.personId == personId;
 
@@ -160,6 +176,7 @@ class OrgAccess {
         name.hashCode +
         roles.hashCode +
         permissions.hashCode +
+        occupantPermissions.hashCode +
         sites.hashCode +
         (personId == null ? 0 : personId.hashCode);
 

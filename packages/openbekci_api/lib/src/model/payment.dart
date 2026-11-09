@@ -73,6 +73,8 @@ class Payment {
     required  this.createdAt,
 
     required  this.updatedAt,
+
+     this.version,
   });
 
   @JsonKey(
@@ -161,17 +163,16 @@ class Payment {
 
 
 
-      /// `card:<provider>` values arrive in 0.4. Open enum.
+      /// `cash`, `bank_transfer`, or `card:<provider>` for a payment made through a payment provider (for example `card:iyzico`). Open set: clients tolerate unknown values.
   @JsonKey(
     
     name: r'method',
     required: true,
     includeIfNull: false,
-  unknownEnumValue: PaymentMethodEnum.unknownDefaultOpenApi,
   )
 
 
-  final PaymentMethodEnum method;
+  final String method;
 
 
 
@@ -395,6 +396,19 @@ class Payment {
 
 
 
+      /// Moves whenever the payment changes status; send it as `If-Match` to refund a provider payment.
+  @JsonKey(
+    
+    name: r'version',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final int? version;
+
+
+
 
 
     @override
@@ -424,7 +438,8 @@ class Payment {
       other.allocations == allocations &&
       other.bankTransactionId == bankTransactionId &&
       other.createdAt == createdAt &&
-      other.updatedAt == updatedAt;
+      other.updatedAt == updatedAt &&
+      other.version == version;
 
     @override
     int get hashCode =>
@@ -453,7 +468,8 @@ class Payment {
         allocations.hashCode +
         (bankTransactionId == null ? 0 : bankTransactionId.hashCode) +
         createdAt.hashCode +
-        updatedAt.hashCode;
+        updatedAt.hashCode +
+        version.hashCode;
 
   factory Payment.fromJson(Map<String, dynamic> json) => _$PaymentFromJson(json);
 
@@ -476,26 +492,6 @@ tenant(r'tenant'),
 unknownDefaultOpenApi(r'unknown_default_open_api');
 
 const PaymentDebtorKindEnum(this.value);
-
-final String value;
-
-@override
-String toString() => value;
-}
-
-
-/// `card:<provider>` values arrive in 0.4. Open enum.
-enum PaymentMethodEnum {
-@JsonValue(r'cash')
-cash(r'cash'),
-@JsonValue(r'bank_transfer')
-bankTransfer(r'bank_transfer'),
-@JsonValue(r'card')
-card(r'card'),
-@JsonValue(r'unknown_default_open_api')
-unknownDefaultOpenApi(r'unknown_default_open_api');
-
-const PaymentMethodEnum(this.value);
 
 final String value;
 

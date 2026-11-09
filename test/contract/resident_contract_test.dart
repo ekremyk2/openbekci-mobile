@@ -29,7 +29,7 @@ void main() {
       'debtor_kind': 'landlord',
     });
     expect(payment.status, PaymentStatusEnum.unknownDefaultOpenApi);
-    expect(payment.method, PaymentMethodEnum.unknownDefaultOpenApi);
+    expect(payment.method, 'crypto');
 
     final ticket = Ticket.fromJson({
       ...ticketJson(),

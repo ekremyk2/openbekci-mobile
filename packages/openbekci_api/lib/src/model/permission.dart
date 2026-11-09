@@ -123,6 +123,8 @@ enum Permission {
   packsPeriodManage(r'packs.manage'),
   @JsonValue(r'packs.read')
   packsPeriodRead(r'packs.read'),
+  @JsonValue(r'payments.checkout')
+  paymentsPeriodCheckout(r'payments.checkout'),
   @JsonValue(r'payments.declare')
   paymentsPeriodDeclare(r'payments.declare'),
   @JsonValue(r'payments.record')

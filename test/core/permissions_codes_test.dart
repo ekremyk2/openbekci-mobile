@@ -13,6 +13,7 @@ OrgAccess org(List<Map<String, Object?>> permissions) => OrgAccess.fromJson({
   'default_locale': 'tr',
   'roles': <Object?>[],
   'permissions': permissions,
+  'occupant_permissions': <Object?>[],
   'sites': <Object?>[],
   'person_id': null,
 });

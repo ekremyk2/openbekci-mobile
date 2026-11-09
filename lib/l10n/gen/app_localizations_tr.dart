@@ -994,6 +994,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get stmtKindRefund => 'İade';
 
   @override
+  String get stmtKindWaiver => 'Muafiyet';
+
+  @override
   String get stmtKindReversal => 'Ters kayıt';
 
   @override
@@ -1794,4 +1797,61 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get channelSystem => 'Sistem';
+
+  @override
+  String get checkoutChargesTitle => 'Ödenecek borçlar';
+
+  @override
+  String get checkoutChargesHint =>
+      'Borç seçin; hiçbirini seçmezseniz açık borçlar en eskiden başlayarak ödenir.';
+
+  @override
+  String checkoutAmount(String currency) {
+    return 'Başka tutar ($currency, isteğe bağlı)';
+  }
+
+  @override
+  String get checkoutContinue => 'Ödemeye devam et';
+
+  @override
+  String get checkoutStatusTitle => 'Kart ödemesi';
+
+  @override
+  String get checkoutPending => 'Ödeme bekleniyor';
+
+  @override
+  String get checkoutPendingBody =>
+      'Ödeme sağlayıcısı ile kontrol ediyoruz. Bu ekrandan çıkabilirsiniz; makbuz bildirim olarak gelir.';
+
+  @override
+  String get checkoutPaid => 'Ödeme alındı';
+
+  @override
+  String get checkoutFailed => 'Ödeme tamamlanamadı';
+
+  @override
+  String get checkoutExpired => 'Ödeme sayfasının süresi doldu';
+
+  @override
+  String get checkoutRefunded => 'Ödeme iade edildi';
+
+  @override
+  String checkoutMismatch(String confirmed, String asked) {
+    return 'Sağlayıcı $asked yerine $confirmed onayladı. Ödenen tutar işlendi; kalan borç açık kalır.';
+  }
+
+  @override
+  String get checkoutReopen => 'Ödeme sayfasını aç';
+
+  @override
+  String get checkoutRefresh => 'Tekrar kontrol et';
+
+  @override
+  String get myCheckoutsTitle => 'Kart ödemeleri';
+
+  @override
+  String get myCheckoutsEmpty => 'Henüz kart ödemesi yok.';
+
+  @override
+  String get joinSignUp => 'Telefon numaranızla kaydolun';
 }

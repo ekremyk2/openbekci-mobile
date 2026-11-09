@@ -1886,6 +1886,12 @@ abstract class AppLocalizations {
   /// **'Refund'**
   String get stmtKindRefund;
 
+  /// No description provided for @stmtKindWaiver.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiver'**
+  String get stmtKindWaiver;
+
   /// No description provided for @stmtKindReversal.
   ///
   /// In en, this message translates to:
@@ -3295,6 +3301,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System'**
   String get channelSystem;
+
+  /// No description provided for @checkoutChargesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Charges to pay'**
+  String get checkoutChargesTitle;
+
+  /// No description provided for @checkoutChargesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select charges, or leave all unselected to pay what is open, oldest first.'**
+  String get checkoutChargesHint;
+
+  /// No description provided for @checkoutAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Other amount ({currency}, optional)'**
+  String checkoutAmount(String currency);
+
+  /// No description provided for @checkoutContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to payment'**
+  String get checkoutContinue;
+
+  /// No description provided for @checkoutStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Card payment'**
+  String get checkoutStatusTitle;
+
+  /// No description provided for @checkoutPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the payment'**
+  String get checkoutPending;
+
+  /// No description provided for @checkoutPendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We are checking with the payment provider. You can leave this screen; the receipt arrives as a notification.'**
+  String get checkoutPendingBody;
+
+  /// No description provided for @checkoutPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment received'**
+  String get checkoutPaid;
+
+  /// No description provided for @checkoutFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The payment did not go through'**
+  String get checkoutFailed;
+
+  /// No description provided for @checkoutExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'The payment page expired'**
+  String get checkoutExpired;
+
+  /// No description provided for @checkoutRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment refunded'**
+  String get checkoutRefunded;
+
+  /// No description provided for @checkoutMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The provider confirmed {confirmed} instead of {asked}. What was paid is booked; the rest stays open.'**
+  String checkoutMismatch(String confirmed, String asked);
+
+  /// No description provided for @checkoutReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open payment page'**
+  String get checkoutReopen;
+
+  /// No description provided for @checkoutRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get checkoutRefresh;
+
+  /// No description provided for @myCheckoutsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Card payments'**
+  String get myCheckoutsTitle;
+
+  /// No description provided for @myCheckoutsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No card payments yet.'**
+  String get myCheckoutsEmpty;
+
+  /// No description provided for @joinSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up with your phone number'**
+  String get joinSignUp;
 }
 
 class _AppLocalizationsDelegate

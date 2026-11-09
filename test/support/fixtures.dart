@@ -97,6 +97,7 @@ Map<String, Object?> residentMeJson({
     'phone': '+905321234567',
     'locale': 'tr',
     'is_platform_admin': false,
+    'version': 1,
   },
   'organizations':
       organizations ??
@@ -108,6 +109,7 @@ Map<String, Object?> residentMeJson({
           'default_locale': 'tr',
           'roles': <Object?>[],
           'permissions': <Object?>[],
+          'occupant_permissions': <Object?>[],
           'sites': [
             {
               'id': siteId,
@@ -303,3 +305,89 @@ Me residentMe({List<Map<String, Object?>>? occupancies}) =>
 
 MeDashboard dashboard({List<Map<String, Object?>>? sides}) =>
     MeDashboard.fromJson(dashboardJson(sides: sides));
+
+const checkoutId = '0192a3f0-1000-7000-8000-000000000020';
+const chargeId = '0192a3f0-1000-7000-8000-0000000000d1';
+
+Map<String, Object?> siteSettingsJson({bool card = true}) => {
+  'version': 1,
+  'tenants_are_portal_users': true,
+  'directory_enabled': false,
+  'owner_financial_transparency': false,
+  'parking_storage_default': 'appurtenance',
+  'bills_enabled': false,
+  'announcement_publishers': 'manager_only',
+  'ticket_archive_months': null,
+  'visitor_log_retention_days': 90,
+  'legal_preset': null,
+  'access': {
+    'offline_grace_hours': 72,
+    'agent_silent_minutes': 10,
+    'plate_match': 'exact',
+    'maintenance_hour': null,
+  },
+  'extra': null,
+  'payments': {
+    'card': {'available': card, 'provider': card ? 'example' : null},
+    'merchant_of_record': 'site',
+    'merchant_of_record_override': null,
+  },
+};
+
+Map<String, Object?> chargeJson() => {
+  'id': chargeId,
+  'org_id': orgId,
+  'site_id': siteId,
+  'plan_id': null,
+  'unit_id': unit12,
+  'unit_door_number': '12',
+  'debtor_kind': 'owner',
+  'debtor_person_id': personId,
+  'debtor_display_name': 'Ayse Yilmaz',
+  'charge_type': 'dues',
+  'period': '2026-11',
+  'amount': money(150000),
+  'paid': money(0),
+  'balance': money(150000),
+  'due_date': '2026-11-01',
+  'description': 'November dues',
+  'allocation_basis': null,
+  'journal_entry_id': '0192a3f0-1000-7000-8000-0000000000d2',
+  'status': 'open',
+  'cancelled_reason': null,
+  'created_at': '2026-11-01T00:00:00Z',
+  'updated_at': '2026-11-01T00:00:00Z',
+  'effective_debtor': {
+    'debtor_kind': 'owner',
+    'person_id': personId,
+    'display_name': 'Ayse Yilmaz',
+    'source': 'charge',
+  },
+};
+
+Map<String, Object?> checkoutJson({
+  String status = 'pending',
+  Map<String, Object?>? extra,
+}) => {
+  'id': checkoutId,
+  'org_id': orgId,
+  'site_id': siteId,
+  'unit_id': unit12,
+  'debtor_kind': 'owner',
+  'charge_ids': [chargeId],
+  'provider': 'example',
+  'merchant_of_record': 'site',
+  'amount': money(150000),
+  'status': status,
+  'checkout_url': 'https://pay.example.test/checkout/ex_1',
+  'return_url': 'openbekci://pay/return?org_id=$orgId&checkout_id=$checkoutId',
+  'expires_at': '2026-11-09T11:00:00Z',
+  'payment_id': status == 'paid'
+      ? '0192a3f0-1000-7000-8000-0000000000b1'
+      : null,
+  'failure_code': null,
+  'created_by': personId,
+  'created_at': '2026-11-09T10:00:00Z',
+  'completed_at': null,
+  ...?extra,
+};

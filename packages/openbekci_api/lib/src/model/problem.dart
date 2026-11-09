@@ -239,6 +239,10 @@ agentSessionExpired(r'agent_session_expired'),
 apiKeyRevoked(r'api_key_revoked'),
 @JsonValue(r'api_key_expired')
 apiKeyExpired(r'api_key_expired'),
+@JsonValue(r'payment_provider_unavailable')
+paymentProviderUnavailable(r'payment_provider_unavailable'),
+@JsonValue(r'merchant_change_blocked')
+merchantChangeBlocked(r'merchant_change_blocked'),
 @JsonValue(r'unknown_default_open_api')
 unknownDefaultOpenApi(r'unknown_default_open_api');
 

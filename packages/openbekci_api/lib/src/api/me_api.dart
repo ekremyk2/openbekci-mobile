@@ -13,9 +13,11 @@ import 'package:openbekci_api/src/model/device.dart';
 import 'package:openbekci_api/src/model/device_register.dart';
 import 'package:openbekci_api/src/model/invitation_list.dart';
 import 'package:openbekci_api/src/model/me.dart';
+import 'package:openbekci_api/src/model/me_user.dart';
 import 'package:openbekci_api/src/model/occupancy.dart';
 import 'package:openbekci_api/src/model/occupancy_list.dart';
 import 'package:openbekci_api/src/model/problem.dart';
+import 'package:openbekci_api/src/model/profile_update.dart';
 import 'package:openbekci_api/src/model/session_list.dart';
 import 'package:openbekci_api/src/model/web_login_link.dart';
 import 'package:openbekci_api/src/model/web_login_link_create.dart';
@@ -800,6 +802,100 @@ _responseData = rawData == null ? null : deserialize<Device, Device>(rawData, 'D
     );
 
     return _response;
+  }
+
+  /// Update my profile
+  /// **Release 0.1.** Display name and locale of the signed-in account (&#x60;PATCH /v1/me/profile&#x60;). Contact changes go through &#x60;me.startContactChange&#x60;. Send the &#x60;version&#x60; of &#x60;GET /v1/me&#x60; (&#x60;user.version&#x60;) in &#x60;If-Match&#x60;; a stale one is 409 &#x60;version_conflict&#x60;. Returns the updated &#x60;user&#x60;, with its new &#x60;version&#x60;. The display name is the account&#39;s own: it wins over the name of the linked person in &#x60;GET /v1/me&#x60;; an empty string clears it. The locale is one the server has texts for: &#x60;tr&#x60; or &#x60;en&#x60;.  Problems: &#x60;version_conflict&#x60; (409), &#x60;validation_failed&#x60; (422).
+  ///
+  /// Parameters:
+  /// * [ifMatch] - The `version` of the resource the client last read, as a quoted integer (`\"3\"`). A stale value is 409 `version_conflict`; a missing one is 422 `validation_failed`.
+  /// * [profileUpdate] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [MeUser] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<MeUser>> meUpdateProfile({ 
+    required String ifMatch,
+    required ProfileUpdate profileUpdate,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/v1/me/profile';
+    final _options = Options(
+      method: r'PATCH',
+      headers: <String, dynamic>{
+        r'If-Match': ifMatch,
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(profileUpdate);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    MeUser? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<MeUser, MeUser>(rawData, 'MeUser', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MeUser>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
 }

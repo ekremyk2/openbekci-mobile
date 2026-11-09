@@ -65,8 +65,22 @@ sealed class AppLink {
       if (uri.host.isNotEmpty) uri.host,
       ...uri.pathSegments.where((s) => s.isNotEmpty),
     ];
+    // openbekci://<host>[:port]/<path>: the server puts the instance host
+    // first (plain http only with scheme=http). The local forms (invite, join,
+    // login, connect, pay) start with their own word instead.
+    if (segments.length >= 2 && !_localForms.contains(segments.first)) {
+      final plain = uri.queryParameters['scheme'] == 'http';
+      final origin = Uri(
+        scheme: plain ? 'http' : 'https',
+        host: uri.host.toLowerCase(),
+        port: uri.hasPort ? uri.port : null,
+      ).toString();
+      return _fromSegments(segments.sublist(1), uri, origin);
+    }
     return _fromSegments(segments, uri, _serverParam(uri));
   }
+
+  static const _localForms = {'invite', 'join', 'login', 'connect', 'pay'};
 
   static AppLink? _fromWeb(Uri uri) {
     final origin = _originOf(uri);
@@ -93,6 +107,13 @@ sealed class AppLink {
           if (token != null && token.isNotEmpty) {
             return MagicLoginLink(token: token, origin: origin);
           }
+        }
+      case 'pay':
+        // openbekci://pay/return?org_id=...&checkout_id=... (card checkout)
+        final org = uri.queryParameters['org_id'];
+        final id = uri.queryParameters['checkout_id'];
+        if (s.length >= 2 && s[1] == 'return' && org != null && id != null) {
+          return PayReturnLink(orgId: org, checkoutId: id, origin: origin);
         }
       case 'connect':
         // openbekci://connect?server=<url>[&invite=<token>]
@@ -160,4 +181,22 @@ class MagicLoginLink extends AppLink {
 
   @override
   int get hashCode => Object.hash(token, origin);
+}
+
+/// `openbekci://pay/return?org_id&checkout_id`: the payer is back from the
+/// provider's page.
+class PayReturnLink extends AppLink {
+  const new({required this.orgId, required this.checkoutId, super.origin});
+  final String orgId;
+  final String checkoutId;
+
+  @override
+  bool operator ==(Object other) =>
+      other is PayReturnLink &&
+      other.checkoutId == checkoutId &&
+      other.orgId == orgId &&
+      other.origin == origin;
+
+  @override
+  int get hashCode => Object.hash(orgId, checkoutId, origin);
 }

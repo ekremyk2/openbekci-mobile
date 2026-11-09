@@ -100,6 +100,13 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
       appBar: AppBar(
         title: Text(l.moneyTitle),
         actions: [
+          if (ref.watch(cardAvailableProvider).value ?? false)
+            IconButton(
+              key: const Key('openCheckouts'),
+              tooltip: l.myCheckoutsTitle,
+              icon: const Icon(Icons.credit_card_outlined),
+              onPressed: () => context.push('/money/checkouts'),
+            ),
           if (target != null)
             IconButton(
               key: const Key('openPayments'),
@@ -276,7 +283,7 @@ class _Summary extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final capabilities = ref.watch(paymentCapabilitiesProvider);
+    final cardAvailable = ref.watch(cardAvailableProvider).value ?? false;
     final fee = statement.accruedLateFee;
     final canPay = !target.former;
     return Card(
@@ -325,12 +332,13 @@ class _Summary extends ConsumerWidget {
                     onPressed: () =>
                         context.push('/money/pay?side=${target.id}'),
                   ),
-                  if (capabilities.checkout)
+                  if (cardAvailable)
                     OutlinedButton.icon(
                       key: const Key('payByCard'),
                       icon: const Icon(Icons.credit_card),
                       label: Text(l.payByCard),
-                      onPressed: () {},
+                      onPressed: () =>
+                          context.push('/money/card?side=${target.id}'),
                     ),
                 ],
               ),
