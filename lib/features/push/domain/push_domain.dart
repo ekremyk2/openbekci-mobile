@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:openbekci_mobile/core/links/safe_id.dart';
 
 /// Push notifications, the parts that need no platform (mobile plan section
 /// 9): the content-free payload, the notification type vocabulary with its
@@ -84,12 +85,6 @@ NotificationArea areaOfType(String type) {
   }
   return NotificationArea.system;
 }
-
-final _safeIdPattern = RegExp(r'^[A-Za-z0-9_-]{1,64}$');
-
-/// An id that is safe to put in a route path (no separators, no query).
-String? safeId(Object? v) =>
-    v is String && _safeIdPattern.hasMatch(v) ? v : null;
 
 /// The content-free push payload (backend plan section 12): exactly these six
 /// keys, never a title, body, name or address.

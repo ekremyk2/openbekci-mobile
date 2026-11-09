@@ -7,6 +7,7 @@ import 'package:openbekci_api/openbekci_api.dart' hide Notification;
 import 'package:openbekci_mobile/app/app.dart';
 import 'package:openbekci_mobile/app/router.dart';
 import 'package:openbekci_mobile/core/account/account.dart';
+import 'package:openbekci_mobile/core/links/app_link.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/features/community/application/community_providers.dart';
 import 'package:openbekci_mobile/features/notifications/application/notifications_providers.dart';
@@ -197,6 +198,34 @@ void main() {
         AppNotification.fromJson(
           notificationJson(type: type, payload: payload),
         );
+
+    test('a malformed id from a payload or link falls back to the list', () {
+      for (final bad in ['../x', '%2F', 'a b', 'a?b=1']) {
+        expect(
+          routeForNotification(
+            note('meeting.called', {'meeting_id': bad}),
+            orgId: orgId,
+          ),
+          '/more/assembly',
+          reason: bad,
+        );
+        expect(
+          routeForNotification(
+            note('ticket.updated', {'ticket_id': bad}),
+            orgId: orgId,
+          ),
+          '/tickets',
+          reason: bad,
+        );
+        expect(
+          AppLink.parse(
+            'openbekci://pay/return?org_id=o1&checkout_id=${Uri.encodeQueryComponent(bad)}',
+          ),
+          isNull,
+          reason: bad,
+        );
+      }
+    });
 
     test('a tap leads to the screen of its type', () {
       String? route(String type, [Map<String, Object?>? payload]) =>

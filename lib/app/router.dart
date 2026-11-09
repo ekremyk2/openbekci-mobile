@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:openbekci_mobile/core/instance/discovery.dart';
+import 'package:openbekci_mobile/core/links/safe_id.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 import 'package:openbekci_mobile/features/announcements/presentation/announcements_screens.dart';
 import 'package:openbekci_mobile/features/community/presentation/bookings_screens.dart';
@@ -169,6 +170,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'checkout/:id',
                     parentNavigatorKey: _rootKey,
+                    redirect: (_, state) =>
+                        safeId(state.pathParameters['id']) == null
+                        ? '/money'
+                        : null,
                     builder: (_, state) => CheckoutStatusScreen(
                       checkoutId: state.pathParameters['id']!,
                       orgId: state.uri.queryParameters['org'],
@@ -298,12 +303,19 @@ final routerProvider = Provider<GoRouter>((ref) {
                         path: 'decisions',
                         parentNavigatorKey: _rootKey,
                         builder: (_, state) => DecisionsScreen(
-                          meetingId: state.uri.queryParameters['meeting'],
+                          meetingId: safeId(
+                            state.uri.queryParameters['meeting'],
+                          ),
                         ),
                       ),
                       GoRoute(
                         path: ':id',
                         parentNavigatorKey: _rootKey,
+                        // A malformed id (from a link or payload) goes to the list.
+                        redirect: (_, state) =>
+                            safeId(state.pathParameters['id']) == null
+                            ? '/more/assembly'
+                            : null,
                         builder: (_, state) => MeetingScreen(
                           meetingId: state.pathParameters['id']!,
                         ),

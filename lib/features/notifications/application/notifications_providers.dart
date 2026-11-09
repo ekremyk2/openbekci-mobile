@@ -8,6 +8,7 @@ import 'package:openbekci_api/openbekci_api.dart' hide Notification;
 import 'package:openbekci_mobile/core/api/api_client.dart';
 import 'package:openbekci_mobile/core/cache/cache_policy.dart';
 import 'package:openbekci_mobile/core/cache/cached.dart';
+import 'package:openbekci_mobile/core/links/safe_id.dart';
 import 'package:openbekci_mobile/core/org/scope.dart';
 import 'package:openbekci_mobile/core/providers.dart';
 
@@ -125,16 +126,15 @@ String? routeForNotification(AppNotification n, {required String orgId}) {
   final linkOrg = _linkId(n.link, 'orgs');
   if (linkOrg != null && linkOrg != orgId) return null;
   final payload = n.payload;
-  String? id(String key) => _safeId(payload[key]);
+  String? id(String key) => safeId(payload[key]);
 
   final type = n.type;
   if (type.startsWith('announcement.')) {
-    final a =
-        id('announcement_id') ?? _safeId(_linkId(n.link, 'announcements'));
+    final a = id('announcement_id') ?? safeId(_linkId(n.link, 'announcements'));
     return a == null ? '/more/announcements' : '/more/announcements/$a';
   }
   if (type.startsWith('ticket.')) {
-    final t = id('ticket_id') ?? _safeId(_linkId(n.link, 'tickets'));
+    final t = id('ticket_id') ?? safeId(_linkId(n.link, 'tickets'));
     return t == null ? '/tickets' : '/tickets/$t';
   }
   if (type.startsWith('payment.') ||
@@ -157,10 +157,6 @@ String? routeForNotification(AppNotification n, {required String orgId}) {
   if (type == 'term.expiring') return '/more/assembly';
   return null;
 }
-
-/// An id that is safe to put in a route path (no separators, no query).
-String? _safeId(Object? v) =>
-    v is String && RegExp(r'^[A-Za-z0-9_-]{1,64}$').hasMatch(v) ? v : null;
 
 String? _linkId(String? link, String segment) {
   if (link == null) return null;
