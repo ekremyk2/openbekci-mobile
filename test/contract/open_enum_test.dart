@@ -145,6 +145,7 @@ void main() {
               {'permission': 'tickets.read'},
               {'permission': 'brand.new_permission'},
             ],
+            'occupant_permissions': <Object?>[],
             'sites': <Object?>[],
             'person_id': null,
           },

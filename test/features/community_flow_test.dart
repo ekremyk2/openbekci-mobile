@@ -25,17 +25,6 @@ class FakeQrImages implements QrImageService {
   }
 }
 
-class FakeUrlOpener implements UrlOpener {
-  final opened = <Uri>[];
-  bool ok = true;
-
-  @override
-  Future<bool> open(Uri uri) async {
-    opened.add(uri);
-    return ok;
-  }
-}
-
 Map<String, Object?> personJson({String? gatePhone}) => {
   'id': personId,
   'org_id': orgId,

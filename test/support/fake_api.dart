@@ -130,6 +130,7 @@ Map<String, Object?> tokenJson({
     'phone': '+905321234567',
     'locale': 'tr',
     'is_platform_admin': false,
+    'version': 1,
   },
 };
 
@@ -175,6 +176,7 @@ Map<String, Object?> meJson({
     'phone': '+905321234567',
     'locale': 'tr',
     'is_platform_admin': false,
+    'version': 1,
   },
   'organizations': organizations,
   'occupancies': occupancies,

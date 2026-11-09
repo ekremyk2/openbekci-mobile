@@ -170,16 +170,22 @@ final lockAuthenticatorProvider = Provider<LockAuthenticator>(
 /// Opens a URL in the browser (the web-login link). A seam so tests do not
 /// need the plugin.
 abstract interface class UrlOpener {
-  Future<bool> open(Uri uri);
+  /// [inApp] opens an Android Custom Tab (checkout) instead of the browser app.
+  Future<bool> open(Uri uri, {bool inApp = false});
 }
 
 class PlatformUrlOpener implements UrlOpener {
   const new();
 
   @override
-  Future<bool> open(Uri uri) async {
+  Future<bool> open(Uri uri, {bool inApp = false}) async {
     try {
-      return await launchUrl(uri, mode: LaunchMode.externalApplication);
+      return await launchUrl(
+        uri,
+        mode: inApp
+            ? LaunchMode.inAppBrowserView
+            : LaunchMode.externalApplication,
+      );
     } on Object {
       return false;
     }

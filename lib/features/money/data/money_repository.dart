@@ -203,6 +203,42 @@ class MoneyRepository {
     ),
   );
 
+  /// Starts a card checkout; [idempotencyKey] is stable per request content.
+  /// `client=mobile` makes the provider return to `openbekci://pay/return`.
+  Future<Checkout> createCheckout({
+    required String orgId,
+    required String unitId,
+    required String kind,
+    required String idempotencyKey,
+    List<String> chargeIds = const [],
+    Money? amount,
+  }) => unwrap(
+    () => api.money.moneyCreateCheckout(
+      orgId: orgId,
+      idempotencyKey: idempotencyKey,
+      checkoutCreate: CheckoutCreate(
+        unitId: unitId,
+        debtorKind: kind == 'owner'
+            ? CheckoutCreateDebtorKindEnum.owner
+            : CheckoutCreateDebtorKindEnum.tenant,
+        chargeIds: chargeIds.isEmpty ? null : chargeIds,
+        amount: amount,
+        client: CheckoutCreateClientEnum.mobile,
+      ),
+    ),
+  );
+
+  Future<Checkout> checkout({required String orgId, required String id}) =>
+      unwrap(() => api.money.moneyGetCheckout(orgId: orgId, checkoutId: id));
+
+  Future<List<Checkout>> myCheckouts(String orgId) =>
+      fetchAllPages<Checkout>((cursor) async {
+        final page = await unwrap(
+          () => api.money.moneyListMyCheckouts(orgId: orgId, cursor: cursor),
+        );
+        return (items: page.items, next: page.nextCursor);
+      });
+
   Future<Uint8List> receipt({
     required String orgId,
     required String paymentId,

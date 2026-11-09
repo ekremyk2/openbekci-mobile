@@ -2,6 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:openbekci_mobile/core/links/app_link.dart';
 
 void main() {
+  test('card checkout return link', () {
+    final link =
+        AppLink.parse('openbekci://pay/return?org_id=o1&checkout_id=c1')!
+            as PayReturnLink;
+    expect([link.orgId, link.checkoutId], ['o1', 'c1']);
+    expect(AppLink.parse('openbekci://pay/return?org_id=o1'), isNull);
+  });
+
   group('web links', () {
     test('invitation', () {
       final link = AppLink.parse('https://Gul.Example.org/invite/abc123');

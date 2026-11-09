@@ -251,6 +251,7 @@ Map<String, Object?> myMeetingJson({
       'agenda_item_id': agendaId,
       'title': 'Approve the budget',
       'answered_units': answered,
+      'answers': <Object?>[],
     },
   ],
 };

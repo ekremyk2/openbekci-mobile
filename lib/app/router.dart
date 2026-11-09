@@ -10,6 +10,7 @@ import 'package:openbekci_mobile/features/community/presentation/visitors_screen
 import 'package:openbekci_mobile/features/documents/presentation/documents_screens.dart';
 import 'package:openbekci_mobile/features/governance/presentation/governance_screens.dart';
 import 'package:openbekci_mobile/features/home/home_screen.dart';
+import 'package:openbekci_mobile/features/money/presentation/checkout_screens.dart';
 import 'package:openbekci_mobile/features/money/presentation/money_screen.dart';
 import 'package:openbekci_mobile/features/money/presentation/pay_screens.dart';
 import 'package:openbekci_mobile/features/notifications/presentation/notifications_screens.dart';
@@ -153,6 +154,26 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (_, state) => PayScreen(
                       sideId: state.uri.queryParameters['side'] ?? '',
                     ),
+                  ),
+                  GoRoute(
+                    path: 'card',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, state) => CheckoutScreen(
+                      sideId: state.uri.queryParameters['side'] ?? '',
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'checkout/:id',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, state) => CheckoutStatusScreen(
+                      checkoutId: state.pathParameters['id']!,
+                      orgId: state.uri.queryParameters['org'],
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'checkouts',
+                    parentNavigatorKey: _rootKey,
+                    builder: (_, _) => const MyCheckoutsScreen(),
                   ),
                   GoRoute(
                     path: 'payments',

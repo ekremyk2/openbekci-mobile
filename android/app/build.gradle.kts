@@ -67,11 +67,22 @@ android {
         }
     }
 
+    signingConfigs {
+        // Release signing comes from the environment (tool/release.sh, CI secrets); never committed.
+        System.getenv("OPENBEKCI_KEYSTORE")?.let { path ->
+            create("release") {
+                storeFile = file(path)
+                storePassword = System.getenv("OPENBEKCI_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("OPENBEKCI_KEY_ALIAS")
+                keyPassword = System.getenv("OPENBEKCI_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Without a keystore: debug keys, so `flutter run --release` works (not uploadable).
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
     }
 }

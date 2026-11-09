@@ -6,7 +6,7 @@ a self-hosted server, chosen at first launch through the discovery document. Lic
 Plans: `docs/plans/03-mobile.md` in the core repository (`ekremyk2/OpenBekci`). This repository consumes a **pinned
 OpenAPI spec**; it never builds against the core working tree.
 
-Status: **phase C (community, governance, push)**, on top of phase B (resident core). On top of phase A (server entry, site QR scan, sign-in by SMS code, password, email
+Status: **phase D (card checkout, contract matrix, a11y, release automation)**, on top of phase C (community, governance, push) and phase B (resident core). On top of phase A (server entry, site QR scan, sign-in by SMS code, password, email
 link and invitation, unit claim, token refresh, read cache): home per organization, the statement per debtor side with
 the late fee accrued to today and a PDF, pay by bank transfer with the "I've paid by transfer" declaration, tickets
 (per-site workflow statuses, private or common, "+1", photos), announcements with read receipts, documents (including
@@ -14,7 +14,10 @@ the unit's private folder and generated files), the notification center with mut
 contact phone, directory opt-in, sessions, app lock, consents, about). Phase C adds bookings (rules, slot picker, fee preview, cancel with the refund rule), visitors (pre-registration with a
 shared QR, recurring visitors, approve or deny from a notification), parcels, governance (assembly with agenda and call
 letter, pre-meeting polls, check-in QR, decisions, minutes), device registration, push handling and the "Open in web"
-action. Card checkout (phase D) is not built yet.
+action. Phase D adds card checkout ("Pay by card" when the site settings say `payments.card.available`: charges or an
+amount per side, `money.createCheckout` with `client=mobile`, the provider page in a Custom Tab, the return link
+`openbekci://pay/return?org_id&checkout_id`, a status poll with backoff that shows `amount_mismatch`, and "my card
+payments"), the N-1/N-2 contract matrix, an accessibility test and release automation (`docs/release.md`).
 
 ## Requirements
 
@@ -171,7 +174,24 @@ flutter test               # unit, widget, contract, goldens; live tests skip th
   lists a guard-logged parcel, answers a poll and reads the check-in token, registers a `unifiedpush` device pointing at a
   local HTTP endpoint and asserts that the server posts exactly the six payload keys to it. Start the server with
   `OPENBEKCI_PUSH_ALLOW_PRIVATE=true` and an organization administrator account (same variables as above).
+- **Contract matrix** (`test/contract/compat_matrix_test.dart`): samples built from the two previous spec pins kept in
+  `spec/compat/` (N-1 and N-2, with their locks) are decoded by the current generated client, alone and with an unknown
+  field on every object and an unknown value for every enum. Known gaps (fields the current spec requires that an older
+  server lacks) are listed in the test. When bumping the pin: copy the current `spec/openapi.yaml` and lock into
+  `spec/compat/` under the old commit's short sha and drop the oldest pair.
+- **Accessibility** (`test/features/a11y_test.dart`): `meetsGuideline` for 48 dp targets, labelled targets and text contrast on
+  home, money and card checkout, light and dark.
+- **Card checkout, live** (`test/live/live_checkout_test.dart`): needs a server built with `-tags examplepack` (the example
+  pack's fake provider; the test enables it with a webhook secret). The provider has no page a test can drive, so the
+  test posts the signed "paid" callback to `/v1/orgs/{org}/packs/example/payments/example/webhook` itself (once for the
+  full amount, once for less, which shows the mismatch notice), feeds the return link to the app and checks the
+  payments the server booked.
 - **Integration** (`integration_test/app_test.dart`): an on-device smoke test; needs an emulator or phone.
+
+## Release
+
+`VERSION` holds the semver; `tool/release.sh` (or `.ps1`) builds the prod AAB; a `v*` tag runs `.github/workflows/release.yml`.
+Store steps and privacy-form answers: `docs/release.md`.
 
 ## CI
 
@@ -197,8 +217,7 @@ flutter test               # unit, widget, contract, goldens; live tests skip th
   setting (sent as `Accept-Language`), not stored on the server.
 - **No consents endpoints** (texts, accept, decline): the only consent served is the per-site directory opt-in
   (`PUT /v1/orgs/{org}/me/directory-consent`), which the Consents screen lists. Other consent documents need endpoints.
-- **No checkout operation and no capability flag**: card payment is phase D. The "Pay by card" button is hidden unless
-  `packs` of `GET /v1/instance` contains `payments.checkout` (a placeholder name to confirm with the backend).
+- **Card checkout capability** (resolved in phase D): the button follows `payments.card.available` of `GET /sites/{id}/settings`.
 - **Pending declared payments are not statement lines** (nothing is posted until a manager confirms): the app lists
   them from `GET /payments` as "declared, awaiting confirmation" above the lines.
 - **`DebtorRef` (oneOf with a discriminator) is flattened by the generator**: `tool/prune_spec.dart` rewrites it into

@@ -204,28 +204,71 @@ void main() {
 
     testWidgets('card button stays hidden by default', (tester) async {
       final r = ResidentApp();
+      r.adapter.answer(
+        'GET /v1/orgs/$orgId/sites/$siteId/settings',
+        FakeResponse.ok(siteSettingsJson(card: false)),
+      );
       await pumpResident(tester, r);
       await tester.tap(find.byKey(const Key('navMoney')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('payByCard')), findsNothing);
     });
 
-    testWidgets('card button shows when the instance offers checkout', (
+    testWidgets('card checkout: pick a charge, Custom Tab, poll to paid', (
       tester,
     ) async {
-      final r = ResidentApp();
-      r.adapter.answer(
-        'GET /v1/instance',
-        FakeResponse.ok({
-          ...discoveryJson(),
-          'packs': ['payments.checkout'],
-          'policies': {'app_lock_required': false},
-        }),
+      final opener = FakeUrlOpener();
+      final r = ResidentApp(
+        extra: [urlOpenerProvider.overrideWithValue(opener)],
       );
+      r.adapter
+        ..answer(
+          'GET /v1/orgs/$orgId/sites/$siteId/settings',
+          FakeResponse.ok(siteSettingsJson()),
+        )
+        ..answer(
+          'GET /v1/orgs/$orgId/charges',
+          FakeResponse.ok(pageOf([chargeJson()])),
+        )
+        ..answer(
+          'POST /v1/orgs/$orgId/checkouts',
+          FakeResponse(201, checkoutJson()),
+        )
+        ..answer(
+          'GET /v1/orgs/$orgId/checkouts/$checkoutId',
+          FakeResponse.ok(checkoutJson()),
+        );
       await pumpResident(tester, r);
       await tester.tap(find.byKey(const Key('navMoney')));
       await tester.pumpAndSettle();
-      expect(find.byKey(const Key('payByCard')), findsOneWidget);
+      await tapKey(tester, 'payByCard');
+      await tapKey(tester, 'charge_$chargeId');
+      await tapKey(tester, 'checkoutContinue');
+
+      final post = r.seen('POST /v1/orgs/$orgId/checkouts').single;
+      expect(post.headers['Idempotency-Key'], isNotEmpty);
+      expect(bodyOf(post), {
+        'unit_id': unit12,
+        'debtor_kind': 'owner',
+        'charge_ids': [chargeId],
+        'client': 'mobile',
+      });
+      expect(opener.opened.single.host, 'pay.example.test');
+      expect(find.byKey(const Key('checkout_pending')), findsOneWidget);
+
+      // The provider confirmed less than asked: paid, flagged.
+      r.adapter.answer(
+        'GET /v1/orgs/$orgId/checkouts/$checkoutId',
+        FakeResponse.ok(
+          checkoutJson(
+            status: 'paid',
+            extra: {'amount_mismatch': true, 'confirmed_amount': money(100000)},
+          ),
+        ),
+      );
+      await tapKey(tester, 'checkoutRefresh');
+      expect(find.byKey(const Key('checkout_paid')), findsOneWidget);
+      expect(find.byKey(const Key('checkoutMismatch')), findsOneWidget);
     });
 
     testWidgets('declares a transfer once, with one Idempotency-Key', (

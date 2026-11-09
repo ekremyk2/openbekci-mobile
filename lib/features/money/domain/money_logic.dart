@@ -304,11 +304,28 @@ class _LedgerEvent {
 /// booked lines (M4), so that line is taken out here and the closing balance
 /// is the booked one again; the fee is then listed once and
 /// `total_due == closing + accrued`.
-Statement withoutAccruedLine(Statement s) {
+///
+/// Declared-payment memo lines (they move no balance) are dropped too: the
+/// screen lists declared transfers itself, from the payments.
+Statement withoutAccruedLine(Statement s0) {
+  final s = Statement(
+    debtor: s0.debtor,
+    from: s0.from,
+    to: s0.to,
+    openingBalance: s0.openingBalance,
+    lines: [
+      for (final l in s0.lines)
+        if (l.kind != StatementLineKindEnum.declaredPayment) l,
+    ],
+    closingBalance: s0.closingBalance,
+    accruedLateFee: s0.accruedLateFee,
+    totalDue: s0.totalDue,
+    credit: s0.credit,
+  );
   final fee = s.accruedLateFee.amount;
   if (fee <= 0 || s.lines.isEmpty) return s;
   final last = s.lines.last;
-  if (last.description != 'accrued' ||
+  if (!(last.accrued ?? false) && last.description != 'accrued' ||
       last.lateFee.amount != fee ||
       last.debit.amount - last.credit.amount != fee) {
     return s;
@@ -327,3 +344,12 @@ Statement withoutAccruedLine(Statement s) {
     credit: s.credit,
   );
 }
+
+/// Wait before poll number [attempt] (0-based) of a pending checkout: 2 s,
+/// doubling, capped at 20 s.
+Duration checkoutPollDelay(int attempt) =>
+    Duration(seconds: (2 << attempt.clamp(0, 4)).clamp(2, 20));
+
+/// shortcut: polls for about 5 minutes, then waits for a manual refresh;
+/// upgrade when providers settle slower than that.
+const checkoutPollAttempts = 20;

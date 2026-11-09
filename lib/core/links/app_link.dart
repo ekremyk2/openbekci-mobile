@@ -94,6 +94,13 @@ sealed class AppLink {
             return MagicLoginLink(token: token, origin: origin);
           }
         }
+      case 'pay':
+        // openbekci://pay/return?org_id=...&checkout_id=... (card checkout)
+        final org = uri.queryParameters['org_id'];
+        final id = uri.queryParameters['checkout_id'];
+        if (s.length >= 2 && s[1] == 'return' && org != null && id != null) {
+          return PayReturnLink(orgId: org, checkoutId: id, origin: origin);
+        }
       case 'connect':
         // openbekci://connect?server=<url>[&invite=<token>]
         final invite = uri.queryParameters['invite'];
@@ -160,4 +167,22 @@ class MagicLoginLink extends AppLink {
 
   @override
   int get hashCode => Object.hash(token, origin);
+}
+
+/// `openbekci://pay/return?org_id&checkout_id`: the payer is back from the
+/// provider's page.
+class PayReturnLink extends AppLink {
+  const new({required this.orgId, required this.checkoutId, super.origin});
+  final String orgId;
+  final String checkoutId;
+
+  @override
+  bool operator ==(Object other) =>
+      other is PayReturnLink &&
+      other.checkoutId == checkoutId &&
+      other.orgId == orgId &&
+      other.origin == origin;
+
+  @override
+  int get hashCode => Object.hash(orgId, checkoutId, origin);
 }

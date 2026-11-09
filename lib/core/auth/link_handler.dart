@@ -34,7 +34,12 @@ class LinkHandler {
       if (link.origin != null && link.origin != account.serverOrigin) {
         return '/';
       }
-      return link is JoinLink ? joinLocation(link.code) : '/';
+      return switch (link) {
+        JoinLink(:final code) => joinLocation(code),
+        PayReturnLink(:final orgId, :final checkoutId) =>
+          '/money/checkout/$checkoutId?org=$orgId',
+        _ => '/',
+      };
     }
 
     if (origin == null) {
@@ -53,6 +58,7 @@ class LinkHandler {
       JoinLink(:final code) => joinLocation(code),
       MagicLoginLink(:final token) => '/magic/${Uri.encodeComponent(token)}',
       ServerLink() => '/sign-in',
+      PayReturnLink() => '/sign-in',
     };
   }
 
