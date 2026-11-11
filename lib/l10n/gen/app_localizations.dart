@@ -1364,6 +1364,12 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get languageTitle;
 
+  /// No description provided for @lookTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Look'**
+  String get lookTitle;
+
   /// No description provided for @lockFailed.
   ///
   /// In en, this message translates to:

@@ -723,6 +723,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageTitle => 'Language';
 
   @override
+  String get lookTitle => 'Look';
+
+  @override
   String get lockFailed => 'Could not confirm it is you.';
 
   @override

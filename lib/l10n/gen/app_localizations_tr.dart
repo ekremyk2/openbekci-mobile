@@ -724,6 +724,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get languageTitle => 'Dil';
 
   @override
+  String get lookTitle => 'Görünüm';
+
+  @override
   String get lockFailed => 'Kimliğiniz doğrulanamadı.';
 
   @override

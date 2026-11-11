@@ -29,6 +29,7 @@ class _OpenBekciAppState extends ConsumerState<OpenBekciApp> {
   void initState() {
     super.initState();
     unawaited(Future<void>(() => restoreLocale(ref)));
+    unawaited(Future<void>(() => restoreLook(ref)));
     // Push registration, incoming messages and the periodic-fetch fallback
     // live as long as the app does.
     ref.listenManual(pushControllerProvider, (_, _) {});
@@ -51,6 +52,7 @@ class _OpenBekciAppState extends ConsumerState<OpenBekciApp> {
     final config = ref.watch(appConfigProvider);
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeProvider);
+    final look = ref.watch(lookProvider);
     // Instance branding tints the app once a server is known.
     final branded = parseHexColor(
       ref.watch(
@@ -72,8 +74,8 @@ class _OpenBekciAppState extends ConsumerState<OpenBekciApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       builder: (context, child) =>
           AppLockGate(child: child ?? const SizedBox()),
-      theme: buildTheme(seed: seed, brightness: Brightness.light),
-      darkTheme: buildTheme(seed: seed, brightness: Brightness.dark),
+      theme: buildTheme(seed: seed, brightness: Brightness.light, look: look),
+      darkTheme: buildTheme(seed: seed, brightness: Brightness.dark, look: look),
     );
   }
 }

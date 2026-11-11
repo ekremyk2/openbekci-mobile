@@ -109,7 +109,7 @@ Future<void> expectGolden(
                     ],
                     theme:
                         buildTheme(
-                          seed: const Color(0xFFB75131),
+                          seed: const Color(0xFFBD4E27),
                           brightness: v.brightness,
                         ).copyWith(
                           // Flat: elevation shadows are the usual source of
