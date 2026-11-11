@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openbekci_api/openbekci_api.dart' hide Notification;
+import 'package:openbekci_mobile/app/theme/theme.dart' show Look;
 import 'package:openbekci_mobile/core/api/api_client.dart';
 import 'package:openbekci_mobile/core/cache/cache_policy.dart';
 import 'package:openbekci_mobile/core/cache/cached.dart';
@@ -224,6 +225,41 @@ Future<void> saveLocale(WidgetRef ref, Locale? locale) async {
     } else {
       await prefs.setString(_localePref, locale.languageCode);
     }
+  } on Object {
+    // Applied for this run only.
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Look setting (Kiremit or Taş).
+// ---------------------------------------------------------------------------
+
+const _lookPref = 'look';
+
+class LookController extends Notifier<Look> {
+  @override
+  Look build() => Look.kiremit;
+
+  // A Notifier cannot expose its state through a setter.
+  // ignore: use_setters_to_change_properties
+  void set(Look look) => state = look;
+}
+
+final lookProvider = NotifierProvider<LookController, Look>(LookController.new);
+
+Future<void> restoreLook(WidgetRef ref) async {
+  try {
+    final tas = (await SharedPreferences.getInstance()).getString(_lookPref) == 'tas';
+    if (tas) ref.read(lookProvider.notifier).set(Look.tas);
+  } on Object {
+    // Kiremit.
+  }
+}
+
+Future<void> saveLook(WidgetRef ref, Look look) async {
+  ref.read(lookProvider.notifier).set(look);
+  try {
+    await (await SharedPreferences.getInstance()).setString(_lookPref, look.name);
   } on Object {
     // Applied for this run only.
   }

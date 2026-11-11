@@ -211,6 +211,7 @@
   "includesLateFee": "gecikme zammı dahil",
   "languageDevice": "Cihazla aynı",
   "languageTitle": "Dil",
+  "lookTitle": "Görünüm",
   "lockFailed": "Kimliğiniz doğrulanamadı.",
   "lockReason": "OpenBekci kilidini aç",
   "lockUnavailable": "Bu cihazda ekran kilidi veya biyometri kurulu değil.",

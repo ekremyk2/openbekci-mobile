@@ -10,9 +10,12 @@ const radiusSm = 4.0;
 const radiusMd = 8.0;
 const radiusLg = 12.0;
 
-/// The terracotta tile of the brand in the light theme; a `seed` equal to this
-/// means "no instance override".
-const brandTile = Color(0xFFB75131);
+/// The Kiremit terracotta tile in the light theme; a `seed` equal to this
+/// means "no instance override" (also under the Taş look).
+const brandTile = Color(0xFFBD4E27);
+
+/// The two selectable looks: Kiremit (the brand) and Taş.
+enum Look { kiremit, tas }
 
 /// Brand color tokens (`tokens.json` of the brand book) for one theme.
 class BrandTokens {
@@ -68,54 +71,106 @@ class BrandTokens {
 }
 
 const lightTokens = BrandTokens(
-  surface: Color(0xFFFCFAF6),
-  raised: Color(0xFFFFFFFF),
-  sunken: Color(0xFFF5F1EC),
-  line: Color(0xFFDFDAD4),
-  lineStrong: Color(0xFF8F847A),
-  ink: Color(0xFF15202D),
-  inkMuted: Color(0xFF525C69),
-  night: Color(0xFF17273C),
-  onNight: Color(0xFFFAF6F1),
-  tile: brandTile,
-  tileDeep: Color(0xFF953920),
-  tileTint: Color(0xFFFFE9DE),
-  onTile: Color(0xFFFCFAF6),
-  shadowInk: Color(0xFF06101C),
-  success: Color(0xFF1F744F),
-  successTint: Color(0xFFD9F7E5),
-  warning: Color(0xFF935F00),
-  warningTint: Color(0xFFFFF0CC),
-  danger: Color(0xFFB61537),
-  dangerTint: Color(0xFFFFE7E6),
-  info: Color(0xFF1F689D),
-  infoTint: Color(0xFFE1F1FF),
-  focus: Color(0xFF164781),
+  surface: Color(0xFFFBF6F0),
+  raised: Color(0xFFFFFDFA),
+  sunken: Color(0xFFF4EBE1),
+  line: Color(0xFFE6D9CB),
+  lineStrong: Color(0xFF8C7A69),
+  ink: Color(0xFF1A2433),
+  inkMuted: Color(0xFF4F5A6A),
+  night: Color(0xFF14284A),
+  onNight: Color(0xFFFBF4EA),
+  tile: Color(0xFFBD4E27),
+  tileDeep: Color(0xFF963718),
+  tileTint: Color(0xFFFFE3D2),
+  onTile: Color(0xFFFFFAF4),
+  shadowInk: Color(0xFF07101F),
+  success: Color(0xFF17744A),
+  successTint: Color(0xFFD3F5DF),
+  warning: Color(0xFF8F5B00),
+  warningTint: Color(0xFFFFECBD),
+  danger: Color(0xFFB4123A),
+  dangerTint: Color(0xFFFFE1E1),
+  info: Color(0xFF1B62A8),
+  infoTint: Color(0xFFDCEDFF),
+  focus: Color(0xFF153F87),
 );
 
 const darkTokens = BrandTokens(
-  surface: Color(0xFF101419),
-  raised: Color(0xFF181D23),
-  sunken: Color(0xFF0A0F13),
-  line: Color(0xFF2E3339),
-  lineStrong: Color(0xFF6E757E),
-  ink: Color(0xFFF2F0EC),
-  inkMuted: Color(0xFFA4ACB4),
-  night: Color(0xFFC3D3E4),
-  onNight: Color(0xFF0B1726),
-  tile: Color(0xFFE78D6A),
-  tileDeep: Color(0xFFF4A988),
-  tileTint: Color(0xFF3A221A),
-  onTile: Color(0xFF0B1726),
-  shadowInk: Color(0xFF03060B),
-  success: Color(0xFF76CF8A),
-  successTint: Color(0xFF0F2D1F),
-  warning: Color(0xFFEEBC4A),
-  warningTint: Color(0xFF3B2B0D),
-  danger: Color(0xFFFF7C80),
-  dangerTint: Color(0xFF451E1F),
-  info: Color(0xFF86BEEE),
-  infoTint: Color(0xFF172B3B),
+  surface: Color(0xFF181513),
+  raised: Color(0xFF211D1A),
+  sunken: Color(0xFF110F0D),
+  line: Color(0xFF35302B),
+  lineStrong: Color(0xFF7F756C),
+  ink: Color(0xFFF3EDE6),
+  inkMuted: Color(0xFFB0A69C),
+  night: Color(0xFFBCD0EE),
+  onNight: Color(0xFF0A1730),
+  tile: Color(0xFFEE8A62),
+  tileDeep: Color(0xFFF6A98A),
+  tileTint: Color(0xFF3B2118),
+  onTile: Color(0xFF1B0F0A),
+  shadowInk: Color(0xFF060403),
+  success: Color(0xFF7AD68F),
+  successTint: Color(0xFF12301F),
+  warning: Color(0xFFF0BD4C),
+  warningTint: Color(0xFF3A2A0C),
+  danger: Color(0xFFFF8083),
+  dangerTint: Color(0xFF4A2022),
+  info: Color(0xFF8CC2F2),
+  infoTint: Color(0xFF1A2D40),
+  focus: Color(0xFF9CCBFF),
+);
+
+const tasLightTokens = BrandTokens(
+  surface: Color(0xFFF6F5F3),
+  raised: Color(0xFFFDFCFB),
+  sunken: Color(0xFFEDEBE8),
+  line: Color(0xFFDAD7D2),
+  lineStrong: Color(0xFF85807A),
+  ink: Color(0xFF1C1D20),
+  inkMuted: Color(0xFF55575C),
+  night: Color(0xFF232B36),
+  onNight: Color(0xFFF6F5F3),
+  tile: Color(0xFFA8573E),
+  tileDeep: Color(0xFF874330),
+  tileTint: Color(0xFFF1E4DE),
+  onTile: Color(0xFFFBF9F7),
+  shadowInk: Color(0xFF0A0C10),
+  success: Color(0xFF1A7449),
+  successTint: Color(0xFFD5F2E1),
+  warning: Color(0xFF946000),
+  warningTint: Color(0xFFFFF0C9),
+  danger: Color(0xFFC0143C),
+  dangerTint: Color(0xFFFFE0E3),
+  info: Color(0xFF1F6AA5),
+  infoTint: Color(0xFFDCECFB),
+  focus: Color(0xFF1F4F8F),
+);
+
+const tasDarkTokens = BrandTokens(
+  surface: Color(0xFF1E1D1B),
+  raised: Color(0xFF272624),
+  sunken: Color(0xFF171614),
+  line: Color(0xFF3A3835),
+  lineStrong: Color(0xFF7B7873),
+  ink: Color(0xFFF1EFEC),
+  inkMuted: Color(0xFFB1AEA9),
+  night: Color(0xFFD3D8DE),
+  onNight: Color(0xFF14171C),
+  tile: Color(0xFFDC9378),
+  tileDeep: Color(0xFFE8AB94),
+  tileTint: Color(0xFF372A25),
+  onTile: Color(0xFF1A1210),
+  shadowInk: Color(0xFF080706),
+  success: Color(0xFF6FD29A),
+  successTint: Color(0xFF12301F),
+  warning: Color(0xFFF0BD4C),
+  warningTint: Color(0xFF3A2A0C),
+  danger: Color(0xFFFF8587),
+  dangerTint: Color(0xFF4A2022),
+  info: Color(0xFF8CC2F2),
+  infoTint: Color(0xFF1A2D40),
   focus: Color(0xFF8CC3FC),
 );
 
@@ -215,8 +270,15 @@ ColorScheme _scheme(BrandTokens t, Brightness b, Color tile) => ColorScheme(
 /// Material 3 theme from the OpenBekci brand tokens, every color role set
 /// explicitly. [seed] is an instance's own primary color (white-label); the
 /// default [brandTile] uses the brand tile of each theme.
-ThemeData buildTheme({required Color seed, required Brightness brightness}) {
-  final t = brightness == Brightness.dark ? darkTokens : lightTokens;
+ThemeData buildTheme({
+  required Color seed,
+  required Brightness brightness,
+  Look look = Look.kiremit,
+}) {
+  final dark = brightness == Brightness.dark;
+  final t = look == Look.tas
+      ? (dark ? tasDarkTokens : tasLightTokens)
+      : (dark ? darkTokens : lightTokens);
   final tile = seed == brandTile ? t.tile : seed;
   final text = _textTheme(t.ink);
   final hairline = BorderSide(color: t.line);

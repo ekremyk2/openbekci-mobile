@@ -370,6 +370,7 @@
   "includesLateFee": "includes late fee",
   "languageDevice": "Same as the device",
   "languageTitle": "Language",
+  "lookTitle": "Look",
   "lockFailed": "Could not confirm it is you.",
   "lockReason": "Unlock OpenBekci",
   "lockUnavailable": "This device has no screen lock or biometrics set up.",

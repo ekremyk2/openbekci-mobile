@@ -401,7 +401,7 @@ class LiveApp {
           flavor: Flavor.dev,
           appName: 'OpenBekci',
           relayId: 'official',
-          seedColor: Color(0xFFB75131),
+          seedColor: Color(0xFFBD4E27),
         ),
       ),
       appInfoProvider.overrideWithValue(

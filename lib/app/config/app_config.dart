@@ -40,7 +40,7 @@ class AppConfig {
       relayId: (json['relay_id'] as String?) ?? 'official',
       seedColor:
           parseHexColor(brand['seed_color'] as String?) ??
-          const Color(0xFFB75131),
+          const Color(0xFFBD4E27),
       defaultServerUrl: override.isNotEmpty
           ? override
           : (fromFile != null && fromFile.isNotEmpty ? fromFile : null),

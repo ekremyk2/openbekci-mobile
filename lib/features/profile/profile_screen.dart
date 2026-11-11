@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:openbekci_api/openbekci_api.dart' hide Notification;
+import 'package:openbekci_mobile/app/theme/theme.dart' show Look;
 import 'package:openbekci_mobile/core/api/app_error.dart';
 import 'package:openbekci_mobile/core/l10n/codes.dart';
 import 'package:openbekci_mobile/core/org/org_context.dart';
@@ -333,6 +334,25 @@ class _EditMeState extends ConsumerState<EditMeScreen> with SubmitState {
                         key: Key('lang_tr'),
                         value: 'tr',
                         title: Text('Türkçe'),
+                      ),
+                    ],
+                  ),
+                ),
+                SectionTitle(l.lookTitle),
+                RadioGroup<Look>(
+                  groupValue: ref.watch(lookProvider),
+                  onChanged: (v) => saveLook(ref, v ?? Look.kiremit),
+                  child: const Column(
+                    children: [
+                      RadioListTile<Look>(
+                        key: Key('look_kiremit'),
+                        value: Look.kiremit,
+                        title: Text('Kiremit'),
+                      ),
+                      RadioListTile<Look>(
+                        key: Key('look_tas'),
+                        value: Look.tas,
+                        title: Text('Taş'),
                       ),
                     ],
                   ),
